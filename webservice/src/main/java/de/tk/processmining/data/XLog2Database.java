@@ -1,5 +1,7 @@
 package de.tk.processmining.data;
 
+import com.healthmarketscience.sqlbuilder.CreateTableQuery;
+import com.healthmarketscience.sqlbuilder.InsertQuery;
 import org.apache.commons.lang3.StringUtils;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -30,9 +32,13 @@ public class XLog2Database {
 
     private JdbcTemplate jdbcTemplate;
 
+    private DatabaseModel db;
+
     public XLog2Database(JdbcTemplate jdbcTemplate, String logName) {
         this.logName = logName;
         this.jdbcTemplate = jdbcTemplate;
+
+        this.db = new DatabaseModel(logName);
     }
 
     public void importLog(XLog log) {
@@ -46,7 +52,9 @@ public class XLog2Database {
         generateCaseAttributeTable(traceAttributes);
         generateEventsTable();
 
-        String insertEventSql = "INSERT INTO " + getEventsTableName(this.logName) + " VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String insertEventSql = new InsertQuery(db.eventTable)
+                .addPreparedColumnCollection(db.eventTable.getColumns())
+                .validate().toString();
         String insertTraceSql = "INSERT INTO " + getCaseAttributeTableName(this.logName) + " VALUES (" + StringUtils.repeat("?", ",", traceAttributes.size() + 2) + ");";
 
         // import events and cases
@@ -109,15 +117,9 @@ public class XLog2Database {
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + getEventsTableName(this.logName));
 
         // create new table
-        String sql = "CREATE TABLE " + getEventsTableName(this.logName) + " (" +
-                "case_id INTEGER," +
-                "original_case_id VARCHAR(250)," +
-                "event_id INTEGER," +
-                "event_name VARCHAR(250)," +
-                "user_name VARCHAR(250)," +
-                "timestamp TIMESTAMP," +
-                "lifecycle VARCHAR(250)" +
-                ")";
+        String sql = new CreateTableQuery(db.eventTable, true)
+                .validate().toString();
+
         jdbcTemplate.execute(sql);
     }
 
@@ -157,13 +159,10 @@ public class XLog2Database {
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + getActivityTableName(this.logName));
 
         // create new table
-        var sql = new StringBuilder();
-        sql.append("CREATE TABLE " + getActivityTableName(this.logName) + " (");
-        sql.append("id INTEGER,");
-        sql.append("name VARCHAR(250)");
-        sql.append(")");
+        var sql = new CreateTableQuery(db.activityTable, true)
+                .validate().toString();
 
-        jdbcTemplate.execute(sql.toString());
+        jdbcTemplate.execute(sql);
 
         // add all activities
         List<Object[]> insertValues = new ArrayList<>();
@@ -171,7 +170,10 @@ public class XLog2Database {
             insertValues.add(new Object[]{eventClass.getIndex(), eventClass.getId()});
         }
 
-        jdbcTemplate.batchUpdate("INSERT INTO " + getActivityTableName(this.logName) + " VALUES (?, ?)", insertValues);
+        var insertSql = new InsertQuery(db.activityTable)
+                .addPreparedColumnCollection(db.activityTable.getColumns())
+                .validate().toString();
+        jdbcTemplate.batchUpdate(insertSql, insertValues);
     }
 
 

@@ -1,24 +1,14 @@
 package de.tk.processmining.webservice.controller;
 
-import de.tk.processmining.data.DatabaseConstants;
+import de.tk.processmining.data.model.Graph;
 import de.tk.processmining.data.model.Log;
-import de.tk.processmining.data.model.Paths;
 import de.tk.processmining.data.model.Variant;
 import de.tk.processmining.data.query.QueryManager;
-import de.tk.processmining.query.ActivityStat;
+import de.tk.processmining.data.query.condition.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.management.Query;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-
-import static de.tk.processmining.data.DatabaseConstants.*;
 
 /**
  * @author Alexander Seeliger on 23.09.2019.
@@ -38,9 +28,14 @@ public class QueryController {
         return queryManager.getLogStatistics(logName);
     }
 
-    @RequestMapping("dfg/getallpaths")
+    @RequestMapping("getallpaths")
     public List<Variant> getAllPaths(String logName) {
         return queryManager.getAllPaths(logName);
+    }
+
+    @RequestMapping(value = "/getprocessmap", method = RequestMethod.POST)
+    public Graph getProcessMap(@RequestParam String logName, @RequestBody List<Condition> conditions) {
+        return queryManager.getProcessMap(logName, conditions);
     }
 
 }

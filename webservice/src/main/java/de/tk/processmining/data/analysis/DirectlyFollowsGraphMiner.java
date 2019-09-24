@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static de.tk.processmining.data.DatabaseConstants.*;
+import static de.tk.processmining.data.DatabaseConstants.getGraphTableName;
 
 /**
  * @author Alexander Seeliger on 23.09.2019.
@@ -35,7 +36,7 @@ public class DirectlyFollowsGraphMiner {
         sql.print("    MIN(timestamp) AS start_time,");
         sql.print("    MAX(timestamp) AS end_time,");
         sql.print("    COUNT(%s) AS %s,", "event_name", "num_events");
-        sql.print("    COUNT(DISTINCT %s) AS %s,", "user_name", "num_users");
+        sql.print("    COUNT(DISTINCT %s) AS %s,", "resource", "num_users");
         sql.print("    CAST(%s AS interval) AS %s,", "age(MAX(timestamp), MIN(timestamp))", "duration");
         sql.print("    CONCAT(':', STRING_AGG(CAST(event_id AS VARCHAR(5)), '::' ORDER BY timestamp, lifecycle, event_id), ':') AS variant");
         sql.print("  FROM %s AS log", getEventsTableName(logName));
@@ -74,7 +75,7 @@ public class DirectlyFollowsGraphMiner {
         sql.print("  COALESCE(b.event_name, 'Endknoten') AS target_event,");
         sql.print("  COALESCE(%s, interval '0') AS duration,", "age(b.timestamp, a.timestamp)");
         sql.print("  CAST(%s AS INT) AS variant_id", getCaseTableName(logName) + ".variant_id");
-        sql.print("INTO %s", logName.toLowerCase() + "_graph");
+        sql.print("INTO %s", getGraphTableName(logName));
         sql.print("FROM ordered AS a");
         sql.print("INNER JOIN %s ON", getActivityTableName(logName));
         sql.print("  %s = %s", getActivityTableName(logName) + ".id", "a.event_id");
@@ -86,7 +87,7 @@ public class DirectlyFollowsGraphMiner {
         jdbcTemplate.execute(sql.toString());
 
         // create index
-        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + logName.toLowerCase() + "_graph ON " + logName + "_graph (case_id)");
+        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + getGraphTableName(logName) + " ON " + logName + "_graph (case_id)");
     }
 
     private String getPathsTableQuery(String variantsTableName) {

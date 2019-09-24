@@ -15,6 +15,8 @@ public class DatabaseConstants {
 
     private static final String VARIANTS_TABLE = "_variants";
 
+    private static final String GRAPH_TABLE = "_graph";
+
     public static String getActivityTableName(String logName) {
         return logName.toLowerCase() + DatabaseConstants.ACTIVITIES_TABLE;
     }
@@ -25,6 +27,10 @@ public class DatabaseConstants {
 
     public static String getCaseAttributeTableName(String logName) {
         return logName.toLowerCase() + DatabaseConstants.CASE_ATTRIBUTES_TABLE;
+    }
+
+    public static String getGraphTableName(String logName) {
+        return logName.toLowerCase() + DatabaseConstants.GRAPH_TABLE;
     }
 
     public static String getCaseTableName(String logName) {
