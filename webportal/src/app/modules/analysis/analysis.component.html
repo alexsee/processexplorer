@@ -1,0 +1,16 @@
+<div class="process-explorer-dashboard">
+  <div class="process-explorer-conditions">
+    <button mat-raised-button color="primary" (click)="onUpdate()">Update</button>
+    <button mat-raised-button [matMenuTriggerFor]="menu">Add Condition</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onAddCondition('path')">Path Condition</button>
+      <button mat-menu-item (click)="onAddCondition('attribute')">Attribute Condition</button>
+    </mat-menu>
+
+    <app-condition-list [context]="context" [conditions]="conditions"></app-condition-list>
+  </div>
+
+  <div class="process-explorer-map">
+    <app-processmap *ngIf="processMap" [data]="processMap"></app-processmap>
+  </div>
+</div>

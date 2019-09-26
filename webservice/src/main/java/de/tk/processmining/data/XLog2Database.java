@@ -24,7 +24,7 @@ import static de.tk.processmining.data.DatabaseConstants.*;
  */
 public class XLog2Database {
 
-    private final int bufferSize = 250;
+    private final int bufferSize = 1000;
 
     private String logName;
 

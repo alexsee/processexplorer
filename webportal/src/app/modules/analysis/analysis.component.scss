@@ -1,0 +1,15 @@
+.process-explorer-dashboard {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto;
+    grid-template-areas: "conditions map";
+    min-height: calc(100vh - 64px - 32px);
+}
+
+.process-explorer-conditions {
+    grid-area: conditions
+}
+
+.process-explorer-map {
+    grid-area: map;
+}

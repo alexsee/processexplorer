@@ -1,0 +1,31 @@
+<mat-expansion-panel>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <span *ngIf="data.attribute">
+                <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.value}}</b>
+            </span>
+            <span *ngIf="!data.attribute">
+                Attribute Condition
+            </span>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-form-field>
+        <mat-label>Attribute</mat-label>
+        <mat-select [(value)]='data.attribute'>
+            <mat-option *ngFor="let attribute of context.attributes" [value]="attribute">
+                {{attribute}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+     <mat-form-field>
+        <mat-label>Binary Type</mat-label>
+        <mat-select [(value)]='data.binaryType'>
+            <mat-option value='EQUAL_TO'>=</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Value</mat-label>
+        <input matInput [(ngModel)]="data.value" />
+    </mat-form-field>
+</mat-expansion-panel>

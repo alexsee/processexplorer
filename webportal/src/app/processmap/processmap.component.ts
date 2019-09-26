@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import * as cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
+import klay from 'cytoscape-klay';
 import {ProcessMap} from '../entities/processmap';
 
 @Component({
@@ -40,7 +41,7 @@ export class ProcessmapComponent implements OnInit, OnChanges {
       edges: []
     };
 
-    let nodes = [];
+    const nodes = [];
     for (const edge of this.data.edges) {
       // add as nodes
       if (nodes.indexOf(edge.sourceEvent) === -1) {
@@ -50,17 +51,16 @@ export class ProcessmapComponent implements OnInit, OnChanges {
         nodes.push(edge.targetEvent);
       }
 
-      elements.edges.push({data: {edgeWeight: edge.occurrence, source: edge.sourceEvent, target: edge.targetEvent},
-        style: { label: edge.occurrence }});
+      elements.edges.push({data: {occurrence: edge.occurrence, edgeWeight: edge.occurrence, source: edge.sourceEvent.split(' ').join(''), target: edge.targetEvent.split(' ').join('')}});
     }
 
     for (const node of nodes) {
       if (node === 'Startknoten') {
-        elements.nodes.push({data: {id: node}, style: {label: node, backgroundColor: '#00cc66'}});
+        elements.nodes.push({data: {id: node.split(' ').join(''), label: node}, style: {backgroundColor: '#00cc66'}});
       } else if (node === 'Endknoten') {
-        elements.nodes.push({data: {id: node}, style: {label: node, backgroundColor: '#ff3300'}});
+        elements.nodes.push({data: {id: node.split(' ').join(''), label: node}, style: {backgroundColor: '#ff3300'}});
       } else {
-        elements.nodes.push({data: {id: node}, style: {label: node}});
+        elements.nodes.push({data: {id: node.split(' ').join(''), label: node}});
       }
     }
 
@@ -73,21 +73,34 @@ export class ProcessmapComponent implements OnInit, OnChanges {
 
       layout: {
         name: 'dagre',
+        // name: 'klay',
+
+        // klay: {
+        //   aspectRatio: 1.8,
+        //   direction: 'DOWN',
+        //   edgeRouting: 'SPLINES',
+        //   nodeLayering: 'LONGEST_PATH',
+        //   layoutHierarchy: true,
+        //   thoroughness: 10,
+        //   feedbackEdges: true,
+        //   fixedAlignment: 'BALANCED',
+        //   linearSegmentsDeflectionDampening: 0
+        // }
         rankDir: 'TB',
 
-        rankSep: 40,
         edgeSep: 30,
-        nodeSep: 40,
+        nodeSep: 30,
 
-        nodeDimensionsIncludeLabels: true
+        nodeDimensionsIncludeLabels: true,
+        padding: 0
       },
 
       style: [
         {
           selector: 'node',
           style: {
+            'content': 'data(label)',
             'background-color': '#11479e',
-            'content': 'data(name)',
             'shape': 'diamond',
             'font-size': '12px',
             'text-valign': 'center',
@@ -102,10 +115,11 @@ export class ProcessmapComponent implements OnInit, OnChanges {
         {
           selector: 'edge',
           style: {
+            'label': 'data(occurrence)',
             'target-arrow-shape': 'triangle',
             'line-color': '#9dbaea',
             'target-arrow-color': '#9dbaea',
-            'curve-style': 'bezier',
+            // 'curve-style': 'segments',
             'font-size': '9px',
             'text-halign': 'right',
             'text-background-color': 'black',

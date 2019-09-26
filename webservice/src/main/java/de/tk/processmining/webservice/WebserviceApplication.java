@@ -6,11 +6,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import de.tk.processmining.data.storage.StorageProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
+@ComponentScan("de.tk.processmining")
 public class WebserviceApplication {
 
     public static void main(String[] args) {
@@ -24,7 +26,7 @@ public class WebserviceApplication {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods("*")
-                        .allowedOrigins("http://localhost:4200");
+                        .allowedOrigins("*", "http://localhost:4200");
             }
         };
     }

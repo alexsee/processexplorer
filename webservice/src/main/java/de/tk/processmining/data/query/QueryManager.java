@@ -19,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import static de.tk.processmining.data.DatabaseConstants.getCaseAttributeTableName;
+
 /**
  * @author Alexander Seeliger on 23.09.2019.
  */
@@ -44,6 +46,7 @@ public class QueryManager {
         var activities = jdbcTemplate.queryForList(new SelectQuery().addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), String.class);
         var numEvents = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events").toString(), Long.class);
         var numTraces = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.caseAttributeCaseIdCol), "num_traces").toString(), Long.class);
+        var attributes = getCaseAttributes(logName);
 
         var result = new Log();
         result.setLogName(logName);
@@ -51,6 +54,7 @@ public class QueryManager {
         result.setActivities(activities);
         result.setNumEvents(numEvents);
         result.setNumTraces(numTraces);
+        result.setAttributes(attributes);
 
         return result;
     }
@@ -138,5 +142,17 @@ public class QueryManager {
         graph.setEdges(edges);
 
         return graph;
+    }
+
+    public List<String> getCaseAttributes(String logName) {
+        var columns = jdbcTemplate.queryForList("SELECT column_name " +
+                "FROM information_schema.columns " +
+                "WHERE table_name = '" + getCaseAttributeTableName(logName) + "' AND table_schema = 'public';", String.class);
+
+        columns.remove("case_id");
+        columns.remove("original_case_id");
+        columns.remove("concept:name");
+
+        return columns;
     }
 }

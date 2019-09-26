@@ -4,6 +4,7 @@ import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.*;
+import org.processmining.xeslite.external.XFactoryExternalStore;
 
 import java.io.File;
 import java.util.List;
@@ -46,9 +47,9 @@ public class XLogUtils {
         XesXmlParser parser = null;
 
         if (file.endsWith(".xes.gz")) {
-            parser = new XesXmlGZIPParser(XFactoryRegistry.instance().currentDefault());
+            parser = new XesXmlGZIPParser(new XFactoryExternalStore.MapDBDiskImpl());
         } else {
-            parser = new XesXmlParser(XFactoryRegistry.instance().currentDefault());
+            parser = new XesXmlParser(new XFactoryExternalStore.MapDBDiskImpl());
         }
 
         try {

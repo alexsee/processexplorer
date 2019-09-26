@@ -1,7 +1,5 @@
 package de.tk.processmining.data.model;
 
-import de.tk.processmining.query.ActivityStat;
-
 import java.util.List;
 
 /**
@@ -18,6 +16,8 @@ public class Log {
     private long numActivities;
 
     private List<String> activities;
+
+    private List<String> attributes;
 
     public String getLogName() {
         return logName;
@@ -57,5 +57,13 @@ public class Log {
 
     public void setActivities(List<String> activities) {
         this.activities = activities;
+    }
+
+    public List<String> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<String> attributes) {
+        this.attributes = attributes;
     }
 }

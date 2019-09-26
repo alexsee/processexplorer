@@ -23,6 +23,8 @@
     "@angular/router": "~8.2.5",
     "cytoscape": "^3.10.1",
     "cytoscape-dagre": "^2.2.2",
+    "cytoscape-klay": "^3.1.2",
+    "ngx-webstorage-service": "^4.1.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
