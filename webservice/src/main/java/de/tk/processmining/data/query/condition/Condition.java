@@ -12,7 +12,8 @@ import java.util.List;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = PathCondition.class, name = "path"),
-        @JsonSubTypes.Type(value = AttributeCondition.class, name = "attribute")
+        @JsonSubTypes.Type(value = AttributeCondition.class, name = "attribute"),
+        @JsonSubTypes.Type(value = VariantCondition.class, name = "variant")
 })
 public abstract class Condition {
 

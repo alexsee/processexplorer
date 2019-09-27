@@ -9,6 +9,8 @@ public class Variant {
 
     private String[] path;
 
+    private int[] pathIndex;
+
     private long occurrence;
 
     public long getId() {
@@ -33,5 +35,13 @@ public class Variant {
 
     public void setOccurrence(long occurrence) {
         this.occurrence = occurrence;
+    }
+
+    public int[] getPathIndex() {
+        return pathIndex;
+    }
+
+    public void setPathIndex(int[] pathIndex) {
+        this.pathIndex = pathIndex;
     }
 }

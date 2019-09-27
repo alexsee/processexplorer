@@ -1,7 +1,11 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
+
+import * as moment from 'moment';
+
 import * as cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import klay from 'cytoscape-klay';
+import dot from './cytoscape-dot';
 import {ProcessMap} from '../entities/processmap';
 
 @Component({
@@ -51,16 +55,24 @@ export class ProcessmapComponent implements OnInit, OnChanges {
         nodes.push(edge.targetEvent);
       }
 
-      elements.edges.push({data: {occurrence: edge.occurrence, edgeWeight: edge.occurrence, source: edge.sourceEvent.split(' ').join(''), target: edge.targetEvent.split(' ').join('')}});
+      elements.edges.push({data: {
+        occurrence: edge.occurrence,
+        edgeWeight: edge.occurrence,
+
+        averageDuration: moment.duration(edge.avgDuration, 'seconds').humanize(),
+
+        source: this.getCleanName(edge.sourceEvent),
+        target: this.getCleanName(edge.targetEvent)
+      }});
     }
 
     for (const node of nodes) {
       if (node === 'Startknoten') {
-        elements.nodes.push({data: {id: node.split(' ').join(''), label: node}, style: {backgroundColor: '#00cc66'}});
+        elements.nodes.push({data: {id: this.getCleanName(node), label: node}, style: {backgroundColor: '#00cc66'}});
       } else if (node === 'Endknoten') {
-        elements.nodes.push({data: {id: node.split(' ').join(''), label: node}, style: {backgroundColor: '#ff3300'}});
+        elements.nodes.push({data: {id: this.getCleanName(node), label: node}, style: {backgroundColor: '#ff3300'}});
       } else {
-        elements.nodes.push({data: {id: node.split(' ').join(''), label: node}});
+        elements.nodes.push({data: {id: this.getCleanName(node), label: node}});
       }
     }
 
@@ -74,6 +86,7 @@ export class ProcessmapComponent implements OnInit, OnChanges {
       layout: {
         name: 'dagre',
         // name: 'klay',
+        // name: 'dot'
 
         // klay: {
         //   aspectRatio: 1.8,
@@ -88,11 +101,14 @@ export class ProcessmapComponent implements OnInit, OnChanges {
         // }
         rankDir: 'TB',
 
-        edgeSep: 30,
-        nodeSep: 30,
+        edgeSep: 50,
+        nodeSep: 50,
 
         nodeDimensionsIncludeLabels: true,
-        padding: 0
+        padding: 0,
+        minLen: (edge) => (edge.source === 'Startknoten' || edge.target === 'Endknoten') ? 2 : 1,
+
+        // edgeWeight: (edge) => edge.edgeWeight
       },
 
       style: [
@@ -115,11 +131,11 @@ export class ProcessmapComponent implements OnInit, OnChanges {
         {
           selector: 'edge',
           style: {
-            'label': 'data(occurrence)',
+            'label': 'data(averageDuration)',
             'target-arrow-shape': 'triangle',
             'line-color': '#9dbaea',
             'target-arrow-color': '#9dbaea',
-            // 'curve-style': 'segments',
+            'curve-style': 'bezier',
             'font-size': '9px',
             'text-halign': 'right',
             'text-background-color': 'black',
@@ -134,4 +150,11 @@ export class ProcessmapComponent implements OnInit, OnChanges {
     });
   }
 
+  getCleanName(text: string) {
+    return text.split(' ').join('')
+      .split(':').join('')
+      .split('.').join('')
+      .split('(').join('')
+      .split(')').join('');
+  }
 }

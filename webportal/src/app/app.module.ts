@@ -27,6 +27,7 @@ import { ConditionSingleComponent } from './query/condition-single/condition-sin
 import { AttributeConditionComponent } from './query/attribute-condition/attribute-condition.component';
 import { FormsModule } from '@angular/forms';
 import { LogComponent } from './modules/log/log.component';
+import { VariantConditionComponent } from './query/variant-condition/variant-condition.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { LogComponent } from './modules/log/log.component';
     ConditionDirective,
     ConditionSingleComponent,
     AttributeConditionComponent,
-    LogComponent
+    LogComponent,
+    VariantConditionComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +63,7 @@ import { LogComponent } from './modules/log/log.component';
     FormsModule
   ],
   providers: [],
-  entryComponents: [ AttributeConditionComponent, PathConditionComponent ],
+  entryComponents: [ AttributeConditionComponent, PathConditionComponent, VariantConditionComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

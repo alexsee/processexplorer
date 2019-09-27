@@ -9,6 +9,7 @@ import { Log } from '../../entities/log';
 import { AttributeConditionComponent } from '../../query/attribute-condition/attribute-condition.component';
 import { LocalStorageService } from '../../services/storage.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { VariantConditionComponent } from 'src/app/query/variant-condition/variant-condition.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -60,6 +61,9 @@ export class AnalysisComponent implements OnInit {
       case 'attribute':
         this.conditions.push(new Condition(AttributeConditionComponent, { }));
         break;
+      case 'variant':
+        this.conditions.push(new Condition(VariantConditionComponent, { }));
+        break;
     }
   }
 
@@ -71,6 +75,8 @@ export class AnalysisComponent implements OnInit {
         query.push({ type: 'path', ...cond.data});
       } else if (cond.component === AttributeConditionComponent) {
         query.push({ type: 'attribute', ...cond.data });
+      } else if (cond.component === VariantConditionComponent) {
+        query.push({ type: 'variant', ...cond.data});
       }
     }
 
@@ -89,6 +95,8 @@ export class AnalysisComponent implements OnInit {
         conditions.push(new Condition(PathConditionComponent, qry));
       } else if (qry.type === 'attribute') {
         conditions.push(new Condition(AttributeConditionComponent, qry));
+      } else if (qry.type === 'variant') {
+        conditions.push(new Condition(VariantConditionComponent, qry));
       }
     }
 

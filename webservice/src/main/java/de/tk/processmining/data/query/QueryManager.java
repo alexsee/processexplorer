@@ -5,6 +5,7 @@ import com.healthmarketscience.sqlbuilder.FunctionCall;
 import com.healthmarketscience.sqlbuilder.OrderObject;
 import com.healthmarketscience.sqlbuilder.SelectQuery;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
+import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.model.Graph;
 import de.tk.processmining.data.model.GraphEdge;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static de.tk.processmining.data.DatabaseConstants.getCaseAttributeTableName;
 
@@ -84,11 +87,17 @@ public class QueryManager {
                 result.setOccurrence(rs.getLong(3));
 
                 var path = rs.getString(2).split("::");
+                var path_index = new int[path.length];
+
                 for (int i = 0; i < path.length; i++) {
-                    path[i] = logStats.getActivities().get(Integer.parseInt(path[i].replace(":", "")));
+                    var index = Integer.parseInt(path[i].replace(":", ""));
+
+                    path[i] = logStats.getActivities().get(index);
+                    path_index[i] = index;
                 }
 
                 result.setPath(path);
+                result.setPathIndex(path_index);
                 return result;
             }
         };
@@ -154,5 +163,63 @@ public class QueryManager {
         columns.remove("concept:name");
 
         return columns;
+    }
+
+    public List<String> getCategoricalCaseAttributes(String logName) {
+        var db = new DatabaseModel(logName);
+        var attrs = getCaseAttributes(logName);
+
+        var categoricalAttrs = new ArrayList<String>();
+
+        for (var attr : attrs) {
+            DbColumn col = db.caseAttributeTable.addColumn(attr);
+
+            var sql = new SelectQuery()
+                    .addColumns(col)
+                    .addAliasedColumn(FunctionCall.count().addColumnParams(col), "occurrence")
+                    .addGroupings(col);
+
+            var result = jdbcTemplate.queryForList(sql.validate().toString());
+            double countTotal = 0;
+
+            for (var item : result) {
+                countTotal += (Double) item.get("occurrence");
+            }
+
+            if ((double) result.size() / countTotal <= 0.01) {
+                categoricalAttrs.add(attr);
+            }
+        }
+
+        return attrs;
+    }
+
+    public List<Map<String, Object>> getCases(String logName, List<String> attributes) {
+        return getCases(logName, attributes, new ArrayList<>());
+    }
+
+    public List<Map<String, Object>> getCases(String logName, List<String> attributes, List<de.tk.processmining.data.query.condition.Condition> conditions) {
+        var db = new DatabaseModel(logName);
+        attributes.forEach(x -> db.caseAttributeTable.addColumn(x));
+
+        var sql = new SelectQuery()
+                .addColumns(db.caseCaseIdCol)
+                .addColumns(db.caseVariantIdCol);
+
+        // add selected columns
+        for (var attr : attributes) {
+            sql = sql.addColumns(db.caseAttributeTable.findColumn(attr));
+        }
+
+        sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin);
+
+        // add conditions
+        for (var rule : conditions) {
+            for (var condition : rule.getCondition(db)) {
+                sql.addCondition(condition);
+            }
+        }
+
+        return jdbcTemplate.queryForList(sql.validate().toString());
     }
 }

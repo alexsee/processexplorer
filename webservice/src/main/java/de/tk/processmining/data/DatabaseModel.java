@@ -58,6 +58,7 @@ public class DatabaseModel {
 
     // joints
     public DbJoin caseVariantJoin;
+    public DbJoin caseCaseAttributeJoin;
     public DbJoin graphVariantJoin;
     public DbJoin graphCaseAttributeJoin;
 
@@ -117,5 +118,8 @@ public class DatabaseModel {
         caseVariantJoin = spec.addJoin(null, caseTable.getTableNameSQL(),
                 null, variantsTable.getTableNameSQL(),
                 new String[]{"variant_id"}, new String[]{"id"});
+        caseCaseAttributeJoin = spec.addJoin(null, caseTable.getTableNameSQL(),
+                null, caseAttributeTable.getTableNameSQL(),
+                "case_id");
     }
 }

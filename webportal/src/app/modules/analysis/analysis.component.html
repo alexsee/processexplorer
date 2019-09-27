@@ -5,6 +5,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onAddCondition('path')">Path Condition</button>
       <button mat-menu-item (click)="onAddCondition('attribute')">Attribute Condition</button>
+      <button mat-menu-item (click)="onAddCondition('variant')">Variant Condition</button>
     </mat-menu>
 
     <app-condition-list [context]="context" [conditions]="conditions"></app-condition-list>
