@@ -8,4 +8,5 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface EventLogRepository extends CrudRepository<EventLog, Long> {
 
+    EventLog findByLogName(String logName);
 }

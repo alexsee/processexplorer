@@ -15,6 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProcessmapComponent } from './processmap/processmap.component';
@@ -53,6 +55,8 @@ import { LogComponent } from './modules/log/log.component';
     MatMenuModule,
     MatIconModule,
     MatExpansionModule,
+    MatChipsModule,
+    MatProgressBarModule,
 
     FormsModule
   ],

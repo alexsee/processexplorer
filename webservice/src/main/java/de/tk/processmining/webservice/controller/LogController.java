@@ -1,50 +1,59 @@
 package de.tk.processmining.webservice.controller;
 
 import de.tk.processmining.data.model.Log;
-import de.tk.processmining.data.storage.StorageService;
+import de.tk.processmining.webservice.database.entities.EventLog;
 import de.tk.processmining.webservice.services.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @RestController()
+@RequestMapping("/logs")
 public class LogController {
-
-    private final StorageService storageService;
 
     private final LogService logService;
 
     @Autowired
-    public LogController(StorageService storageService, LogService logService) {
-        this.storageService = storageService;
+    public LogController(LogService logService) {
         this.logService = logService;
     }
 
-    @RequestMapping("/getalllogs")
+    @RequestMapping("/allstatistics")
     public List<Log> getAll() {
         return logService.getAllLogs();
     }
 
-    @RequestMapping("/upload")
-    public String upload(@RequestParam("file") MultipartFile file, @RequestParam("logName") String logName, RedirectAttributes redirectAttributes) {
-        // store and import log
-        storageService.store(file);
-        logService.importLog(storageService.load(file.getOriginalFilename()).toFile().getAbsolutePath(), logName);
-
-        // generate result
-        redirectAttributes.addAttribute("logName", logName);
-        return "redirect:/statistics";
+    @RequestMapping()
+    public Iterable<EventLog> listLogs() {
+        return logService.getAll();
     }
 
-    @RequestMapping("/mine/dfg")
-    public String mingDFG(@RequestParam("logName") String logName) {
+    @RequestMapping("/upload")
+    public EventLog uploadLog(@RequestParam("file") MultipartFile file,
+                              @RequestParam("logName") String logName) {
+        // store and import log
+        return logService.storeLog(file, logName);
+    }
+
+    @RequestMapping("/import")
+    public ResponseEntity importLog(@RequestParam("logName") String logName) {
+        var result = logService.importLog(logName);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping("/process")
+    public ResponseEntity processLog(@RequestParam("logName") String logName) {
         // generate directly follows graph
-        logService.mineDFG(logName);
-        return "";
+        var result = logService.processLog(logName);
+        return ResponseEntity.ok().build();
     }
 }
