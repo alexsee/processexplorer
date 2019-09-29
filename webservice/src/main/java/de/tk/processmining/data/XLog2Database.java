@@ -95,7 +95,7 @@ public class XLog2Database {
 
             // execute buffer?
             buffer++;
-            if (buffer > bufferSize) {
+            if (buffer >= bufferSize) {
                 jdbcTemplate.batchUpdate(insertEventSql, insertEventValues);
                 jdbcTemplate.batchUpdate(insertTraceSql, insertTraceValues);
 
