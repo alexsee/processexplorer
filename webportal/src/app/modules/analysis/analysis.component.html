@@ -14,4 +14,10 @@
   <div class="process-explorer-map">
     <app-processmap *ngIf="processMap" [data]="processMap"></app-processmap>
   </div>
+
+  <div class="process-explorer-insights">
+    <div *ngFor="let insight of insights">
+      <p>{{insight.insight}}</p>
+    </div>
+  </div>
 </div>

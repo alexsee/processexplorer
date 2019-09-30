@@ -1,8 +1,8 @@
 .process-explorer-dashboard {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: auto;
-    grid-template-areas: "conditions map";
+    grid-template-areas: "conditions map insights";
     min-height: calc(100vh - 64px - 32px);
 }
 
@@ -12,4 +12,8 @@
 
 .process-explorer-map {
     grid-area: map;
+}
+
+.process-explorer-insights {
+    grid-area: insights;
 }

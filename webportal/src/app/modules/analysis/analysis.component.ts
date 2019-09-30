@@ -10,6 +10,7 @@ import { AttributeConditionComponent } from '../../query/attribute-condition/att
 import { LocalStorageService } from '../../services/storage.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { VariantConditionComponent } from 'src/app/query/variant-condition/variant-condition.component';
+import { Insight } from 'src/app/entities/insight';
 
 @Component({
   selector: 'app-analysis-module',
@@ -18,6 +19,7 @@ import { VariantConditionComponent } from 'src/app/query/variant-condition/varia
 })
 export class AnalysisComponent implements OnInit {
   processMap: ProcessMap = {edges: []};
+  insights: Insight[];
 
   logName: string;
   context: Log;
@@ -51,6 +53,9 @@ export class AnalysisComponent implements OnInit {
     // query process map
     this.queryService.getProcessMap(this.logName, query)
       .subscribe(processMap => this.processMap = processMap);
+
+    this.queryService.getInsights(this.logName, query)
+      .subscribe(insights => this.insights = insights);
   }
 
   onAddCondition(conditionType: string) {
