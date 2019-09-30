@@ -1,46 +1,28 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
-import com.healthmarketscience.sqlbuilder.BinaryCondition;
-import com.healthmarketscience.sqlbuilder.Condition;
+import com.healthmarketscience.sqlbuilder.CustomSql;
+import com.healthmarketscience.sqlbuilder.ExtractExpression;
 import com.healthmarketscience.sqlbuilder.FunctionCall;
-import com.healthmarketscience.sqlbuilder.SelectQuery;
-import de.tk.processmining.data.DatabaseModel;
-import de.tk.processmining.data.query.QueryManager;
+import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
+import de.tk.processmining.data.model.Insight;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class OccurrenceMetric implements InsightMetric {
+public class OccurrenceMetric extends GraphCaseMetric {
 
-    private String logName;
-
-    private QueryManager queryManager;
-
-    private JdbcTemplate jdbcTemplate;
-
-    public void getInsights(String logName) {
-        var log = queryManager.getLogStatistics(logName);
-        var activities = log.getActivities();
-
-        var startActivity = activities.get(0);
-        var endActivity = activities.get(1);
-
-
-
+    public OccurrenceMetric(JdbcTemplate jdbcTemplate, String logName) {
+        super(jdbcTemplate, logName);
     }
 
-    private void computeDifference(Condition condition) {
-        var db = new DatabaseModel(logName);
+    @Override
+    protected Object getExpression() {
+        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, new CustomSql("duration")));
+    }
 
-        var sql = new SelectQuery()
-                .addColumns(db.graphSourceEventCol, db.graphTargetEventCol)
-                .addAliasedColumn(FunctionCall.countAll(), "occurrence")
-                .addCondition(condition)
-                .addJoins(SelectQuery.JoinType.INNER, db.graphVariantJoin)
-                .addGroupings(db.graphCaseIdCol, db.graphSourceEventCol, db.graphTargetEventCol)
-                .validate().toString();
-
-        var result = jdbcTemplate.queryForList(sql);
-
-
+    protected Insight generateInsight(double effectSize, CaseMetric.Measure measure1, CaseMetric.Measure measure2, Edge edge) {
+        var insight = new Insight();
+        insight.setEffectSize(effectSize);
+        insight.setInsight("Occurrence of \"" + edge.getSourceEvent() + " --> " + edge.getTargetEvent() + "\" with " + measure1.getAverage() + " vs " + measure2.getAverage());
+        return insight;
     }
 
 }
