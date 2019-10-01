@@ -1,12 +1,12 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
 import com.healthmarketscience.sqlbuilder.*;
-import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.model.Insight;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,12 +15,16 @@ import java.util.Map;
  */
 public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements InsightMetric {
 
-    protected final JdbcTemplate jdbcTemplate;
+    protected JdbcTemplate jdbcTemplate;
     protected final String logName;
 
-    protected CaseMetric(JdbcTemplate jdbcTemplate, String logName) {
-        this.jdbcTemplate = jdbcTemplate;
+    protected CaseMetric(String logName) {
         this.logName = logName;
+    }
+
+    @Override
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     protected abstract Insight generateInsight(double effectSize, X measure1, X measure2, Y edge);
@@ -39,13 +43,17 @@ public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements Ins
         }
 
         // get occurrence
-        var withCondition = computeDifference(calculation,  ComboCondition.and(conditions.toArray()));
+        var withCondition = computeDifference(calculation, ComboCondition.and(conditions.toArray()));
         var withoutCondition = computeDifference(calculation, new NotCondition(ComboCondition.and(conditions.toArray())));
 
         var result = new ArrayList<Insight>();
 
         for (var item : withCondition.entrySet()) {
             var other = withoutCondition.get(item.getKey());
+
+            if (other == null) {
+                continue;
+            }
 
             var effectSize = (item.getValue().getAverage() - other.getAverage()) / Math.sqrt((Math.pow(item.getValue().getStddev(), 2) + Math.pow(other.getStddev(), 2)) / 2);
             if (Math.abs(effectSize) > 0.2) {
@@ -55,7 +63,6 @@ public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements Ins
 
         return result;
     }
-
 
     protected class Measure {
         private double average;

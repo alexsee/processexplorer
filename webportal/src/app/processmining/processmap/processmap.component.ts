@@ -6,7 +6,7 @@ import * as cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import klay from 'cytoscape-klay';
 import dot from './cytoscape-dot';
-import {ProcessMap} from '../entities/processmap';
+import {ProcessMap} from '../../entities/processmap';
 
 @Component({
   selector: 'app-processmap',

@@ -3,6 +3,7 @@
     grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: auto;
     grid-template-areas: "conditions map insights";
+    column-gap: 20px;
     min-height: calc(100vh - 64px - 32px);
 }
 
@@ -12,6 +13,10 @@
 
 .process-explorer-map {
     grid-area: map;
+}
+
+.process-explorer-map mat-card {
+    height: 800px;
 }
 
 .process-explorer-insights {

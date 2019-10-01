@@ -1,0 +1,11 @@
+<mat-card *ngFor="let insight of insights">
+    <mat-card-title>{{insight.insight}}</mat-card-title>
+    <mat-card-subtitle>{{insight.effectSize | number}}</mat-card-subtitle>
+
+    <p *ngIf="insight.format == 'DURATION'">
+        <span>{{humanizeDuration(insight.averageWithin)}}</span> vs. <span>{{humanizeDuration(insight.averageWithout)}}</span>
+    </p>
+    <p *ngIf="insight.format == 'NUMBER'">
+        <span>{{insight.averageWithin | number}}</span> vs. <span>{{insight.averageWithout | number}}</span>
+    </p>
+</mat-card>

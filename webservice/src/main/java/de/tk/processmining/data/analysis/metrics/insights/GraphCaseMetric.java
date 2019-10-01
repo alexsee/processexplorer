@@ -13,8 +13,8 @@ import java.util.Objects;
  */
 public abstract class GraphCaseMetric extends CaseMetric<CaseMetric.Measure, GraphCaseMetric.Edge> {
 
-    public GraphCaseMetric(JdbcTemplate jdbcTemplate, String logName) {
-        super(jdbcTemplate, logName);
+    public GraphCaseMetric(String logName) {
+        super(logName);
     }
 
     protected Map<Edge, CaseMetric.Measure> computeDifference(Object expr, Condition condition) {

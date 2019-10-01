@@ -5,12 +5,15 @@ import com.healthmarketscience.sqlbuilder.ExtractExpression;
 import com.healthmarketscience.sqlbuilder.FunctionCall;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.model.Insight;
-import org.springframework.jdbc.core.JdbcTemplate;
+import de.tk.processmining.data.model.InsightValueFormat;
 
-public class OccurrenceMetric extends GraphCaseMetric {
+/**
+ * @author Alexander Seeliger on 01.10.2019.
+ */
+public class EventDurationMetric extends GraphCaseMetric {
 
-    public OccurrenceMetric(JdbcTemplate jdbcTemplate, String logName) {
-        super(jdbcTemplate, logName);
+    public EventDurationMetric(String logName) {
+        super(logName);
     }
 
     @Override
@@ -21,7 +24,12 @@ public class OccurrenceMetric extends GraphCaseMetric {
     protected Insight generateInsight(double effectSize, CaseMetric.Measure measure1, CaseMetric.Measure measure2, Edge edge) {
         var insight = new Insight();
         insight.setEffectSize(effectSize);
-        insight.setInsight("Occurrence of \"" + edge.getSourceEvent() + " --> " + edge.getTargetEvent() + "\" with " + measure1.getAverage() + " vs " + measure2.getAverage());
+        insight.setAverageWithin(measure1.getAverage());
+        insight.setAverageWithout(measure2.getAverage());
+        insight.setStddevWithin(measure1.getStddev());
+        insight.setStddevWithout(measure2.getStddev());
+        insight.setFormat(InsightValueFormat.DURATION);
+        insight.setInsight("Duration between \"" + edge.getSourceEvent() + " --> " + edge.getTargetEvent() + "\"");
         return insight;
     }
 

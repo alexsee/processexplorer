@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 
 import { QueryService } from '../../services/query.service';
@@ -11,6 +11,8 @@ import { LocalStorageService } from '../../services/storage.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { VariantConditionComponent } from 'src/app/query/variant-condition/variant-condition.component';
 import { Insight } from 'src/app/entities/insight';
+import { Subject } from 'rxjs';
+import { InsightComponent } from 'src/app/processmining/insight/insight.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -18,8 +20,9 @@ import { Insight } from 'src/app/entities/insight';
   styleUrls: ['./analysis.component.scss']
 })
 export class AnalysisComponent implements OnInit {
+  @ViewChild(InsightComponent, {static: false}) private insightComponent: InsightComponent;
+
   processMap: ProcessMap = {edges: []};
-  insights: Insight[];
 
   logName: string;
   context: Log;
@@ -39,7 +42,7 @@ export class AnalysisComponent implements OnInit {
 
     // load queries from local storage
     const query = this.storageService.readQueryConditions(this.logName);
-    this.conditions = this.convertFromQuery(query);
+    this.conditions = this.queryService.convertFromQuery(query);
 
     // update view components
     this.onUpdate();
@@ -47,15 +50,17 @@ export class AnalysisComponent implements OnInit {
 
   onUpdate() {
     // store queries to local storage
-    this.storageService.writeQueryConditions(this.logName, this.convertToQuery(this.conditions));
-    const query = this.convertToQuery(this.conditions);
+    this.storageService.writeQueryConditions(this.logName, this.queryService.convertToQuery(this.conditions));
+    const query = this.queryService.convertToQuery(this.conditions);
 
     // query process map
     this.queryService.getProcessMap(this.logName, query)
       .subscribe(processMap => this.processMap = processMap);
 
-    this.queryService.getInsights(this.logName, query)
-      .subscribe(insights => this.insights = insights);
+    // update childs
+    if (this.insightComponent !== undefined) {
+      this.insightComponent.update();
+    }
   }
 
   onAddCondition(conditionType: string) {
@@ -70,41 +75,5 @@ export class AnalysisComponent implements OnInit {
         this.conditions.push(new Condition(VariantConditionComponent, { }));
         break;
     }
-  }
-
-  convertToQuery(conditions: Condition[]) {
-    const query = [];
-
-    for (const cond of conditions) {
-      if (cond.component === PathConditionComponent) {
-        query.push({ type: 'path', ...cond.data});
-      } else if (cond.component === AttributeConditionComponent) {
-        query.push({ type: 'attribute', ...cond.data });
-      } else if (cond.component === VariantConditionComponent) {
-        query.push({ type: 'variant', ...cond.data});
-      }
-    }
-
-    return query;
-  }
-
-  convertFromQuery(query: any[]): Condition[] {
-    const conditions = [];
-
-    if (!query) {
-      return conditions;
-    }
-
-    for (const qry of query) {
-      if (qry.type === 'path') {
-        conditions.push(new Condition(PathConditionComponent, qry));
-      } else if (qry.type === 'attribute') {
-        conditions.push(new Condition(AttributeConditionComponent, qry));
-      } else if (qry.type === 'variant') {
-        conditions.push(new Condition(VariantConditionComponent, qry));
-      }
-    }
-
-    return conditions;
   }
 }

@@ -17,9 +17,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatListModule } from '@angular/material/list';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ProcessmapComponent } from './processmap/processmap.component';
+import { ProcessmapComponent } from './processmining/processmap/processmap.component';
 import { ConditionListComponent } from './query/condition-list/condition-list.component';
 import { ConditionDirective } from './query/condition.directive';
 import { PathConditionComponent } from './query/pathcondition/pathcondition.component';
@@ -28,6 +29,7 @@ import { AttributeConditionComponent } from './query/attribute-condition/attribu
 import { FormsModule } from '@angular/forms';
 import { LogComponent } from './modules/log/log.component';
 import { VariantConditionComponent } from './query/variant-condition/variant-condition.component';
+import { InsightComponent } from './processmining/insight/insight.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { VariantConditionComponent } from './query/variant-condition/variant-con
     ConditionSingleComponent,
     AttributeConditionComponent,
     LogComponent,
-    VariantConditionComponent
+    VariantConditionComponent,
+    InsightComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +62,7 @@ import { VariantConditionComponent } from './query/variant-condition/variant-con
     MatExpansionModule,
     MatChipsModule,
     MatProgressBarModule,
+    MatListModule,
 
     FormsModule
   ],
