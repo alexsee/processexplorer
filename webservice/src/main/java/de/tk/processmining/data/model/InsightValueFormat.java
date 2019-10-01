@@ -5,6 +5,6 @@ package de.tk.processmining.data.model;
  */
 public enum InsightValueFormat {
 
-    NUMBER, DURATION
+    NUMBER, DURATION, DISTRIBUTION
 
 }

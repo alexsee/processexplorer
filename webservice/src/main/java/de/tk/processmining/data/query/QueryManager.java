@@ -1,11 +1,7 @@
 package de.tk.processmining.data.query;
 
-import com.healthmarketscience.sqlbuilder.ExtractExpression;
-import com.healthmarketscience.sqlbuilder.FunctionCall;
-import com.healthmarketscience.sqlbuilder.OrderObject;
-import com.healthmarketscience.sqlbuilder.SelectQuery;
+import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.model.Graph;
 import de.tk.processmining.data.model.GraphEdge;
@@ -172,26 +168,17 @@ public class QueryManager {
         var categoricalAttrs = new ArrayList<String>();
 
         for (var attr : attrs) {
-            DbColumn col = db.caseAttributeTable.addColumn(attr);
-
             var sql = new SelectQuery()
-                    .addColumns(col)
-                    .addAliasedColumn(FunctionCall.count().addColumnParams(col), "occurrence")
-                    .addGroupings(col);
+                    .addAliasedColumn(new CustomSql("CAST(COUNT(DISTINCT \"" + attr + "\") AS float) / COUNT(\"" + attr + "\")"), "occurrence")
+                    .addFromTable(db.caseAttributeTable);
 
-            var result = jdbcTemplate.queryForList(sql.validate().toString());
-            double countTotal = 0;
-
-            for (var item : result) {
-                countTotal += (Double) item.get("occurrence");
-            }
-
-            if ((double) result.size() / countTotal <= 0.01) {
+            var result = jdbcTemplate.queryForObject(sql.validate().toString(), Double.class);
+            if (result != null && result <= 0.01) {
                 categoricalAttrs.add(attr);
             }
         }
 
-        return attrs;
+        return categoricalAttrs;
     }
 
     public List<Map<String, Object>> getCases(String logName, List<String> attributes) {

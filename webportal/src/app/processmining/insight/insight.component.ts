@@ -4,6 +4,7 @@ import { QueryService } from 'src/app/services/query.service';
 import { Insight } from 'src/app/entities/insight';
 
 import * as moment from 'moment';
+import { ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-insight',
@@ -15,6 +16,9 @@ export class InsightComponent implements OnChanges {
   @Input() private conditions: Condition[];
 
   private insights: Insight[];
+  private chartOptions: ChartOptions = {
+    responsive: true
+  };
 
   constructor(
     private queryService: QueryService
@@ -25,7 +29,7 @@ export class InsightComponent implements OnChanges {
   }
 
   update() {
-    if (!this.conditions) {
+    if (!this.conditions || this.conditions.length === 0) {
       return;
     }
 

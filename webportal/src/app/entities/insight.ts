@@ -5,4 +5,9 @@ export class Insight {
     averageWithout: number;
     stddevWithin: number;
     stddevWithout: number;
+    format: string;
+
+    labels: string[];
+    within: number[];
+    without: number[];
 }

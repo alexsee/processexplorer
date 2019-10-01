@@ -1,8 +1,6 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
 import com.healthmarketscience.sqlbuilder.*;
-import de.tk.processmining.data.DatabaseModel;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +9,13 @@ import java.util.Objects;
 /**
  * @author Alexander Seeliger on 30.09.2019.
  */
-public abstract class GraphCaseMetric extends CaseMetric<CaseMetric.Measure, GraphCaseMetric.Edge> {
+public abstract class EventMetric extends CaseMetric<CaseMetric.Measure, EventMetric.Edge> {
 
-    public GraphCaseMetric(String logName) {
+    public EventMetric(String logName) {
         super(logName);
     }
 
     protected Map<Edge, CaseMetric.Measure> computeDifference(Object expr, Condition condition) {
-        var db = new DatabaseModel(logName);
-
         var inner_sql = new SelectQuery()
                 .addColumns(db.graphSourceEventCol, db.graphTargetEventCol)
                 .addAliasedColumn(expr, "expr")

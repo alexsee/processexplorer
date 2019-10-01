@@ -4,7 +4,7 @@ import com.healthmarketscience.sqlbuilder.FunctionCall;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.InsightValueFormat;
 
-public class EventOccurrenceMetric extends GraphCaseMetric {
+public class EventOccurrenceMetric extends EventMetric {
 
     public EventOccurrenceMetric(String logName) {
         super(logName);

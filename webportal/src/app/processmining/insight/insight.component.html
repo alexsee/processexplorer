@@ -8,4 +8,13 @@
     <p *ngIf="insight.format == 'NUMBER'">
         <span>{{insight.averageWithin | number}}</span> vs. <span>{{insight.averageWithout | number}}</span>
     </p>
+    <div *ngIf="insight.format == 'DISTRIBUTION'">
+        <canvas baseChart 
+            [datasets]="insight | getChartData"
+            [labels]="insight | getChartLabels"
+            [options]="chartOptions"
+            [legend]="'true'"
+            [chartType]="'bar'">
+        </canvas>
+    </div>
 </mat-card>

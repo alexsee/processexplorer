@@ -19,6 +19,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
 
+import { ChartsModule } from 'ng2-charts';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProcessmapComponent } from './processmining/processmap/processmap.component';
 import { ConditionListComponent } from './query/condition-list/condition-list.component';
@@ -30,6 +32,7 @@ import { FormsModule } from '@angular/forms';
 import { LogComponent } from './modules/log/log.component';
 import { VariantConditionComponent } from './query/variant-condition/variant-condition.component';
 import { InsightComponent } from './processmining/insight/insight.component';
+import { ApplicationPipesModule } from './application-pipes/application-pipes.module';
 
 @NgModule({
   declarations: [
@@ -51,6 +54,8 @@ import { InsightComponent } from './processmining/insight/insight.component';
     AppRoutingModule,
     BrowserAnimationsModule,
 
+    ApplicationPipesModule,
+
     MatToolbarModule,
     MatTableModule,
     MatSelectModule,
@@ -63,6 +68,8 @@ import { InsightComponent } from './processmining/insight/insight.component';
     MatChipsModule,
     MatProgressBarModule,
     MatListModule,
+
+    ChartsModule,
 
     FormsModule
   ],

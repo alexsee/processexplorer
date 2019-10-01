@@ -10,6 +10,6 @@ public interface InsightMetric {
 
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);
 
-    List<Insight> getInsights(List<Condition> condition);
+    List<Insight> getInsights(List<Condition> conditions);
 
 }

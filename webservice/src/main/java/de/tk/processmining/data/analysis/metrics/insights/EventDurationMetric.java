@@ -10,7 +10,7 @@ import de.tk.processmining.data.model.InsightValueFormat;
 /**
  * @author Alexander Seeliger on 01.10.2019.
  */
-public class EventDurationMetric extends GraphCaseMetric {
+public class EventDurationMetric extends EventMetric {
 
     public EventDurationMetric(String logName) {
         super(logName);

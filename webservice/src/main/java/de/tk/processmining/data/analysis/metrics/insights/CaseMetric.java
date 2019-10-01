@@ -15,11 +15,13 @@ import java.util.Map;
  */
 public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements InsightMetric {
 
+    protected DatabaseModel db;
     protected JdbcTemplate jdbcTemplate;
     protected final String logName;
 
     protected CaseMetric(String logName) {
         this.logName = logName;
+        this.db = new DatabaseModel(logName);
     }
 
     @Override
@@ -34,7 +36,6 @@ public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements Ins
     protected abstract Object getExpression();
 
     public List<Insight> getInsights(List<de.tk.processmining.data.query.condition.Condition> queryConditions) {
-        var db = new DatabaseModel(this.logName);
         var calculation = getExpression();
 
         var conditions = new ArrayList<>();

@@ -1,5 +1,8 @@
 package de.tk.processmining.data.model;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Alexander Seeliger on 30.09.2019.
  */
@@ -18,6 +21,12 @@ public class Insight {
     private double stddevWithout;
 
     private InsightValueFormat format;
+
+    private List<String> labels;
+
+    private double[] within;
+
+    private double[] without;
 
     public String getInsight() {
         return insight;
@@ -73,5 +82,29 @@ public class Insight {
 
     public void setFormat(InsightValueFormat format) {
         this.format = format;
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
+    public double[] getWithin() {
+        return within;
+    }
+
+    public void setWithin(double[] within) {
+        this.within = within;
+    }
+
+    public double[] getWithout() {
+        return without;
+    }
+
+    public void setWithout(double[] without) {
+        this.without = without;
     }
 }
