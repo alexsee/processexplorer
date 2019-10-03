@@ -1,6 +1,8 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
-import com.healthmarketscience.sqlbuilder.*;
+import com.healthmarketscience.sqlbuilder.Condition;
+import com.healthmarketscience.sqlbuilder.FunctionCall;
+import com.healthmarketscience.sqlbuilder.SelectQuery;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.InsightValueFormat;
 
@@ -31,7 +33,8 @@ public class CaseAttributeMetric extends ClusterMetric {
         insight.setWithout(without);
 
         insight.setFormat(InsightValueFormat.DISTRIBUTION);
-        insight.setInsight("Case Attribute: " + attributeName);
+        insight.setTitle("Case Attribute");
+        insight.setSubTitle(attributeName);
         return insight;
     }
 

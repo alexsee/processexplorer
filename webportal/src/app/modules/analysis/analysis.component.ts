@@ -10,6 +10,7 @@ import { LocalStorageService } from '../../services/storage.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { VariantConditionComponent } from 'src/app/query/variant-condition/variant-condition.component';
 import { InsightListComponent } from 'src/app/processmining/insight-list/insight-list.component';
+import { ProcessMapComponent } from 'src/app/processmining/process-map/processmap.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -18,8 +19,7 @@ import { InsightListComponent } from 'src/app/processmining/insight-list/insight
 })
 export class AnalysisComponent implements OnInit {
   @ViewChild(InsightListComponent, {static: false}) private insightListComponent: InsightListComponent;
-
-  processMap: ProcessMap = {edges: []};
+  @ViewChild(ProcessMapComponent, {static: false}) private processMapComponent: ProcessMapComponent;
 
   logName: string;
   context: Log;
@@ -48,14 +48,13 @@ export class AnalysisComponent implements OnInit {
   onUpdate() {
     // store queries to local storage
     this.storageService.writeQueryConditions(this.logName, this.queryService.convertToQuery(this.conditions));
-    const query = this.queryService.convertToQuery(this.conditions);
-
-    // query process map
-    this.queryService.getProcessMap(this.logName, query)
-      .subscribe(processMap => this.processMap = processMap);
 
     if (this.insightListComponent !== undefined) {
       this.insightListComponent.update();
+    }
+
+    if (this.processMapComponent !== undefined) {
+      this.processMapComponent.update();
     }
   }
 

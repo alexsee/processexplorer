@@ -8,7 +8,9 @@ import java.util.Map;
  */
 public class Insight {
 
-    private String insight;
+    private String title;
+
+    private String subTitle;
 
     private double effectSize;
 
@@ -27,14 +29,6 @@ public class Insight {
     private double[] within;
 
     private double[] without;
-
-    public String getInsight() {
-        return insight;
-    }
-
-    public void setInsight(String insight) {
-        this.insight = insight;
-    }
 
     public double getEffectSize() {
         return effectSize;
@@ -106,5 +100,21 @@ public class Insight {
 
     public void setWithout(double[] without) {
         this.without = without;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
     }
 }

@@ -1,5 +1,7 @@
 export class Insight {
-    insight: string;
+    title: string;
+    subTitle: string;
+    
     effectSize: number;
     averageWithin: number;
     averageWithout: number;

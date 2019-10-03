@@ -7,36 +7,60 @@ import dagre from 'cytoscape-dagre';
 import klay from 'cytoscape-klay';
 import dot from './cytoscape-dot';
 import {ProcessMap} from '../../entities/processmap';
+import { QueryService } from 'src/app/services/query.service';
+import { Condition } from 'src/app/entities/conditions/condition';
 
 @Component({
   selector: 'app-processmap',
   templateUrl: './processmap.component.html',
   styleUrls: ['./processmap.component.scss']
 })
-export class ProcessmapComponent implements OnChanges {
+export class ProcessMapComponent implements OnChanges {
   @ViewChild('processmap', {static: true}) private processmapContainer: ElementRef;
-  @Input() private data: ProcessMap;
+
+  @Input() private logName: string;
+  @Input() private conditions: Condition[];
+
+  private data: ProcessMap;
 
   private zoom;
   private svg;
   private g;
   private graph;
 
-  private noData: boolean = true;
+  private noData = false;
+  private progress = true;
 
-  constructor() {
+  constructor(private queryService: QueryService) {
   }
 
   ngOnChanges() {
-    if (this.data.edges.length > 0) {
-      this.createProcessMap();
-    } else {
-      this.noData = true;
+    this.update();
+  }
+
+  update() {
+    if (!this.logName || !this.conditions) {
+      return;
     }
+
+    // query process map
+    this.progress = true;
+
+    this.queryService.getProcessMap(this.logName, this.queryService.convertToQuery(this.conditions))
+      .subscribe(processMap => {
+        this.data = processMap;
+        this.createProcessMap();
+      });
   }
 
   createProcessMap() {
-    this.noData = false;
+    this.progress = false;
+
+    if (this.data.edges.length === 0) {
+      this.noData = true;
+      return;
+    }
+
     const element = this.processmapContainer.nativeElement;
 
     const elements = {
@@ -105,9 +129,7 @@ export class ProcessmapComponent implements OnChanges {
 
         nodeDimensionsIncludeLabels: true,
         padding: 0,
-        minLen: (edge) => (edge.source === 'Startknoten' || edge.target === 'Endknoten') ? 2 : 1,
-
-        // edgeWeight: (edge) => edge.edgeWeight
+        minLen: (edge) => (edge.source === 'Startknoten' || edge.target === 'Endknoten') ? 2 : 1
       },
 
       style: [

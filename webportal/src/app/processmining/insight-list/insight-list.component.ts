@@ -15,7 +15,7 @@ export class InsightListComponent implements OnChanges {
   @Input() private conditions: Condition[];
 
   private insights: Insight[];
-  private noData: boolean = true;
+  private noData = true;
 
   constructor(
     private queryService: QueryService

@@ -23,7 +23,14 @@ public class EventOccurrenceMetric extends EventMetric {
         insight.setStddevWithin(measure1.getStddev());
         insight.setStddevWithout(measure2.getStddev());
         insight.setFormat(InsightValueFormat.NUMBER);
-        insight.setInsight("Occurrence of \"" + edge.getSourceEvent() + " --> " + edge.getTargetEvent() + "\"");
+
+        if (edge.getSourceEvent().equals(edge.getTargetEvent())) {
+            insight.setTitle("Loop");
+            insight.setSubTitle(edge.getSourceEvent());
+        } else {
+            insight.setTitle("Occurrence");
+            insight.setSubTitle(edge.getSourceEvent() + " --> " + edge.getTargetEvent());
+        }
         return insight;
     }
 

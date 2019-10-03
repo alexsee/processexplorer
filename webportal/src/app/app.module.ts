@@ -18,11 +18,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { ChartsModule } from 'ng2-charts';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ProcessmapComponent } from './processmining/processmap/processmap.component';
+import { ProcessMapComponent } from './processmining/process-map/processmap.component';
 import { ConditionListComponent } from './query/condition-list/condition-list.component';
 import { ConditionDirective } from './query/condition.directive';
 import { PathConditionComponent } from './query/pathcondition/pathcondition.component';
@@ -38,7 +39,7 @@ import { InsightListComponent } from './processmining/insight-list/insight-list.
   declarations: [
     AppComponent,
     AnalysisComponent,
-    ProcessmapComponent,
+    ProcessMapComponent,
     ConditionListComponent,
     PathConditionComponent,
     ConditionDirective,
@@ -55,7 +56,7 @@ import { InsightListComponent } from './processmining/insight-list/insight-list.
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    
+
     MatToolbarModule,
     MatTableModule,
     MatSelectModule,
@@ -68,6 +69,7 @@ import { InsightListComponent } from './processmining/insight-list/insight-list.
     MatChipsModule,
     MatProgressBarModule,
     MatListModule,
+    MatProgressSpinnerModule,
 
     ChartsModule,
 

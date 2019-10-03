@@ -30,7 +30,7 @@ public class CaseDurationMetric extends CaseMetric<CaseMetric.Measure, String> {
         insight.setStddevWithin(measure1.getStddev());
         insight.setStddevWithout(measure2.getStddev());
         insight.setFormat(InsightValueFormat.DURATION);
-        insight.setInsight("Case Duration");
+        insight.setTitle("Case Duration");
         return insight;
     }
 

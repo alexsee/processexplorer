@@ -1,0 +1,12 @@
+<div class="d3-process-map" [hidden]="noData || progress" #processmap>
+</div>
+<div [hidden]="!noData" class="no-data-container">
+    <div class="no-data">
+        <p>No data to show.</p>
+    </div>
+</div>
+<div [hidden]="!progress" class="progress-container">
+    <div class="progress">
+        <mat-spinner></mat-spinner>
+    </div>
+</div>

@@ -29,7 +29,8 @@ public class EventDurationMetric extends EventMetric {
         insight.setStddevWithin(measure1.getStddev());
         insight.setStddevWithout(measure2.getStddev());
         insight.setFormat(InsightValueFormat.DURATION);
-        insight.setInsight("Duration between \"" + edge.getSourceEvent() + " --> " + edge.getTargetEvent() + "\"");
+        insight.setTitle("Duration");
+        insight.setSubTitle(edge.getSourceEvent() + " --> " + edge.getTargetEvent());
         return insight;
     }
 
