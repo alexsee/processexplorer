@@ -14,13 +14,13 @@
 
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-areas: no-data;
+  grid-template-areas: "no-data";
   justify-content: center;
   align-content: center;
 }
 
 .no-data p {
-  grid-template: no-data;
+  grid-template: "no-data";
   text-align: center;
 }
 
@@ -35,13 +35,13 @@
 
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-areas: progress;
+  grid-template-areas: "progress";
   justify-content: center;
   align-content: center;
 }
 
 .progress .mat-spinner {
-  grid-template: progress;
+  grid-template: "progress";
   text-align: center;
   margin: 0 auto;
 }

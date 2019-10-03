@@ -7,4 +7,10 @@
             <p>No insights found.</p>
         </div>
     </div>
+    <div [hidden]="!progress" class="progress-container">
+        <div class="progress">
+            <mat-spinner></mat-spinner>
+            <p>Insights will be computed...</p>
+        </div>
+    </div>
 </div>
