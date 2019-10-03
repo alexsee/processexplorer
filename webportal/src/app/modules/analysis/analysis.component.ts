@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
 
 import { QueryService } from '../../services/query.service';
 import { ProcessMap } from '../../entities/processmap';
@@ -10,9 +9,7 @@ import { AttributeConditionComponent } from '../../query/attribute-condition/att
 import { LocalStorageService } from '../../services/storage.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { VariantConditionComponent } from 'src/app/query/variant-condition/variant-condition.component';
-import { Insight } from 'src/app/entities/insight';
-import { Subject } from 'rxjs';
-import { InsightComponent } from 'src/app/processmining/insight/insight.component';
+import { InsightListComponent } from 'src/app/processmining/insight-list/insight-list.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -20,7 +17,7 @@ import { InsightComponent } from 'src/app/processmining/insight/insight.componen
   styleUrls: ['./analysis.component.scss']
 })
 export class AnalysisComponent implements OnInit {
-  @ViewChild(InsightComponent, {static: false}) private insightComponent: InsightComponent;
+  @ViewChild(InsightListComponent, {static: false}) private insightListComponent: InsightListComponent;
 
   processMap: ProcessMap = {edges: []};
 
@@ -57,9 +54,8 @@ export class AnalysisComponent implements OnInit {
     this.queryService.getProcessMap(this.logName, query)
       .subscribe(processMap => this.processMap = processMap);
 
-    // update childs
-    if (this.insightComponent !== undefined) {
-      this.insightComponent.update();
+    if (this.insightListComponent !== undefined) {
+      this.insightListComponent.update();
     }
   }
 

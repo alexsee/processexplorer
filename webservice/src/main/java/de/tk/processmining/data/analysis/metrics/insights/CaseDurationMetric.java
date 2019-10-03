@@ -52,6 +52,9 @@ public class CaseDurationMetric extends CaseMetric<CaseMetric.Measure, String> {
         var measures = new HashMap<String, CaseMetric.Measure>();
 
         for (var item : result) {
+            if (item.get("average") == null || item.get("standard_deviation") == null)
+                continue;
+
             var measure = new CaseMetric.Measure(Double.parseDouble(item.get("average").toString()), Double.parseDouble(item.get("standard_deviation").toString()));
             measures.put("case_duration", measure);
         }

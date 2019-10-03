@@ -1,0 +1,10 @@
+<div class="insights-list">
+    <div *ngFor="let insight of insights">
+        <app-insight [insight]="insight"></app-insight>
+    </div>
+    <div [hidden]="noData" class="no-data-container">
+        <div class="no-data">
+            <p>No insights found.</p>
+        </div>
+    </div>
+</div>

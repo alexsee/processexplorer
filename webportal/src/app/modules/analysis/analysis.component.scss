@@ -3,12 +3,15 @@
     grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: auto;
     grid-template-areas: "conditions map insights";
-    column-gap: 20px;
-    min-height: calc(100vh - 64px - 32px);
+    height: 100%;
+}
+
+.process-explorer-dashboard:only-child div {
+    padding: 15px;
 }
 
 .process-explorer-conditions {
-    grid-area: conditions
+    grid-area: conditions;
 }
 
 .process-explorer-map {
@@ -21,4 +24,5 @@
 
 .process-explorer-insights {
     grid-area: insights;
+    overflow-y: scroll;
 }

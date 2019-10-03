@@ -32,7 +32,7 @@ import { FormsModule } from '@angular/forms';
 import { LogComponent } from './modules/log/log.component';
 import { VariantConditionComponent } from './query/variant-condition/variant-condition.component';
 import { InsightComponent } from './processmining/insight/insight.component';
-import { ApplicationPipesModule } from './application-pipes/application-pipes.module';
+import { InsightListComponent } from './processmining/insight-list/insight-list.component';
 
 @NgModule({
   declarations: [
@@ -46,16 +46,16 @@ import { ApplicationPipesModule } from './application-pipes/application-pipes.mo
     AttributeConditionComponent,
     LogComponent,
     VariantConditionComponent,
-    InsightComponent
+
+    InsightComponent,
+    InsightListComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-
-    ApplicationPipesModule,
-
+    
     MatToolbarModule,
     MatTableModule,
     MatSelectModule,

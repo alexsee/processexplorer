@@ -13,7 +13,7 @@ import {ProcessMap} from '../../entities/processmap';
   templateUrl: './processmap.component.html',
   styleUrls: ['./processmap.component.scss']
 })
-export class ProcessmapComponent implements OnInit, OnChanges {
+export class ProcessmapComponent implements OnChanges {
   @ViewChild('processmap', {static: true}) private processmapContainer: ElementRef;
   @Input() private data: ProcessMap;
 
@@ -22,22 +22,21 @@ export class ProcessmapComponent implements OnInit, OnChanges {
   private g;
   private graph;
 
-  constructor() {
-  }
+  private noData: boolean = true;
 
-  ngOnInit() {
-    if (this.data.edges.length > 0) {
-      this.createProcessMap();
-    }
+  constructor() {
   }
 
   ngOnChanges() {
     if (this.data.edges.length > 0) {
       this.createProcessMap();
+    } else {
+      this.noData = true;
     }
   }
 
   createProcessMap() {
+    this.noData = false;
     const element = this.processmapContainer.nativeElement;
 
     const elements = {

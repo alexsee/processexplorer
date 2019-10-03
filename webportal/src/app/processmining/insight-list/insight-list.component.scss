@@ -1,0 +1,33 @@
+.insights-list div {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.insights-list div:first-child {
+    margin-top: 0;
+}
+
+.insights-list div:last-child {
+    margin-bottom: 0;
+}
+
+.no-data-container {
+    width: 100%;
+    height: 100%;
+}
+
+.no-data {
+    width: 100%;
+    height: 100%;
+  
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas: no-data;
+    justify-content: center;
+    align-content: center;
+  }
+  
+  .no-data p {
+    grid-template: no-data;
+    text-align: center;
+  }

@@ -1,6 +1,8 @@
-<mat-card *ngFor="let insight of insights">
-    <mat-card-title>{{insight.insight}}</mat-card-title>
-    <mat-card-subtitle>{{insight.effectSize | number}}</mat-card-subtitle>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{insight.insight}}</mat-card-title>
+        <mat-icon mat-card-avatar [ngClass]="color">{{icon}}</mat-icon>
+    </mat-card-header>
 
     <p *ngIf="insight.format == 'DURATION'">
         <span>{{humanizeDuration(insight.averageWithin)}}</span> vs. <span>{{humanizeDuration(insight.averageWithout)}}</span>
@@ -10,8 +12,8 @@
     </p>
     <div *ngIf="insight.format == 'DISTRIBUTION'">
         <canvas baseChart 
-            [datasets]="insight | getChartData"
-            [labels]="insight | getChartLabels"
+            [datasets]="chartData"
+            [labels]="chartLabels"
             [options]="chartOptions"
             [legend]="'true'"
             [chartType]="'bar'">
