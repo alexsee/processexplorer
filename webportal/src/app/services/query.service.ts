@@ -10,6 +10,7 @@ import { Insight } from '../entities/insight';
 import { PathConditionComponent } from '../query/pathcondition/pathcondition.component';
 import { AttributeConditionComponent } from '../query/attribute-condition/attribute-condition.component';
 import { VariantConditionComponent } from '../query/variant-condition/variant-condition.component';
+import { ClusterConditionComponent } from '../query/cluster-condition/cluster-condition.component';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -42,13 +43,7 @@ export class QueryService {
     const query = [];
 
     for (const cond of conditions) {
-      if (cond.component === PathConditionComponent) {
-        query.push({ type: 'path', ...cond.data});
-      } else if (cond.component === AttributeConditionComponent) {
-        query.push({ type: 'attribute', ...cond.data });
-      } else if (cond.component === VariantConditionComponent) {
-        query.push({ type: 'variant', ...cond.data});
-      }
+      query.push({ type: cond.component.name.toLocaleLowerCase().replace('conditioncomponent', ''), ...cond.data});
     }
 
     return query;
@@ -68,6 +63,8 @@ export class QueryService {
         conditions.push(new Condition(AttributeConditionComponent, qry));
       } else if (qry.type === 'variant') {
         conditions.push(new Condition(VariantConditionComponent, qry));
+      } else if (qry.type === 'cluster') {
+        conditions.push(new Condition(ClusterConditionComponent, qry));
       }
     }
 

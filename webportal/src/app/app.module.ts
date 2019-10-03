@@ -34,19 +34,23 @@ import { LogComponent } from './modules/log/log.component';
 import { VariantConditionComponent } from './query/variant-condition/variant-condition.component';
 import { InsightComponent } from './processmining/insight/insight.component';
 import { InsightListComponent } from './processmining/insight-list/insight-list.component';
+import { ClusterConditionComponent } from './query/cluster-condition/cluster-condition.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AnalysisComponent,
     ProcessMapComponent,
+
     ConditionListComponent,
     PathConditionComponent,
+    VariantConditionComponent,
+    ClusterConditionComponent,
+
     ConditionDirective,
     ConditionSingleComponent,
     AttributeConditionComponent,
     LogComponent,
-    VariantConditionComponent,
 
     InsightComponent,
     InsightListComponent
@@ -76,7 +80,7 @@ import { InsightListComponent } from './processmining/insight-list/insight-list.
     FormsModule
   ],
   providers: [],
-  entryComponents: [ AttributeConditionComponent, PathConditionComponent, VariantConditionComponent ],
+  entryComponents: [ AttributeConditionComponent, PathConditionComponent, VariantConditionComponent, ClusterConditionComponent ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

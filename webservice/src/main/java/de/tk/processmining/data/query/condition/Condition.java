@@ -13,7 +13,8 @@ import java.util.List;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = PathCondition.class, name = "path"),
         @JsonSubTypes.Type(value = AttributeCondition.class, name = "attribute"),
-        @JsonSubTypes.Type(value = VariantCondition.class, name = "variant")
+        @JsonSubTypes.Type(value = VariantCondition.class, name = "variant"),
+        @JsonSubTypes.Type(value = ClusterCondition.class, name = "cluster")
 })
 public abstract class Condition {
 

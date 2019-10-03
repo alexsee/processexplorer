@@ -11,6 +11,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { VariantConditionComponent } from 'src/app/query/variant-condition/variant-condition.component';
 import { InsightListComponent } from 'src/app/processmining/insight-list/insight-list.component';
 import { ProcessMapComponent } from 'src/app/processmining/process-map/processmap.component';
+import { ClusterConditionComponent } from 'src/app/query/cluster-condition/cluster-condition.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -69,6 +70,8 @@ export class AnalysisComponent implements OnInit {
       case 'variant':
         this.conditions.push(new Condition(VariantConditionComponent, { }));
         break;
+      case 'cluster':
+        this.conditions.push(new Condition(ClusterConditionComponent, { }));
     }
   }
 }

@@ -84,6 +84,11 @@ export class InsightComponent implements OnChanges {
       this.icon = 'info';
       this.color = 'green';
     }
+
+    // format fix
+    if (this.insight.subTitle) {
+      this.insight.subTitle = this.insight.subTitle.replace('-->', '&#8594;');
+    }
   }
 
   unusualness(n_vt: number, n_v: number, n_t: number, n_s: number) {
