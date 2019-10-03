@@ -1,5 +1,5 @@
 <div class="insights-list">
-    <div *ngFor="let insight of insights">
+    <div *ngFor="let insight of insights" [hidden]="!noData || progress">
         <app-insight [insight]="insight"></app-insight>
     </div>
     <div [hidden]="noData" class="no-data-container">
