@@ -6,12 +6,25 @@
     height: 100%;
 }
 
-.process-explorer-dashboard:only-child div {
+.process-explorer-dashboard > div {
     padding: 15px;
 }
 
 .process-explorer-conditions {
     grid-area: conditions;
+}
+
+.process-explorer-conditions .buttons {
+    margin-bottom: 10px;
+}
+
+.process-explorer-conditions .buttons button {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.process-explorer-conditions .buttons button:first-child {
+    margin-left: 0;
 }
 
 .process-explorer-map {
@@ -26,3 +39,4 @@
     grid-area: insights;
     overflow-y: scroll;
 }
+
