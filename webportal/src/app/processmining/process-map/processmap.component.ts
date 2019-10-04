@@ -2,10 +2,8 @@ import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angul
 
 import * as moment from 'moment';
 
-import * as cytoscape from 'cytoscape';
-import dagre from 'cytoscape-dagre';
-import klay from 'cytoscape-klay';
-import dot from './cytoscape-dot';
+import * as dagre from 'dagre';
+
 import {ProcessMap} from '../../entities/processmap';
 import { QueryService } from 'src/app/services/query.service';
 import { Condition } from 'src/app/entities/conditions/condition';
@@ -99,76 +97,77 @@ export class ProcessMapComponent implements OnChanges {
       }
     }
 
-    cytoscape.use(dagre);
-    const cy = cytoscape({
-      container: element,
 
-      boxSelectionEnabled: false,
-      autounselectify: true,
+    // cytoscape.use(dagre);
+    // const cy = cytoscape({
+    //   container: element,
 
-      layout: {
-        name: 'dagre',
-        // name: 'klay',
-        // name: 'dot'
+    //   boxSelectionEnabled: false,
+    //   autounselectify: true,
 
-        // klay: {
-        //   aspectRatio: 1.8,
-        //   direction: 'DOWN',
-        //   edgeRouting: 'SPLINES',
-        //   nodeLayering: 'LONGEST_PATH',
-        //   layoutHierarchy: true,
-        //   thoroughness: 10,
-        //   feedbackEdges: true,
-        //   fixedAlignment: 'BALANCED',
-        //   linearSegmentsDeflectionDampening: 0
-        // }
-        rankDir: 'TB',
+    //   layout: {
+    //     name: 'dagre',
+    //     // name: 'klay',
+    //     // name: 'dot'
 
-        edgeSep: 50,
-        nodeSep: 50,
+    //     // klay: {
+    //     //   aspectRatio: 1.8,
+    //     //   direction: 'DOWN',
+    //     //   edgeRouting: 'SPLINES',
+    //     //   nodeLayering: 'LONGEST_PATH',
+    //     //   layoutHierarchy: true,
+    //     //   thoroughness: 10,
+    //     //   feedbackEdges: true,
+    //     //   fixedAlignment: 'BALANCED',
+    //     //   linearSegmentsDeflectionDampening: 0
+    //     // }
+    //     rankDir: 'TB',
 
-        nodeDimensionsIncludeLabels: true,
-        padding: 0,
-        minLen: (edge) => (edge.source === 'Startknoten' || edge.target === 'Endknoten') ? 2 : 1
-      },
+    //     edgeSep: 50,
+    //     nodeSep: 50,
 
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'content': 'data(label)',
-            'background-color': '#11479e',
-            'shape': 'diamond',
-            'font-size': '12px',
-            'text-valign': 'center',
-            'text-halign': 'right',
-            'text-margin-x': '0.3em',
-            'overlay-padding': '6px',
-            'z-index': '10',
-            'height': '1.2em',
-            'width': '1.2em'
-          }
-        },
-        {
-          selector: 'edge',
-          style: {
-            'label': 'data(averageDuration)',
-            'target-arrow-shape': 'triangle',
-            'line-color': '#9dbaea',
-            'target-arrow-color': '#9dbaea',
-            'curve-style': 'bezier',
-            'font-size': '9px',
-            'text-halign': 'right',
-            'text-background-color': 'black',
-            'text-background-opacity': 0.2,
-            'text-background-shape': 'roundrectangle',
-            'text-background-padding': '3px'
-          }
-        }
-      ],
+    //     nodeDimensionsIncludeLabels: true,
+    //     padding: 0,
+    //     minLen: (edge) => (edge.source === 'Startknoten' || edge.target === 'Endknoten') ? 2 : 1
+    //   },
 
-      elements: elements
-    });
+    //   style: [
+    //     {
+    //       selector: 'node',
+    //       style: {
+    //         'content': 'data(label)',
+    //         'background-color': '#11479e',
+    //         'shape': 'diamond',
+    //         'font-size': '12px',
+    //         'text-valign': 'center',
+    //         'text-halign': 'right',
+    //         'text-margin-x': '0.3em',
+    //         'overlay-padding': '6px',
+    //         'z-index': '10',
+    //         'height': '1.2em',
+    //         'width': '1.2em'
+    //       }
+    //     },
+    //     {
+    //       selector: 'edge',
+    //       style: {
+    //         'label': 'data(averageDuration)',
+    //         'target-arrow-shape': 'triangle',
+    //         'line-color': '#9dbaea',
+    //         'target-arrow-color': '#9dbaea',
+    //         'curve-style': 'bezier',
+    //         'font-size': '9px',
+    //         'text-halign': 'right',
+    //         'text-background-color': 'black',
+    //         'text-background-opacity': 0.2,
+    //         'text-background-shape': 'roundrectangle',
+    //         'text-background-padding': '3px'
+    //       }
+    //     }
+    //   ],
+
+    //   elements: elements
+    // });
   }
 
   getCleanName(text: string) {

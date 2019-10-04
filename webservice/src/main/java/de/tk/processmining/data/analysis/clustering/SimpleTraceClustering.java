@@ -32,7 +32,7 @@ public class SimpleTraceClustering {
     }
 
     public void cluster(String logName) {
-        var variants = queryManager.getAllPaths(logName);
+        var variants = queryManager.getAllPaths(logName, new ArrayList<>());
 
         // compute distance matrix
         double[][] distanceMatrix = new double[variants.size()][variants.size()];

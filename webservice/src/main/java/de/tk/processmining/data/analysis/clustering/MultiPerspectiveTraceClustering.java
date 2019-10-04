@@ -26,7 +26,7 @@ public class MultiPerspectiveTraceClustering {
 
     public void generateCaseAttributeDb() {
         var categoricalAttributes = queryManager.getCategoricalCaseAttributes(logName);
-        var variants = queryManager.getAllPaths(logName);
+        var variants = queryManager.getAllPaths(logName, new ArrayList<>());
 
         var itemsetValues = new HashMap<FieldValue, Integer>();
 

@@ -7,6 +7,7 @@ import de.tk.processmining.data.model.Graph;
 import de.tk.processmining.data.model.GraphEdge;
 import de.tk.processmining.data.model.Log;
 import de.tk.processmining.data.model.Variant;
+import de.tk.processmining.data.query.condition.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -62,9 +63,10 @@ public class QueryManager {
      * Returns all existing paths of a loaded event log with corresponding occurrence and variant id.
      *
      * @param logName
+     * @param conditions
      * @return
      */
-    public List<Variant> getAllPaths(String logName) {
+    public List<Variant> getAllPaths(String logName, List<de.tk.processmining.data.query.condition.Condition> conditions) {
         var logStats = getLogStatistics(logName);
         var db = new DatabaseModel(logName);
 
@@ -73,8 +75,13 @@ public class QueryManager {
                 .addAliasedColumn(FunctionCall.count().addColumnParams(db.caseVariantIdCol), "occurrence")
                 .addJoins(SelectQuery.JoinType.INNER, db.caseVariantJoin)
                 .addGroupings(db.variantsIdCol)
-                .addCustomOrdering("occurrence", OrderObject.Dir.DESCENDING)
-                .validate().toString();
+                .addCustomOrdering("occurrence", OrderObject.Dir.DESCENDING);
+
+        for (var rule : conditions) {
+            for (var condition : rule.getCondition(db)) {
+                sql.addCondition(condition);
+            }
+        }
 
         var rowMapper = new RowMapper<Variant>() {
             public Variant mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -98,7 +105,7 @@ public class QueryManager {
             }
         };
 
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql.validate().toString(), rowMapper);
     }
 
     /**
