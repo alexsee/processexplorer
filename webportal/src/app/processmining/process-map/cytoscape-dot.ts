@@ -6,20 +6,27 @@ function CytoscapeDotLayout(options) {
   this.options = options;
 }
 
-CytoscapeDotLayout.prototype.run = function () {
-  let dotStr = 'digraph G {';
+CytoscapeDotLayout.prototype.run = function() {
+  let dotStr = 'digraph G {\n';
+  dotStr += 'rankdir=TB;\n';
 
   const nodes = this.options.eles.nodes();
   for (let i = 0; i < nodes.length; ++i) {
     const node = nodes[i];
     const {w, h} = node.layoutDimensions(this.options);
-    dotStr += `  ${node.id()}[label="${node.id()}",fixedsize=true,width=${w / 100},height=${h / 100}];\n`;
+
+    console.info(this.options);
+
+    dotStr += `  ${node.id()}[label="${node.id()}"];\n`;
   }
+
+  dotStr += '  { rank=source; "Startknoten" }\n';
+  dotStr += '  { rank=sink; "Endknoten" }\n';
 
   const edges = this.options.eles.edges();
   for (let i = 0; i < edges.length; ++i) {
     const edge = edges[i];
-    dotStr += `  ${edge.source().id()} -> ${edge.target().id()};\n`;
+    dotStr += `  ${edge.source().id()} -> ${edge.target().id()} [weight=${edge.data('edgeWeight')}];\n`;
   }
 
   dotStr += '}';
