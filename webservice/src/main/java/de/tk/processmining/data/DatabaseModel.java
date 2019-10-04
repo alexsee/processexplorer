@@ -59,8 +59,11 @@ public class DatabaseModel {
     // joints
     public DbJoin caseVariantJoin;
     public DbJoin caseCaseAttributeJoin;
+
     public DbJoin graphVariantJoin;
     public DbJoin graphCaseAttributeJoin;
+
+    public DbJoin eventCaseJoin;
 
     public DatabaseModel(String logName) {
         // activity table
@@ -120,6 +123,10 @@ public class DatabaseModel {
                 new String[]{"variant_id"}, new String[]{"id"});
         caseCaseAttributeJoin = spec.addJoin(null, caseTable.getTableNameSQL(),
                 null, caseAttributeTable.getTableNameSQL(),
+                "case_id");
+
+        eventCaseJoin = spec.addJoin(null, eventTable.getTableNameSQL(),
+                null, caseTable.getTableNameSQL(),
                 "case_id");
     }
 }

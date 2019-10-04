@@ -1,24 +1,18 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
-import com.healthmarketscience.sqlbuilder.CustomSql;
-import com.healthmarketscience.sqlbuilder.ExtractExpression;
 import com.healthmarketscience.sqlbuilder.FunctionCall;
-import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.InsightValueFormat;
 
-/**
- * @author Alexander Seeliger on 01.10.2019.
- */
-public class EventDurationMetric extends EventMetric {
+public class TransitionOccurrenceMetric extends TransitionMetric {
 
-    public EventDurationMetric(String logName) {
+    public TransitionOccurrenceMetric(String logName) {
         super(logName);
     }
 
     @Override
     protected Object getExpression() {
-        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, new CustomSql("duration")));
+        return FunctionCall.countAll();
     }
 
     protected Insight generateInsight(double effectSize, CaseMetric.Measure measure1, CaseMetric.Measure measure2, Edge edge) {
@@ -28,9 +22,15 @@ public class EventDurationMetric extends EventMetric {
         insight.setAverageWithout(measure2.getAverage());
         insight.setStddevWithin(measure1.getStddev());
         insight.setStddevWithout(measure2.getStddev());
-        insight.setFormat(InsightValueFormat.DURATION);
-        insight.setTitle("Duration");
-        insight.setSubTitle(edge.getSourceEvent() + " --> " + edge.getTargetEvent());
+        insight.setFormat(InsightValueFormat.NUMBER);
+
+        if (edge.getSourceEvent().equals(edge.getTargetEvent())) {
+            insight.setTitle("Loop");
+            insight.setSubTitle(edge.getSourceEvent());
+        } else {
+            insight.setTitle("Occurrence");
+            insight.setSubTitle(edge.getSourceEvent() + " --> " + edge.getTargetEvent());
+        }
         return insight;
     }
 

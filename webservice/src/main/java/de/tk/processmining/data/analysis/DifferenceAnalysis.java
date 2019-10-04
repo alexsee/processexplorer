@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.management.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +40,12 @@ public class DifferenceAnalysis {
 
     public List<InsightMetric> getDefaultMetrics(String logName) {
         var result = new ArrayList<InsightMetric>();
-        result.add(new EventOccurrenceMetric(logName));
-        result.add(new EventDurationMetric(logName));
+        result.add(new TransitionOccurrenceMetric(logName));
+        result.add(new TransitionDurationMetric(logName));
         result.add(new CaseDurationMetric(logName));
 
         queryManager.getCategoricalCaseAttributes(logName).forEach(attr -> result.add(new CaseAttributeMetric(logName, attr)));
+        queryManager.getLogStatistics(logName).getActivities().forEach(evt -> result.add(new EventResourceMetric(logName, evt)));
         return result;
     }
 

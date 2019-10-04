@@ -73,9 +73,9 @@ public abstract class ClusterMetric implements InsightMetric {
         return result;
     }
 
-    protected abstract Insight generateInsight(double effectSize, List<Measure> labels, double[] with, double[] without);
+    protected abstract Insight generateInsight(double effectSize, List<? extends Measure> labels, double[] with, double[] without);
 
-    protected abstract Map<Measure, Double> computeDifference(Object calculation, Condition conditions);
+    protected abstract Map<? extends Measure, Double> computeDifference(Object calculation, Condition conditions);
 
     protected abstract Object getExpression();
 

@@ -24,7 +24,7 @@ public class CaseAttributeMetric extends ClusterMetric {
     }
 
     @Override
-    protected Insight generateInsight(double effectSize, List<Measure> labels, double[] with, double[] without) {
+    protected Insight generateInsight(double effectSize, List<? extends Measure> labels, double[] with, double[] without) {
         var insight = new Insight();
         insight.setEffectSize(effectSize);
 
