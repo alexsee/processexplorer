@@ -1,6 +1,30 @@
+.process-map-container {
+  display: grid;
+  grid-template-areas: 
+    "process-map"
+    "navigation";
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 55px;
+  height: 100%;
+  widows: 100%;
+}
+
 .d3-process-map {
+  grid-area: process-map;
+
   width: 100%;
   height: 100%;
+}
+
+.navigation {
+  grid-area: navigation;
+
+  border-top: 1px solid lightgray;
+  padding-top: 10px;
+}
+
+.navigation .mat-form-field-wrapper {
+  padding-bottom: 0;
 }
 
 .no-data-container {

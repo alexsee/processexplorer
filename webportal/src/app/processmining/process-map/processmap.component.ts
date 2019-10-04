@@ -8,6 +8,9 @@ import * as cytoscape from 'cytoscape';
 import {ProcessMap} from '../../entities/processmap';
 import { QueryService } from 'src/app/services/query.service';
 import { Condition } from 'src/app/entities/conditions/condition';
+import { ProcessMapSettings } from 'src/app/entities/settings/process-map-settings';
+import { LocalStorageService } from 'src/app/services/storage.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-processmap',
@@ -21,6 +24,7 @@ export class ProcessMapComponent implements OnChanges {
   @Input() private conditions: Condition[];
 
   private data: ProcessMap;
+  private settings: ProcessMapSettings;
 
   private zoom;
   private svg;
@@ -30,7 +34,9 @@ export class ProcessMapComponent implements OnChanges {
   private noData = false;
   private progress = true;
 
-  constructor(private queryService: QueryService) {
+  constructor(
+    private queryService: QueryService,
+    private storageService: LocalStorageService) {
   }
 
   ngOnChanges() {
@@ -50,6 +56,25 @@ export class ProcessMapComponent implements OnChanges {
         this.data = processMap;
         this.createProcessMap();
       });
+
+    this.loadSettings();
+  }
+
+  loadSettings() {
+    this.settings = this.storageService.readConfig(this.logName, 'processmap.settings');
+
+    // default settings
+    if (!this.settings) {
+      this.settings = {
+        mode: 'occurrence'
+      };
+    }
+  }
+
+  onSettingsChange() {
+    this.storageService.writeConfig(this.logName, 'processmap.settings', this.settings);
+
+    this.createProcessMap();
   }
 
   createProcessMap() {
@@ -152,7 +177,7 @@ export class ProcessMapComponent implements OnChanges {
         {
           selector: 'edge',
           style: {
-            'label': 'data(averageDuration)',
+            'label': this.settings.mode === 'duration' ? 'data(averageDuration)' : 'data(occurrence)',
             'target-arrow-shape': 'triangle',
             'line-color': '#9dbaea',
             'target-arrow-color': '#9dbaea',
