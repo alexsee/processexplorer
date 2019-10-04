@@ -7,7 +7,6 @@ import de.tk.processmining.data.model.Graph;
 import de.tk.processmining.data.model.GraphEdge;
 import de.tk.processmining.data.model.Log;
 import de.tk.processmining.data.model.Variant;
-import de.tk.processmining.data.query.condition.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -156,6 +155,12 @@ public class QueryManager {
         return graph;
     }
 
+    /**
+     * Returns a list of all available case attributes.
+     *
+     * @param logName
+     * @return
+     */
     public List<String> getCaseAttributes(String logName) {
         var columns = jdbcTemplate.queryForList("SELECT column_name " +
                 "FROM information_schema.columns " +
@@ -168,6 +173,12 @@ public class QueryManager {
         return columns;
     }
 
+    /**
+     * Returns a list of all categorical case attributes.
+     *
+     * @param logName
+     * @return
+     */
     public List<String> getCategoricalCaseAttributes(String logName) {
         var db = new DatabaseModel(logName);
         var attrs = getCaseAttributes(logName);
@@ -188,10 +199,25 @@ public class QueryManager {
         return categoricalAttrs;
     }
 
+    /**
+     * Returns a list of all cases with the given case attribute values.
+     *
+     * @param logName
+     * @param attributes
+     * @return
+     */
     public List<Map<String, Object>> getCases(String logName, List<String> attributes) {
         return getCases(logName, attributes, new ArrayList<>());
     }
 
+    /**
+     * Returns a list of all cases with the given condition and the corresponding case attributes.
+     *
+     * @param logName
+     * @param attributes
+     * @param conditions
+     * @return
+     */
     public List<Map<String, Object>> getCases(String logName, List<String> attributes, List<de.tk.processmining.data.query.condition.Condition> conditions) {
         var db = new DatabaseModel(logName);
         attributes.forEach(x -> db.caseAttributeTable.addColumn(x));
@@ -215,5 +241,36 @@ public class QueryManager {
         }
 
         return jdbcTemplate.queryForList(sql.validate().toString());
+    }
+
+    public CaseAttributeValueResult getCaseAttributeValues(CaseAttributeValueQuery query) {
+        var db = new DatabaseModel(query.getLogName());
+
+        var sql = new SelectQuery(true)
+                .addAliasedColumn(db.caseAttributeTable.addColumn("\"" + query.getAttributeName() + "\""), "attr")
+                .addFromTable(db.caseTable);
+
+        sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin, db.caseVariantJoin);
+
+        // add conditions
+        for (var rule : query.getConditions()) {
+            for (var condition : rule.getCondition(db)) {
+                sql.addCondition(condition);
+            }
+        }
+
+        var values = jdbcTemplate.queryForList(sql.validate().toString(), String.class);
+
+        var result = new CaseAttributeValueResult();
+        result.setAttributeName(query.getAttributeName());
+
+        if (values.size() > 100) {
+            result.setCategorical(false);
+        } else {
+            result.setValues(values);
+            result.setCategorical(true);
+        }
+
+        return result;
     }
 }

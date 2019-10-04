@@ -12,7 +12,7 @@
 
     <mat-form-field>
         <mat-label>Attribute</mat-label>
-        <mat-select [(value)]='data.attribute'>
+        <mat-select [(value)]='data.attribute' (selectionChange)="onSelectionChange()">
             <mat-option *ngFor="let attribute of context.attributes" [value]="attribute">
                 {{attribute}}
             </mat-option>
@@ -26,6 +26,12 @@
     </mat-form-field>
     <mat-form-field>
         <mat-label>Value</mat-label>
-        <input matInput [(ngModel)]="data.value" />
+        <input matInput [(ngModel)]="data.value" *ngIf="!options.categorical" />
+
+        <mat-select [(value)]='data.value' *ngIf="options.categorical">
+            <mat-option *ngFor="let value of options.values" [value]="value">
+                {{value}}
+            </mat-option>
+        </mat-select>
     </mat-form-field>
 </mat-expansion-panel>

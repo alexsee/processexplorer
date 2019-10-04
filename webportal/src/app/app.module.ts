@@ -26,7 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProcessMapComponent } from './processmining/process-map/processmap.component';
 import { ConditionListComponent } from './query/condition-list/condition-list.component';
 import { ConditionDirective } from './query/condition.directive';
-import { PathConditionComponent } from './query/pathcondition/pathcondition.component';
+import { PathConditionComponent } from './query/path-condition/path-condition.component';
 import { ConditionSingleComponent } from './query/condition-single/condition-single.component';
 import { AttributeConditionComponent } from './query/attribute-condition/attribute-condition.component';
 import { FormsModule } from '@angular/forms';

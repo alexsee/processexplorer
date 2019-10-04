@@ -3,9 +3,9 @@ import { ConditionComponent } from '../condition.component';
 import { Log } from 'src/app/entities/log';
 
 @Component({
-  selector: 'app-pathcondition',
-  templateUrl: './pathcondition.component.html',
-  styleUrls: ['./pathcondition.component.scss']
+  selector: 'app-path-condition',
+  templateUrl: './path-condition.component.html',
+  styleUrls: ['./path-condition.component.scss']
 })
 export class PathConditionComponent implements ConditionComponent {
   @Input() data: any;

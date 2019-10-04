@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PathConditionComponent } from './pathcondition.component';
+import { PathConditionComponent } from './path-condition.component';
 
-describe('PathconditionComponent', () => {
+describe('PathConditionComponent', () => {
   let component: PathConditionComponent;
   let fixture: ComponentFixture<PathConditionComponent>;
 

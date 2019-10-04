@@ -11,6 +11,7 @@ import { Condition } from 'src/app/entities/conditions/condition';
 import { ProcessMapSettings } from 'src/app/entities/settings/process-map-settings';
 import { LocalStorageService } from 'src/app/services/storage.service';
 import { Observable } from 'rxjs';
+import { QueryConvertService } from 'src/app/services/query-convert.service';
 
 @Component({
   selector: 'app-processmap',
@@ -36,6 +37,7 @@ export class ProcessMapComponent implements OnChanges {
 
   constructor(
     private queryService: QueryService,
+    private queryConvertService: QueryConvertService,
     private storageService: LocalStorageService) {
   }
 
@@ -51,7 +53,7 @@ export class ProcessMapComponent implements OnChanges {
     // query process map
     this.progress = true;
 
-    this.queryService.getProcessMap(this.logName, this.queryService.convertToQuery(this.conditions))
+    this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(processMap => {
         this.data = processMap;
         this.createProcessMap();

@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { QueryService } from '../../services/query.service';
 import { ProcessMap } from '../../entities/processmap';
 import { Condition } from '../../entities/conditions/condition';
-import { PathConditionComponent } from '../../query/pathcondition/pathcondition.component';
+import { PathConditionComponent } from '../../query/path-condition/path-condition.component';
 import { Log } from '../../entities/log';
 import { AttributeConditionComponent } from '../../query/attribute-condition/attribute-condition.component';
 import { LocalStorageService } from '../../services/storage.service';
@@ -12,6 +12,7 @@ import { VariantConditionComponent } from 'src/app/query/variant-condition/varia
 import { InsightListComponent } from 'src/app/processmining/insight-list/insight-list.component';
 import { ProcessMapComponent } from 'src/app/processmining/process-map/processmap.component';
 import { ClusterConditionComponent } from 'src/app/query/cluster-condition/cluster-condition.component';
+import { QueryConvertService } from 'src/app/services/query-convert.service';
 
 @Component({
   selector: 'app-analysis-module',
@@ -30,6 +31,7 @@ export class AnalysisComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private queryService: QueryService,
+    private queryConvertService: QueryConvertService,
     private storageService: LocalStorageService
   ) {
   }
@@ -40,7 +42,7 @@ export class AnalysisComponent implements OnInit {
 
     // load queries from local storage
     const query = this.storageService.readQueryConditions(this.logName);
-    this.conditions = this.queryService.convertFromQuery(query);
+    this.conditions = this.queryConvertService.convertFromQuery(query);
 
     // update view components
     this.onUpdate();
@@ -48,7 +50,7 @@ export class AnalysisComponent implements OnInit {
 
   onUpdate() {
     // store queries to local storage
-    this.storageService.writeQueryConditions(this.logName, this.queryService.convertToQuery(this.conditions));
+    this.storageService.writeQueryConditions(this.logName, this.queryConvertService.convertToQuery(this.conditions));
 
     if (this.insightListComponent !== undefined) {
       this.insightListComponent.update();

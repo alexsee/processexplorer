@@ -27,6 +27,6 @@ export class LogService {
   }
 
   getAllLogs(): Observable<Log[]> {
-    return this.http.get<Log[]>(environment.serviceUrl + '/logs/allstatistics');
+    return this.http.get<Log[]>(environment.serviceUrl + '/logs/all_statistics');
   }
 }

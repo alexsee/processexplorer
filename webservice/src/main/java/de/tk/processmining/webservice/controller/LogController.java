@@ -27,7 +27,7 @@ public class LogController {
         this.logService = logService;
     }
 
-    @RequestMapping("/allstatistics")
+    @RequestMapping("/all_statistics")
     public List<Log> getAll() {
         return logService.getAllLogs();
     }
