@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { AnalysisComponent } from './modules/analysis/analysis.component';
 import { LogComponent } from './modules/log/log.component';
 
-
 const routes: Routes = [
   { path: 'analysis', component: LogComponent },
   { path: 'analysis/:logName', component: AnalysisComponent },
