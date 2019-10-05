@@ -16,8 +16,8 @@ export class InsightListComponent implements OnChanges {
   @Input() private conditions: Condition[];
 
   private insights: Insight[];
-  private noData = true;
-  private progress = true;
+  private noData = false;
+  private progress = false;
 
   constructor(
     private queryService: QueryService,
@@ -33,6 +33,7 @@ export class InsightListComponent implements OnChanges {
       return;
     }
 
+    this.noData = true;
     this.progress = true;
 
     this.queryService.getInsights(this.logName, this.queryConvertService.convertToQuery(this.conditions))

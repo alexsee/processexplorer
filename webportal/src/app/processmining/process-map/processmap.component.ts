@@ -54,8 +54,8 @@ export class ProcessMapComponent implements OnChanges {
     this.progress = true;
 
     this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions))
-      .subscribe(processMap => {
-        this.data = processMap;
+      .subscribe(response => {
+        this.data = response.processMap;
         this.createProcessMap();
       });
 

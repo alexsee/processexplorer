@@ -110,11 +110,11 @@ public class QueryManager {
     /**
      * Returns the process map with edges and their duration, occurrence.
      *
-     * @param logName
+     * @param query
      * @return
      */
-    public Graph getProcessMap(String logName, List<de.tk.processmining.data.query.condition.Condition> conditions) {
-        var db = new DatabaseModel(logName);
+    public ProcessMapResult getProcessMap(ProcessMapQuery query) {
+        var db = new DatabaseModel(query.getLogName());
 
         var sql = new SelectQuery()
                 .addColumns(db.graphSourceEventCol, db.graphTargetEventCol)
@@ -123,7 +123,7 @@ public class QueryManager {
                 .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addColumnParams(db.graphDurationCol)), "max_duration")
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence");
 
-        for (var rule : conditions) {
+        for (var rule : query.getConditions()) {
             for (var condition : rule.getCondition(db)) {
                 sql.addCondition(condition);
             }
@@ -152,7 +152,9 @@ public class QueryManager {
         var graph = new Graph();
         graph.setEdges(edges);
 
-        return graph;
+        var result = new ProcessMapResult();
+        result.setProcessMap(graph);
+        return result;
     }
 
     /**
@@ -200,41 +202,28 @@ public class QueryManager {
     }
 
     /**
-     * Returns a list of all cases with the given case attribute values.
-     *
-     * @param logName
-     * @param attributes
-     * @return
-     */
-    public List<Map<String, Object>> getCases(String logName, List<String> attributes) {
-        return getCases(logName, attributes, new ArrayList<>());
-    }
-
-    /**
      * Returns a list of all cases with the given condition and the corresponding case attributes.
      *
-     * @param logName
-     * @param attributes
-     * @param conditions
+     * @param query
      * @return
      */
-    public List<Map<String, Object>> getCases(String logName, List<String> attributes, List<de.tk.processmining.data.query.condition.Condition> conditions) {
-        var db = new DatabaseModel(logName);
-        attributes.forEach(x -> db.caseAttributeTable.addColumn(x));
+    public List<Map<String, Object>> getCases(CasesQuery query) {
+        var db = new DatabaseModel(query.getLogName());
+        query.getAttributes().forEach(x -> db.caseAttributeTable.addColumn(x));
 
         var sql = new SelectQuery()
                 .addColumns(db.caseCaseIdCol)
                 .addColumns(db.caseVariantIdCol);
 
         // add selected columns
-        for (var attr : attributes) {
+        for (var attr : query.getAttributes()) {
             sql = sql.addColumns(db.caseAttributeTable.findColumn(attr));
         }
 
         sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin);
 
         // add conditions
-        for (var rule : conditions) {
+        for (var rule : query.getConditions()) {
             for (var condition : rule.getCondition(db)) {
                 sql.addCondition(condition);
             }
@@ -243,6 +232,13 @@ public class QueryManager {
         return jdbcTemplate.queryForList(sql.validate().toString());
     }
 
+    /**
+     * Returns a list of values that correspond to the given case attribute. If the attribute is not a categorical
+     * attribute, the function will indicate that.
+     *
+     * @param query
+     * @return
+     */
     public CaseAttributeValueResult getCaseAttributeValues(CaseAttributeValueQuery query) {
         var db = new DatabaseModel(query.getLogName());
 

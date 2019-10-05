@@ -1,5 +1,6 @@
 package de.tk.processmining.data.analysis.clustering;
 
+import de.tk.processmining.data.query.CasesQuery;
 import de.tk.processmining.data.query.QueryManager;
 import de.tk.processmining.data.query.condition.Condition;
 import de.tk.processmining.data.query.condition.VariantCondition;
@@ -35,7 +36,7 @@ public class MultiPerspectiveTraceClustering {
             var conditions = new ArrayList<Condition>();
             conditions.add(new VariantCondition(variant.getId()));
 
-            var cases = queryManager.getCases(logName, categoricalAttributes, conditions);
+            var cases = queryManager.getCases(new CasesQuery(logName, conditions, categoricalAttributes));
             var transactions = new ArrayList<>();
 
             for (var c : cases) {

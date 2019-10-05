@@ -4,21 +4,23 @@ import de.tk.processmining.data.query.condition.Condition;
 
 import java.util.List;
 
-public class CaseAttributeValueQuery {
-
-    private String logName;
+public class CaseAttributeValueQuery extends BaseQuery {
 
     private String attributeName;
 
-    private List<Condition> conditions;
-
-    public String getLogName() {
-        return logName;
+    public CaseAttributeValueQuery() {
     }
 
-    public void setLogName(String logName) {
-        this.logName = logName;
+    public CaseAttributeValueQuery(String logName, String attributeName) {
+        super(logName);
+        this.attributeName = attributeName;
     }
+
+    public CaseAttributeValueQuery(String logName, List<Condition> conditions, String attributeName) {
+        super(logName, conditions);
+        this.attributeName = attributeName;
+    }
+
 
     public String getAttributeName() {
         return attributeName;
@@ -28,11 +30,4 @@ public class CaseAttributeValueQuery {
         this.attributeName = attributeName;
     }
 
-    public List<Condition> getConditions() {
-        return conditions;
-    }
-
-    public void setConditions(List<Condition> conditions) {
-        this.conditions = conditions;
-    }
 }
