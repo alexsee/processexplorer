@@ -3,10 +3,7 @@ package de.tk.processmining.data.query;
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.DatabaseModel;
-import de.tk.processmining.data.model.Graph;
-import de.tk.processmining.data.model.GraphEdge;
-import de.tk.processmining.data.model.Log;
-import de.tk.processmining.data.model.Variant;
+import de.tk.processmining.data.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -265,6 +262,59 @@ public class QueryManager {
         } else {
             result.setValues(values);
             result.setCategorical(true);
+        }
+
+        return result;
+    }
+
+    public DrillDownResult getDrillDown(DrillDownQuery query) {
+        var db = new DatabaseModel(query.getLogName());
+        var result = new DrillDownResult();
+
+        var sql = new SelectQuery()
+                .addFromTable(db.caseTable)
+                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin, db.caseVariantJoin);
+
+        // add selections
+        int i = 0;
+        boolean hasGroup = false;
+        for (var selection : query.getSelections()) {
+            sql = sql.addAliasedColumn(selection.getSelection(db), "expr" + i);
+            result.getMetaData().add(new ColumnMetaData(selection.getName(), ""));
+
+            if (selection.isGroup()) {
+                hasGroup = true;
+            }
+            i++;
+        }
+
+        // add grouping?
+        if (hasGroup) {
+            for (var selection : query.getSelections()) {
+                if (selection.isGroup())
+                    continue;
+
+                sql = sql.addCustomGroupings(selection.getSelection(db));
+            }
+        }
+
+        // add conditions
+        for (var rule : query.getConditions()) {
+            for (var condition : rule.getCondition(db)) {
+                sql = sql.addCondition(condition);
+            }
+        }
+
+        var values = jdbcTemplate.queryForList(sql.validate().toString());
+
+        for (var value : values) {
+            var data = new Object[value.size()];
+
+            for (i = 0; i < query.getSelections().size(); i++) {
+                data[i] = value.get("expr" + i);
+            }
+
+            result.getData().add(data);
         }
 
         return result;

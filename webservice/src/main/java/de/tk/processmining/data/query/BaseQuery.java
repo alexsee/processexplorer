@@ -12,6 +12,7 @@ public abstract class BaseQuery {
     private List<Condition> conditions;
 
     public BaseQuery() {
+        this.conditions = new ArrayList<>();
     }
 
     public BaseQuery(String logName) {

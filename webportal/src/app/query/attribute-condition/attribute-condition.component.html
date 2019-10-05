@@ -2,7 +2,7 @@
     <mat-expansion-panel-header>
         <mat-panel-title>
             <span *ngIf="data.attribute">
-                <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.value}}</b>
+                <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.values}}</b>
             </span>
             <span *ngIf="!data.attribute">
                 Attribute Condition
@@ -24,14 +24,20 @@
             <mat-option value='EQUAL_TO'>=</mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field *ngIf="options.categorical">
         <mat-label>Value</mat-label>
-        <input matInput [(ngModel)]="data.value" *ngIf="!options.categorical" />
-
-        <mat-select [(value)]='data.value' *ngIf="options.categorical">
+        <mat-select [(value)]='data.values' *ngIf="options.categorical" multiple>
             <mat-option *ngFor="let value of options.values" [value]="value">
                 {{value}}
             </mat-option>
         </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="!options.categorical">
+        <mat-label>Start</mat-label>
+        <input matInput [(ngModel)]="data.rangeStart" />
+    </mat-form-field>
+    <mat-form-field *ngIf="!options.categorical">
+        <mat-label>End</mat-label>
+        <input matInput [(ngModel)]="data.rangeEnd" />
     </mat-form-field>
 </mat-expansion-panel>

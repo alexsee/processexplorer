@@ -1,6 +1,5 @@
 package de.tk.processmining.webservice.controller;
 
-import de.tk.processmining.data.model.Graph;
 import de.tk.processmining.data.model.Log;
 import de.tk.processmining.data.model.Variant;
 import de.tk.processmining.data.query.*;
@@ -44,6 +43,11 @@ public class QueryController {
     @RequestMapping(value = "/query/case_attribute_values", method = RequestMethod.POST)
     public CaseAttributeValueResult getCaseAttributeValues(@RequestBody CaseAttributeValueQuery query) {
         return queryManager.getCaseAttributeValues(query);
+    }
+
+    @RequestMapping(value = "/query/drill_down", method = RequestMethod.POST)
+    public DrillDownResult getDrillDown(@RequestBody DrillDownQuery query) {
+        return queryManager.getDrillDown(query);
     }
 
 }

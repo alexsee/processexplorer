@@ -1,7 +1,6 @@
 package de.tk.processmining.data.query.condition;
 
-import com.healthmarketscience.sqlbuilder.BinaryCondition;
-import com.healthmarketscience.sqlbuilder.JdbcEscape;
+import com.healthmarketscience.sqlbuilder.InCondition;
 import de.tk.processmining.data.DatabaseModel;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class AttributeCondition extends Condition {
 
     private String attribute;
 
-    private String value;
+    private Object[] values;
 
     @Override
     public List<com.healthmarketscience.sqlbuilder.Condition> getCondition(DatabaseModel db) {
@@ -32,7 +31,7 @@ public class AttributeCondition extends Condition {
 
         switch (binaryType) {
             case EQUAL_TO:
-                conditions.add(BinaryCondition.equalTo(db.caseAttributeTable.addColumn("\"" + attribute + "\""), value));
+                conditions.add(new InCondition(db.caseAttributeTable.addColumn("\"" + attribute + "\""), values));
                 break;
         }
 
@@ -43,7 +42,7 @@ public class AttributeCondition extends Condition {
         this.attribute = attribute;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValues(Object[] values) {
+        this.values = values;
     }
 }
