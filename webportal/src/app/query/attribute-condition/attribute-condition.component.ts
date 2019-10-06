@@ -11,10 +11,10 @@ import { CaseAttributeValueResult } from '../results/case-attribute-value-result
   styleUrls: ['./attribute-condition.component.scss']
 })
 export class AttributeConditionComponent implements OnInit, ConditionComponent {
-  @Input() data: any;
-  @Input() context: Log;
+  @Input() public data: any;
+  @Input() public context: Log;
 
-  private options: CaseAttributeValueResult = {
+  public options: CaseAttributeValueResult = {
     attributeName: '',
     categorical: false,
     values: []

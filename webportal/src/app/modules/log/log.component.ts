@@ -9,8 +9,8 @@ import { EventLog } from 'src/app/entities/eventlog';
   styleUrls: ['./log.component.scss']
 })
 export class LogComponent implements OnInit {
-  private logs: EventLog[];
-  private displayedColumns = ['logName', 'creationDate', 'status', 'actions'];
+  public logs: EventLog[];
+  public displayedColumns = ['logName', 'creationDate', 'status', 'actions'];
 
   constructor(
     private logService: LogService

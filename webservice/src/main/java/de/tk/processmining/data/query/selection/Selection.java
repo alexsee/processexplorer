@@ -12,6 +12,8 @@ import de.tk.processmining.data.DatabaseModel;
 })
 public abstract class Selection {
 
+    private SelectionOrder ordering;
+
     public abstract Object getSelection(DatabaseModel db);
 
     public abstract String getName();
@@ -20,4 +22,11 @@ public abstract class Selection {
         return false;
     }
 
+    public SelectionOrder getOrdering() {
+        return ordering;
+    }
+
+    public void setOrdering(SelectionOrder ordering) {
+        this.ordering = ordering;
+    }
 }

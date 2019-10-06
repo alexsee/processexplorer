@@ -4,6 +4,7 @@ import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.model.*;
+import de.tk.processmining.data.query.selection.SelectionOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -285,6 +286,11 @@ public class QueryManager {
             if (selection.isGroup()) {
                 hasGroup = true;
             }
+
+            if (selection.getOrdering() != null) {
+                sql = sql.addCustomOrdering(new CustomSql("expr" + i), selection.getOrdering() == SelectionOrder.ASC ? OrderObject.Dir.ASCENDING : OrderObject.Dir.DESCENDING);
+            }
+
             i++;
         }
 

@@ -10,7 +10,6 @@ import { QueryService } from 'src/app/services/query.service';
 import { Condition } from 'src/app/entities/conditions/condition';
 import { ProcessMapSettings } from 'src/app/entities/settings/process-map-settings';
 import { LocalStorageService } from 'src/app/services/storage.service';
-import { Observable } from 'rxjs';
 import { QueryConvertService } from 'src/app/services/query-convert.service';
 
 @Component({
@@ -24,16 +23,16 @@ export class ProcessMapComponent implements OnChanges {
   @Input() private logName: string;
   @Input() private conditions: Condition[];
 
-  private data: ProcessMap;
-  private settings: ProcessMapSettings;
+  public data: ProcessMap;
+  public settings: ProcessMapSettings;
 
-  private zoom;
-  private svg;
-  private g;
-  private graph;
+  public zoom: any;
+  public svg: any;
+  public g: any;
+  public graph: any;
 
-  private noData = false;
-  private progress = true;
+  public noData = false;
+  public progress = true;
 
   constructor(
     private queryService: QueryService,

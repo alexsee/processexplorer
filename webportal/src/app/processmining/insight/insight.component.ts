@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Insight } from 'src/app/entities/insight';
 
 import * as moment from 'moment';
-import { ChartOptions } from 'chart.js';
-import { OverlayKeyboardDispatcher } from '@angular/cdk/overlay';
+import * as c3 from 'c3';
 
 @Component({
   selector: 'app-insight',
@@ -11,27 +10,11 @@ import { OverlayKeyboardDispatcher } from '@angular/cdk/overlay';
   styleUrls: ['./insight.component.scss']
 })
 export class InsightComponent implements OnChanges {
-  @Input() private insight: Insight;
+  @ViewChild('chart', {static: true}) public chartContainer: ElementRef;
+  @Input() public insight: Insight;
 
-  private chartOptions: ChartOptions = {
-    responsive: true,
-    legend: {
-      display: false
-    },
-    scales: {
-      yAxes: [{
-        ticks: {
-          min: 0
-        }
-      }]
-    }
-  };
-
-  private chartData: any;
-  private chartLabels: any;
-
-  private icon: string;
-  private color: string;
+  public icon: string;
+  public color: string;
 
   constructor() { }
 
@@ -42,8 +25,8 @@ export class InsightComponent implements OnChanges {
 
     // calculate the interesting chart distribution
     if (this.insight.format === 'DISTRIBUTION') {
-      const dataset = [];
-      const labels = [];
+      const dataset: any[] = ['count'];
+      const labels: string[] = ['x'];
       let otherCount = 0;
 
       for (let i = 0; i < this.insight.labels.length; i++) {
@@ -69,8 +52,23 @@ export class InsightComponent implements OnChanges {
         labels.push('Other');
       }
 
-      this.chartData = [{data: dataset, label: 'within'}];
-      this.chartLabels = labels;
+      // generate chart in container
+      c3.generate({
+        bindto: this.chartContainer.nativeElement,
+        data: {
+          x: 'x',
+          columns: [labels, dataset],
+          type: 'bar'
+        },
+        axis: {
+            x: {
+                type: 'category' // this needed to load string x value
+            }
+        },
+        legend: {
+          hide: true
+        }
+      });
     }
 
     // set icon

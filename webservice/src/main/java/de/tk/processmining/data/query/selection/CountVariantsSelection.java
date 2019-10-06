@@ -12,7 +12,7 @@ public class CountVariantsSelection extends Selection {
 
     @Override
     public String getName() {
-        return "\"Variant count\"";
+        return "\"Count variants\"";
     }
 
     @Override

@@ -12,12 +12,12 @@ import { QueryConvertService } from 'src/app/services/query-convert.service';
   styleUrls: ['./insight-list.component.scss']
 })
 export class InsightListComponent implements OnChanges {
-  @Input() private logName: string;
-  @Input() private conditions: Condition[];
+  @Input() public logName: string;
+  @Input() public conditions: Condition[];
 
-  private insights: Insight[];
-  private noData = false;
-  private progress = false;
+  public insights: Insight[];
+  public noData = false;
+  public progress = false;
 
   constructor(
     private queryService: QueryService,

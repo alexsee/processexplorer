@@ -20,7 +20,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { ChartsModule } from 'ng2-charts';
+// import { ChartsModule } from 'ng2-charts';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProcessMapComponent } from './processmining/process-map/processmap.component';
@@ -35,6 +35,8 @@ import { VariantConditionComponent } from './query/variant-condition/variant-con
 import { InsightComponent } from './processmining/insight/insight.component';
 import { InsightListComponent } from './processmining/insight-list/insight-list.component';
 import { ClusterConditionComponent } from './query/cluster-condition/cluster-condition.component';
+import { ChartComponent } from './dashboard/chart/chart.component';
+import { TestComponent } from './modules/test/test.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { ClusterConditionComponent } from './query/cluster-condition/cluster-con
     LogComponent,
 
     InsightComponent,
-    InsightListComponent
+    InsightListComponent,
+    ChartComponent,
+    TestComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +79,7 @@ import { ClusterConditionComponent } from './query/cluster-condition/cluster-con
     MatListModule,
     MatProgressSpinnerModule,
 
-    ChartsModule,
+    // ChartsModule,
 
     FormsModule
   ],

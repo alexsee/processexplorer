@@ -9,6 +9,7 @@ import { Insight } from '../entities/insight';
 
 import { CaseAttributeValueResult } from '../query/results/case-attribute-value-result';
 import { ProcessMapResult } from '../query/results/process-map-result';
+import { DrillDownResult } from '../query/results/drill-down-result';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -45,6 +46,13 @@ export class QueryService {
     return this.http.post<CaseAttributeValueResult>(
       environment.serviceUrl + '/query/case_attribute_values',
       { logName, attributeName, conditions }
+    );
+  }
+
+  getDrillDown(logName: string, selections: any[], conditions: Condition[]): Observable<DrillDownResult> {
+    return this.http.post<DrillDownResult>(
+      environment.serviceUrl + '/query/drill_down',
+      { logName, selections: selections, conditions }
     );
   }
 }
