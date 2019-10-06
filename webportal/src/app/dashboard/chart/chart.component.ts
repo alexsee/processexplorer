@@ -45,42 +45,69 @@ export class ChartComponent implements OnInit, OnChanges {
   }
 
   updateChart(drillDown: DrillDownResult) {
-    // build data set
-    const dataset = [];
-
-    for (let i = 0; i < drillDown.metaData.length; i++) {
-      const d = [];
-      d.push(drillDown.metaData[i].columnName);
-
-      for (const data of drillDown.data) {
-        d.push(data[i]);
+    // prepare x-axis
+    const xAxis = [];
+    for (const axis of this.options.axis0) {
+      if (xAxis[0] === undefined) {
+        xAxis.push(axis.text);
+      } else {
+        xAxis[0] += ', ' + axis.text;
       }
 
-      dataset.push(d);
+      const idx = drillDown.metaData.map(x => x.alias).indexOf(axis.alias);
+      let j = 1;
+      for (const data of drillDown.data) {
+        if (xAxis[j] === undefined) {
+          xAxis.push(data[idx]);
+        } else {
+          xAxis[j] += ', ' + data[idx];
+        }
+        j++;
+      }
     }
 
-    console.info(dataset);
+    // prepare y-axis
+    const yAxes = [];
+    for (const axis of this.options.axis2) {
+      const yAxis = [];
+      yAxis.push(axis.text);
 
-    // generate chart in container
-    c3.generate({
+      const idx = drillDown.metaData.map(x => x.alias).indexOf(axis.alias);
+      for (const data of drillDown.data) {
+        yAxis.push(data[idx]);
+      }
+
+      yAxes.push(yAxis);
+    }
+
+    // set config
+    let config = {
       bindto: this.chartContainer.nativeElement,
       data: {
-        x: '"Item Type"',
-        columns: dataset,
-        type: 'bar',
-        axes: {
-          '"Count cases"': 'y',
-          '"Count variants"': 'y2'
-        }
+        x: xAxis[0],
+        columns: [xAxis, ...yAxes],
+        type: this.options.type,
+        axes: {}
       },
       axis: {
-          x: {
-              type: 'category' // this needed to load string x value
-          },
-          y2: {
-            show: true
-          }
+          x: this.options.x,
+          y: this.options.y,
+          y2: this.options.y2
+      },
+      legend: {
+        show: this.options.legendShow,
+        position: this.options.legendPosition
+      },
+      tooltip: {
+        show: this.options.tooltipsShow
       }
-    });
+    };
+
+    for (const axis of this.options.axis2) {
+      config.data.axes[axis.text] = (axis.secondaryAxis === undefined || axis.secondaryAxis.valueOf() === false) ? 'y' : 'y2';
+    }
+
+    // generate chart in container
+    c3.generate(config);
   }
 }

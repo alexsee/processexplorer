@@ -281,7 +281,7 @@ public class QueryManager {
         boolean hasGroup = false;
         for (var selection : query.getSelections()) {
             sql = sql.addAliasedColumn(selection.getSelection(db), "expr" + i);
-            result.getMetaData().add(new ColumnMetaData(selection.getName(), ""));
+            result.getMetaData().add(new ColumnMetaData(selection.getName(), "", selection.getAlias()));
 
             if (selection.isGroup()) {
                 hasGroup = true;

@@ -1,4 +1,10 @@
 export class DrillDownResult {
-    metaData: any[];
+    metaData: ColumnMetaData[];
     data: any[];
+}
+
+export class ColumnMetaData {
+    public alias: string;
+    public columnName: string;
+    public columnType: string;
 }

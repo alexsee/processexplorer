@@ -14,6 +14,8 @@ public abstract class Selection {
 
     private SelectionOrder ordering;
 
+    private String alias;
+
     public abstract Object getSelection(DatabaseModel db);
 
     public abstract String getName();
@@ -28,5 +30,13 @@ public abstract class Selection {
 
     public void setOrdering(SelectionOrder ordering) {
         this.ordering = ordering;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }
