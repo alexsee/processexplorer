@@ -1,0 +1,22 @@
+<h1>{{logName}}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Column</th>
+            <th>Annotations</th>
+        </tr>
+    </thead>
+    <tbody *ngIf="context && annotations">
+        <tr *ngFor="let attribute of context.attributes">
+            <td>{{attribute}}</td>
+            <td>
+                <mat-select [(value)]="annotations[attribute]" multiple>
+                    <mat-option *ngFor="let option of options" [value]="option">{{option}}</mat-option>
+                </mat-select>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<button mat-raised-button (click)="doSave()" color="primary">Save</button>

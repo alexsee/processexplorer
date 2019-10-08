@@ -37,6 +37,7 @@ import { InsightListComponent } from './processmining/insight-list/insight-list.
 import { ClusterConditionComponent } from './query/cluster-condition/cluster-condition.component';
 import { ChartComponent } from './dashboard/chart/chart.component';
 import { TestComponent } from './modules/test/test.component';
+import { LogAnnotationComponent } from './modules/log-annotation/log-annotation.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { TestComponent } from './modules/test/test.component';
     InsightComponent,
     InsightListComponent,
     ChartComponent,
-    TestComponent
+    TestComponent,
+    LogAnnotationComponent
   ],
   imports: [
     BrowserModule,

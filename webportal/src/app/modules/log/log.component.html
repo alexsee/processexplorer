@@ -41,6 +41,7 @@
         <td mat-cell *matCellDef="let log">
             <span *ngIf="log.imported && !log.processed && !log.processing"><button mat-raised-button color="primary" (click)="doProcess(log)">Process</button></span>
             <span *ngIf="!log.imported && !log.processed && !log.processing"><button mat-raised-button color="primary" (click)="doImport(log)">Import Event Log</button></span>
+            <span *ngIf="log.imported && log.processed"><button mat-raised-button color="primary" [routerLink]="['/logs/annotations/', log.logName]">Annotate</button></span>
         </td>
     </ng-container>
 

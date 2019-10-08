@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { Log } from '../entities/log';
 import { Observable } from 'rxjs/internal/Observable';
 import { EventLog } from '../entities/eventlog';
 import { environment } from 'src/environments/environment';
+import { EventLogAnnotation } from '../entities/eventlog-annotation';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,13 @@ export class LogService {
 
   getAllLogs(): Observable<Log[]> {
     return this.http.get<Log[]>(environment.serviceUrl + '/logs/all_statistics');
+  }
+
+  getAnnotations(logName: string): Observable<EventLogAnnotation[]> {
+    return this.http.get<EventLogAnnotation[]>(environment.serviceUrl + '/logs/annotations?logName=' + logName);
+  }
+
+  saveAnnotations(annotations: EventLogAnnotation[]) {
+    return this.http.post(environment.serviceUrl + '/logs/annotations', annotations);
   }
 }
