@@ -15,6 +15,14 @@ export class LogService {
     private http: HttpClient
   ) { }
 
+  upload(logName: string, file: File) {
+    const formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('logName', logName);
+
+    return this.http.post(environment.serviceUrl + '/logs/upload', formData);
+  }
+
   list(): Observable<EventLog[]> {
     return this.http.get<EventLog[]>(environment.serviceUrl + '/logs');
   }

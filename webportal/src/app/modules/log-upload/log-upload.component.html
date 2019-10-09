@@ -1,0 +1,13 @@
+<div class="log-upload-container">
+    <div class="log-upload-body">
+        <h1>Upload an Event Log</h1>
+
+            <mat-label>Event Log Name</mat-label>
+            <input matInput type="text" [(ngModel)]="logName">
+
+            <mat-label>File (*.xes, *.xes.gz)</mat-label>
+            <input type="file" (change)="onFileInput($event.target.files)">
+
+        <button mat-raised-button color="primary" (click)="doUpload()">Upload</button>
+    </div>
+</div>

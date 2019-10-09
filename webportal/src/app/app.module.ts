@@ -38,6 +38,7 @@ import { ClusterConditionComponent } from './query/cluster-condition/cluster-con
 import { ChartComponent } from './dashboard/chart/chart.component';
 import { TestComponent } from './modules/test/test.component';
 import { LogAnnotationComponent } from './modules/log-annotation/log-annotation.component';
+import { LogUploadComponent } from './modules/log-upload/log-upload.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { LogAnnotationComponent } from './modules/log-annotation/log-annotation.
     InsightListComponent,
     ChartComponent,
     TestComponent,
-    LogAnnotationComponent
+    LogAnnotationComponent,
+    LogUploadComponent
   ],
   imports: [
     BrowserModule,
