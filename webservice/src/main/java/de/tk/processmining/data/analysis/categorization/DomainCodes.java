@@ -1,6 +1,6 @@
 package de.tk.processmining.data.analysis.categorization;
 
-public enum DomainCategorization {
+public enum DomainCodes {
     PROCESS_DISCOVERY,
     CONFORMANCE_CHECKING,
     TIME_PERSPECTIVE,

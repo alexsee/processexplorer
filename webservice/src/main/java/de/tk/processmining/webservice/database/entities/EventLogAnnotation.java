@@ -18,7 +18,7 @@ public class EventLogAnnotation {
     private String columnName;
 
     @Column(name = "annotation")
-    private String categorization;
+    private String code;
 
     public long getId() {
         return id;
@@ -44,11 +44,11 @@ public class EventLogAnnotation {
         this.columnName = columnName;
     }
 
-    public String getCategorization() {
-        return categorization;
+    public String getCode() {
+        return code;
     }
 
-    public void setCategorization(String categorization) {
-        this.categorization = categorization;
+    public void setCode(String code) {
+        this.code = code;
     }
 }

@@ -20,7 +20,7 @@ export class LogAnnotationComponent implements OnInit {
   annotations: EventLogAnnotation[];
   addAnnotation: EventLogAnnotation = { };
 
-  categorizations: string[] = [
+  codes: string[] = [
     'CASES',
     'ACTIVITY_INSTANCES',
     'ACTIVITY',
@@ -60,7 +60,7 @@ export class LogAnnotationComponent implements OnInit {
     this.addAnnotation.logName = this.logName;
 
     this.logService.saveAnnotation(this.addAnnotation).subscribe(x => {
-      this.addAnnotation.categorization = null;
+      this.addAnnotation.code = null;
       this.loadAnnotations();
     });
   }

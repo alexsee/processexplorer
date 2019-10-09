@@ -1,6 +1,6 @@
 package de.tk.processmining.data.analysis.categorization;
 
-public enum VisualizationCategorization {
+public enum VisualizationCodes {
     BAR_CHART,
     BOX_AND_WHISKER_PLOT,
     CHLOROPLETH_MAP,

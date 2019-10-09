@@ -1,6 +1,6 @@
 package de.tk.processmining.data.analysis.categorization;
 
-public enum AnalysisTargetCategorization {
+public enum AnalysisTargetCodes {
     TRENDS,
     OUTLIERS,
     FEATURES,

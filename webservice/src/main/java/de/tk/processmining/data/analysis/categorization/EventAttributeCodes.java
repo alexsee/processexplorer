@@ -1,6 +1,6 @@
 package de.tk.processmining.data.analysis.categorization;
 
-public enum EventAttributeCategorization {
+public enum EventAttributeCodes {
     CASES,
     ACTIVITY_INSTANCES,
     ACTIVITY,

@@ -19,14 +19,14 @@
             </ng-container>
 
             <ng-container matColumnDef="categorization">
-                <th mat-header-cell *matHeaderCellDef>Categorization</th>
-                <td mat-cell *matCellDef="let annotation">{{annotation.categorization}}</td>
+                <th mat-header-cell *matHeaderCellDef>Code</th>
+                <td mat-cell *matCellDef="let annotation">{{annotation.code}}</td>
                 <td mat-footer-cell *matFooterCellDef>
                     <mat-form-field *ngIf="context">
-                        <mat-label>Categorization</mat-label>
-                        <mat-select [(value)]='addAnnotation.categorization'>
-                            <mat-option *ngFor="let categorization of categorizations" [value]="categorization">
-                                {{categorization}}
+                        <mat-label>Code</mat-label>
+                        <mat-select [(value)]='addAnnotation.code'>
+                            <mat-option *ngFor="let code of codes" [value]="code">
+                                {{code}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>    
