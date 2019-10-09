@@ -1,5 +1,10 @@
 package de.tk.processmining.data.model;
 
+import de.tk.processmining.data.analysis.categorization.AnalysisTargetCodes;
+import de.tk.processmining.data.analysis.categorization.DomainCodes;
+import de.tk.processmining.data.analysis.categorization.EventAttributeCodes;
+import de.tk.processmining.data.analysis.categorization.VisualizationCodes;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +34,14 @@ public class Insight {
     private double[] within;
 
     private double[] without;
+
+    private List<AnalysisTargetCodes> analysisTargetCodes;
+
+    private List<DomainCodes> domainCodes;
+
+    private List<EventAttributeCodes> eventAttributeCodes;
+
+    private List<VisualizationCodes> visualizationCodes;
 
     public double getEffectSize() {
         return effectSize;
@@ -116,5 +129,37 @@ public class Insight {
 
     public void setSubTitle(String subTitle) {
         this.subTitle = subTitle;
+    }
+
+    public List<AnalysisTargetCodes> getAnalysisTargetCodes() {
+        return analysisTargetCodes;
+    }
+
+    public void setAnalysisTargetCodes(List<AnalysisTargetCodes> analysisTargetCodes) {
+        this.analysisTargetCodes = analysisTargetCodes;
+    }
+
+    public List<DomainCodes> getDomainCodes() {
+        return domainCodes;
+    }
+
+    public void setDomainCodes(List<DomainCodes> domainCodes) {
+        this.domainCodes = domainCodes;
+    }
+
+    public List<EventAttributeCodes> getEventAttributeCodes() {
+        return eventAttributeCodes;
+    }
+
+    public void setEventAttributeCodes(List<EventAttributeCodes> eventAttributeCodes) {
+        this.eventAttributeCodes = eventAttributeCodes;
+    }
+
+    public List<VisualizationCodes> getVisualizationCodes() {
+        return visualizationCodes;
+    }
+
+    public void setVisualizationCodes(List<VisualizationCodes> visualizationCodes) {
+        this.visualizationCodes = visualizationCodes;
     }
 }

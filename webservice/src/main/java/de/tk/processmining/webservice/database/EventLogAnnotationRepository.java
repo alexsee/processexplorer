@@ -9,6 +9,8 @@ public interface EventLogAnnotationRepository extends CrudRepository<EventLogAnn
 
     List<EventLogAnnotation> findByLogName(String logName);
 
+    List<EventLogAnnotation> findByLogNameAndAndColumnName(String logName, String columnName);
+
     void deleteAllByLogName(String logName);
 
 }

@@ -1,8 +1,13 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
 import com.healthmarketscience.sqlbuilder.FunctionCall;
+import de.tk.processmining.data.analysis.categorization.AnalysisTargetCodes;
+import de.tk.processmining.data.analysis.categorization.DomainCodes;
+import de.tk.processmining.data.analysis.categorization.VisualizationCodes;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.InsightValueFormat;
+
+import java.util.Arrays;
 
 public class TransitionOccurrenceMetric extends TransitionMetric {
 
@@ -31,6 +36,10 @@ public class TransitionOccurrenceMetric extends TransitionMetric {
             insight.setTitle("Occurrence");
             insight.setSubTitle(edge.getSourceEvent() + " --> " + edge.getTargetEvent());
         }
+
+        insight.setAnalysisTargetCodes(Arrays.asList(AnalysisTargetCodes.OUTLIERS, AnalysisTargetCodes.EXTREMES));
+        insight.setDomainCodes(Arrays.asList(DomainCodes.PROCESS_DISCOVERY));
+        insight.setVisualizationCodes(Arrays.asList(VisualizationCodes.TABLE));
         return insight;
     }
 

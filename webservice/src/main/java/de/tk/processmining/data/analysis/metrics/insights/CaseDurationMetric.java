@@ -3,11 +3,17 @@ package de.tk.processmining.data.analysis.metrics.insights;
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.DatabaseModel;
+import de.tk.processmining.data.analysis.categorization.VisualizationCodes;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.InsightValueFormat;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static de.tk.processmining.data.analysis.categorization.AnalysisTargetCodes.EXTREMES;
+import static de.tk.processmining.data.analysis.categorization.AnalysisTargetCodes.OUTLIERS;
+import static de.tk.processmining.data.analysis.categorization.DomainCodes.TIME_PERSPECTIVE;
 
 /**
  * @author Alexander Seeliger on 01.10.2019.
@@ -31,6 +37,11 @@ public class CaseDurationMetric extends CaseMetric<CaseMetric.Measure, String> {
         insight.setStddevWithout(measure2.getStddev());
         insight.setFormat(InsightValueFormat.DURATION);
         insight.setTitle("Case Duration");
+
+        // set codes
+        insight.setAnalysisTargetCodes(Arrays.asList(OUTLIERS, EXTREMES));
+        insight.setDomainCodes(Arrays.asList(TIME_PERSPECTIVE));
+        insight.setVisualizationCodes(Arrays.asList(VisualizationCodes.TABLE));
         return insight;
     }
 

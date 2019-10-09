@@ -4,8 +4,13 @@ import com.healthmarketscience.sqlbuilder.CustomSql;
 import com.healthmarketscience.sqlbuilder.ExtractExpression;
 import com.healthmarketscience.sqlbuilder.FunctionCall;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
+import de.tk.processmining.data.analysis.categorization.AnalysisTargetCodes;
+import de.tk.processmining.data.analysis.categorization.DomainCodes;
+import de.tk.processmining.data.analysis.categorization.VisualizationCodes;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.InsightValueFormat;
+
+import java.util.Arrays;
 
 /**
  * @author Alexander Seeliger on 01.10.2019.
@@ -31,6 +36,10 @@ public class TransitionDurationMetric extends TransitionMetric {
         insight.setFormat(InsightValueFormat.DURATION);
         insight.setTitle("Duration");
         insight.setSubTitle(edge.getSourceEvent() + " --> " + edge.getTargetEvent());
+
+        insight.setAnalysisTargetCodes(Arrays.asList(AnalysisTargetCodes.OUTLIERS, AnalysisTargetCodes.EXTREMES));
+        insight.setDomainCodes(Arrays.asList(DomainCodes.TIME_PERSPECTIVE));
+        insight.setVisualizationCodes(Arrays.asList(VisualizationCodes.TABLE));
         return insight;
     }
 

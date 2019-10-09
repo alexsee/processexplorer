@@ -1,8 +1,12 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
+import de.tk.processmining.data.analysis.categorization.AnalysisTargetCodes;
+import de.tk.processmining.data.analysis.categorization.DomainCodes;
+import de.tk.processmining.data.analysis.categorization.VisualizationCodes;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.InsightValueFormat;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +28,10 @@ public class EventResourceMetric extends EventMetric {
         insight.setFormat(InsightValueFormat.DISTRIBUTION);
         insight.setTitle("Resource");
         insight.setSubTitle(this.eventName);
+
+        insight.setAnalysisTargetCodes(Arrays.asList(AnalysisTargetCodes.DISTRIBUTION));
+        insight.setDomainCodes(Arrays.asList(DomainCodes.ORGANIZATIONAL_PERSPECTIVE));
+        insight.setVisualizationCodes(Arrays.asList(VisualizationCodes.BAR_CHART));
         return insight;
     }
 
