@@ -1,3 +1,16 @@
-.log-table {
+.log-list-container {
+    display: grid;
+    grid-template-areas: 'body';
+    grid-template-columns: 1200px;
+    justify-content: center;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.log-list-body {
+    grid-area: body;
+}
+
+.log-list-body table {
     width: 100%;
 }

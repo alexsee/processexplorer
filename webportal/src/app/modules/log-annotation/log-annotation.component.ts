@@ -15,10 +15,12 @@ export class LogAnnotationComponent implements OnInit {
   logName: string;
   context: Log;
 
-  annotations: Map<string, string[]>;
-  annotationsDb: EventLogAnnotation[];
+  displayedColumns: string[] = ['columnName', 'categorization', 'actions'];
 
-  options: string[] = [
+  annotations: EventLogAnnotation[];
+  addAnnotation: EventLogAnnotation = { };
+
+  categorizations: string[] = [
     'CASES',
     'ACTIVITY_INSTANCES',
     'ACTIVITY',
@@ -47,33 +49,24 @@ export class LogAnnotationComponent implements OnInit {
     this.logName = this.route.snapshot.paramMap.get('logName');
     this.queryService.getStatistics(this.logName).subscribe(statistics => this.context = statistics);
 
-    this.logService.getAnnotations(this.logName).subscribe(annotations => {
-      this.annotationsDb = annotations;
+    this.loadAnnotations();
+  }
 
-      this.annotations = new Map();
-      for (const annotation of annotations) {
-        this.annotations[annotation.columnName] = annotation.annotation;
-      }
+  loadAnnotations() {
+    this.logService.getAnnotations(this.logName).subscribe(annotations => this.annotations = annotations);
+  }
+
+  doAddAnnotation() {
+    this.addAnnotation.logName = this.logName;
+
+    this.logService.saveAnnotation(this.addAnnotation).subscribe(x => {
+      this.addAnnotation.categorization = null;
+      this.loadAnnotations();
     });
   }
 
-  doSave() {
-    const items = [];
-
-    for (const attribute in this.annotations) {
-      for (const value of this.annotations[attribute]) {
-        const item = new EventLogAnnotation();
-        item.logName = this.logName;
-        item.columnName = attribute;
-        item.annotation = value;
-        
-        items.push(item);
-      }
-    }
-
-    console.info(items);
-
-    this.logService.saveAnnotations(items);
+  doDeleteAnnotation(id: number) {
+    this.logService.deleteAnnotation(id).subscribe(x => this.loadAnnotations());
   }
 
 }

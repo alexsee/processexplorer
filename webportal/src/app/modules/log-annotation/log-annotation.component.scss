@@ -1,0 +1,16 @@
+.log-annotation-container {
+    display: grid;
+    grid-template-areas: 'body';
+    grid-template-columns: 1200px;
+    justify-content: center;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.log-annotation-body {
+    grid-area: body;
+}
+
+.log-annotation-body table {
+    width: 100%;
+}

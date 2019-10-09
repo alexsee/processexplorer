@@ -26,4 +26,12 @@ public class LogAnnotationService {
         return this.eventLogAnnotationRepository.saveAll(annotations);
     }
 
+    public EventLogAnnotation save(EventLogAnnotation annotation) {
+        return this.eventLogAnnotationRepository.save(annotation);
+    }
+
+    public void deleteById(Long id) {
+        this.eventLogAnnotationRepository.deleteById(id);
+    }
+
 }

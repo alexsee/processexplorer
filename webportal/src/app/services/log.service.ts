@@ -35,7 +35,11 @@ export class LogService {
     return this.http.get<EventLogAnnotation[]>(environment.serviceUrl + '/logs/annotations?logName=' + logName);
   }
 
-  saveAnnotations(annotations: EventLogAnnotation[]) {
-    return this.http.post(environment.serviceUrl + '/logs/annotations', annotations);
+  saveAnnotation(annotation: EventLogAnnotation) {
+    return this.http.post(environment.serviceUrl + '/logs/annotation', annotation);
+  }
+
+  deleteAnnotation(id: number) {
+    return this.http.delete(environment.serviceUrl + '/logs/annotation?id=' + id);
   }
 }
