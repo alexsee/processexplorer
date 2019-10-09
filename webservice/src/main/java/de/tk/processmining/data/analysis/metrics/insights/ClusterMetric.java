@@ -12,11 +12,16 @@ import smile.math.Math;
 import java.util.*;
 
 import static de.tk.processmining.data.analysis.metrics.StatisticMetrics.norm;
+import static org.apache.commons.math3.stat.StatUtils.sum;
 
 /**
  * @author Alexander Seeliger on 01.10.2019.
  */
 public abstract class ClusterMetric implements InsightMetric {
+
+    public double minSamples = 10;
+
+    public double maxDivergence = 0.6;
 
     protected DatabaseModel db;
 
@@ -66,7 +71,7 @@ public abstract class ClusterMetric implements InsightMetric {
         var effectSize = StatisticMetrics.effectByCohensD(with, without);
         var divergence = Math.JensenShannonDivergence(norm(with), norm(without));
 
-        if (Math.sqrt(divergence) < 0.6 && combinations.size() > 1) {
+        if (Math.sqrt(divergence) <= maxDivergence && combinations.size() > 1 && sum(with) > minSamples) {
             result.add(generateInsight(effectSize, new ArrayList<>(combinations), with, without));
         }
 
