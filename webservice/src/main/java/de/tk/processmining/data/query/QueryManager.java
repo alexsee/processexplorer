@@ -5,6 +5,7 @@ import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.model.*;
 import de.tk.processmining.data.query.selection.SelectionOrder;
+import de.tk.processmining.webservice.database.EventLogAnnotationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -27,9 +28,13 @@ public class QueryManager {
 
     private JdbcTemplate jdbcTemplate;
 
+    private EventLogAnnotationRepository eventLogAnnotationRepository;
+
     @Autowired
-    public QueryManager(JdbcTemplate jdbcTemplate) {
+    public QueryManager(JdbcTemplate jdbcTemplate,
+                        EventLogAnnotationRepository eventLogAnnotationRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.eventLogAnnotationRepository = eventLogAnnotationRepository;
     }
 
     /**
@@ -304,7 +309,11 @@ public class QueryManager {
         boolean hasGroup = false;
         for (var selection : query.getSelections()) {
             sql = sql.addAliasedColumn(selection.getSelection(db), "expr" + i);
-            result.getMetaData().add(new ColumnMetaData(selection.getName(), "", selection.getAlias()));
+
+            // obtain meta data for selected column
+            var metaData = new ColumnMetaData(selection.getName(), "", selection.getAlias());
+            metaData.setCodes(selection.getCodes(eventLogAnnotationRepository, query.getLogName()));
+            result.getMetaData().add(metaData);
 
             if (selection.isGroup()) {
                 hasGroup = true;

@@ -22,7 +22,7 @@ public class MultiPerspectiveTraceClustering {
         this.jdbcTemplate = jdbcTemplate;
         this.logName = logName;
 
-        this.queryManager = new QueryManager(jdbcTemplate);
+        this.queryManager = new QueryManager(jdbcTemplate, null);
     }
 
     public void generateCaseAttributeDb() {

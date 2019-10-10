@@ -3,6 +3,10 @@ package de.tk.processmining.data.query.selection;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.tk.processmining.data.DatabaseModel;
+import de.tk.processmining.data.analysis.categorization.EventAttributeCodes;
+import de.tk.processmining.webservice.database.EventLogAnnotationRepository;
+
+import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -19,6 +23,8 @@ public abstract class Selection {
     public abstract Object getSelection(DatabaseModel db);
 
     public abstract String getName();
+
+    public abstract List<EventAttributeCodes> getCodes(EventLogAnnotationRepository repository, String logName);
 
     public boolean isGroup() {
         return false;

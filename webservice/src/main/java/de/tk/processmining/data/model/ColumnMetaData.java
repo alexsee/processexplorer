@@ -1,5 +1,9 @@
 package de.tk.processmining.data.model;
 
+import de.tk.processmining.data.analysis.categorization.EventAttributeCodes;
+
+import java.util.List;
+
 public class ColumnMetaData {
 
     private String alias;
@@ -7,6 +11,8 @@ public class ColumnMetaData {
     private String columnName;
 
     private String columnType;
+
+    private List<EventAttributeCodes> codes;
 
     public ColumnMetaData() {
     }
@@ -39,5 +45,13 @@ public class ColumnMetaData {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public List<EventAttributeCodes> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(List<EventAttributeCodes> codes) {
+        this.codes = codes;
     }
 }
