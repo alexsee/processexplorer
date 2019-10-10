@@ -24,16 +24,16 @@
                     <mat-form-field *ngIf="context && addAnnotation.columnType == 'case_attribute'">
                         <mat-label>Attribute</mat-label>
                         <mat-select [(value)]='addAnnotation.columnName'>
-                            <mat-option *ngFor="let attribute of context.caseAttributes" [value]="attribute">
-                                {{attribute}}
+                            <mat-option *ngFor="let attribute of context.caseAttributes" [value]="attribute.columnName">
+                                {{attribute.columnName}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field *ngIf="context && addAnnotation.columnType == 'event_attribute'">
                         <mat-label>Attribute</mat-label>
                         <mat-select [(value)]='addAnnotation.columnName'>
-                            <mat-option *ngFor="let attribute of context.eventAttributes" [value]="attribute">
-                                {{attribute}}
+                            <mat-option *ngFor="let attribute of context.eventAttributes" [value]="attribute.columnName">
+                                {{attribute.columnName}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>

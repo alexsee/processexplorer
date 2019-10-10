@@ -3,9 +3,11 @@ package de.tk.processmining.data.query;
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.DatabaseModel;
+import de.tk.processmining.data.analysis.categorization.EventAttributeCodes;
 import de.tk.processmining.data.model.*;
 import de.tk.processmining.data.query.selection.SelectionOrder;
 import de.tk.processmining.webservice.database.EventLogAnnotationRepository;
+import de.tk.processmining.webservice.database.entities.EventLogAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static de.tk.processmining.data.DatabaseConstants.getCaseAttributeTableName;
 import static de.tk.processmining.data.DatabaseConstants.getEventsTableName;
@@ -50,8 +53,8 @@ public class QueryManager {
         var numEvents = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events").toString(), Long.class);
         var numTraces = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.caseAttributeCaseIdCol), "num_traces").toString(), Long.class);
 
-        var caseAttributes = getCaseAttributes(logName);
-        var eventAttributes = getEventAttributes(logName);
+        var caseAttributes = getCaseAttributesDetails(logName);
+        var eventAttributes = getEventAttributesDetails(logName);
 
         var result = new Log();
         result.setLogName(logName);
@@ -166,6 +169,26 @@ public class QueryManager {
     }
 
     /**
+     * Returns a detailed list of all available case attributes.
+     *
+     * @param logName
+     * @return
+     */
+    public List<ColumnMetaData> getCaseAttributesDetails(String logName) {
+        var columns = getCaseAttributes(logName);
+
+        var result = new ArrayList<ColumnMetaData>();
+        for (var column : columns) {
+            var annotations = eventLogAnnotationRepository.findByLogNameAndColumnTypeAndColumnName(logName, "case_attribute", column);
+            var codes = annotations.stream().map(EventLogAnnotation::getCode).map(EventAttributeCodes::valueOf).collect(Collectors.toList());
+
+            result.add(new ColumnMetaData(column, "case_attribute", null, codes));
+        }
+
+        return result;
+    }
+
+    /**
      * Returns a list of all available case attributes.
      *
      * @param logName
@@ -181,6 +204,26 @@ public class QueryManager {
         columns.remove("concept:name");
 
         return columns;
+    }
+
+    /**
+     * Returns a detailed list of all available event attributes.
+     *
+     * @param logName
+     * @return
+     */
+    public List<ColumnMetaData> getEventAttributesDetails(String logName) {
+        var columns = getEventAttributes(logName);
+
+        var result = new ArrayList<ColumnMetaData>();
+        for (var column : columns) {
+            var annotations = eventLogAnnotationRepository.findByLogNameAndColumnTypeAndColumnName(logName, "case_attribute", column);
+            var codes = annotations.stream().map(EventLogAnnotation::getCode).map(EventAttributeCodes::valueOf).collect(Collectors.toList());
+
+            result.add(new ColumnMetaData(column, "event_attribute", null, codes));
+        }
+
+        return result;
     }
 
     /**
