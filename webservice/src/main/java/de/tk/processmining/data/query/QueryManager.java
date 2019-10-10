@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static de.tk.processmining.data.DatabaseConstants.getCaseAttributeTableName;
+import static de.tk.processmining.data.DatabaseConstants.getEventsTableName;
 
 /**
  * @author Alexander Seeliger on 23.09.2019.
@@ -43,7 +44,9 @@ public class QueryManager {
         var activities = jdbcTemplate.queryForList(new SelectQuery().addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), String.class);
         var numEvents = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events").toString(), Long.class);
         var numTraces = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.caseAttributeCaseIdCol), "num_traces").toString(), Long.class);
-        var attributes = getCaseAttributes(logName);
+
+        var caseAttributes = getCaseAttributes(logName);
+        var eventAttributes = getEventAttributes(logName);
 
         var result = new Log();
         result.setLogName(logName);
@@ -51,7 +54,9 @@ public class QueryManager {
         result.setActivities(activities);
         result.setNumEvents(numEvents);
         result.setNumTraces(numTraces);
-        result.setAttributes(attributes);
+
+        result.setCaseAttributes(caseAttributes);
+        result.setEventAttributes(eventAttributes);
 
         return result;
     }
@@ -169,6 +174,24 @@ public class QueryManager {
         columns.remove("case_id");
         columns.remove("original_case_id");
         columns.remove("concept:name");
+
+        return columns;
+    }
+
+    /**
+     * Returns a list of all available event attributes.
+     *
+     * @param logName
+     * @return
+     */
+    public List<String> getEventAttributes(String logName) {
+        var columns = jdbcTemplate.queryForList("SELECT column_name " +
+                "FROM information_schema.columns " +
+                "WHERE table_name = '" + getEventsTableName(logName) + "' AND table_schema = 'public';", String.class);
+
+        columns.remove("case_id");
+        columns.remove("original_case_id");
+        columns.remove("event_id");
 
         return columns;
     }

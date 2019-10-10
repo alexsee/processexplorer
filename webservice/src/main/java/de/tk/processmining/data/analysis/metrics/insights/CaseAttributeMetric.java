@@ -55,7 +55,7 @@ public class CaseAttributeMetric extends ClusterMetric {
         var context = ApplicationContextProvider.getApplicationContext();
         var eventLogAnnotationRepository = context.getBean(EventLogAnnotationRepository.class);
 
-        var annotations = eventLogAnnotationRepository.findByLogNameAndAndColumnName(logName, attributeName);
+        var annotations = eventLogAnnotationRepository.findByLogNameAndColumnTypeAndColumnName(logName, "case_attribute", attributeName);
         return annotations.stream().map(EventLogAnnotation::getCode).map(EventAttributeCodes::valueOf).collect(Collectors.toList());
     }
 

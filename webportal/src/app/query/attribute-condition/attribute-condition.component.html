@@ -13,7 +13,7 @@
     <mat-form-field>
         <mat-label>Attribute</mat-label>
         <mat-select [(value)]='data.attribute' (selectionChange)="onSelectionChange()">
-            <mat-option *ngFor="let attribute of context.attributes" [value]="attribute">
+            <mat-option *ngFor="let attribute of context.caseAttributes" [value]="attribute">
                 {{attribute}}
             </mat-option>
         </mat-select>

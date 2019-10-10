@@ -14,6 +14,9 @@ public class EventLogAnnotation {
     @Column(name = "log_name")
     private String logName;
 
+    @Column(name = "column_type")
+    private String columnType;
+
     @Column(name = "column_name")
     private String columnName;
 
@@ -50,5 +53,13 @@ public class EventLogAnnotation {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getColumnType() {
+        return columnType;
+    }
+
+    public void setColumnType(String columnType) {
+        this.columnType = columnType;
     }
 }

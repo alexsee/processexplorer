@@ -17,7 +17,9 @@ public class Log {
 
     private List<String> activities;
 
-    private List<String> attributes;
+    private List<String> caseAttributes;
+
+    private List<String> eventAttributes;
 
     public String getLogName() {
         return logName;
@@ -59,11 +61,19 @@ public class Log {
         this.activities = activities;
     }
 
-    public List<String> getAttributes() {
-        return attributes;
+    public List<String> getCaseAttributes() {
+        return caseAttributes;
     }
 
-    public void setAttributes(List<String> attributes) {
-        this.attributes = attributes;
+    public void setCaseAttributes(List<String> caseAttributes) {
+        this.caseAttributes = caseAttributes;
+    }
+
+    public List<String> getEventAttributes() {
+        return eventAttributes;
+    }
+
+    public void setEventAttributes(List<String> eventAttributes) {
+        this.eventAttributes = eventAttributes;
     }
 }

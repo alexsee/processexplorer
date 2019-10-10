@@ -4,5 +4,6 @@ export class Log {
     numEvents: number;
     numActivities: number;
     activities: string[];
-    attributes: string[];
+    caseAttributes: string[];
+    eventAttributes: string[];
 }

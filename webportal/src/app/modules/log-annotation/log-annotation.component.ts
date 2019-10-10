@@ -15,7 +15,7 @@ export class LogAnnotationComponent implements OnInit {
   logName: string;
   context: Log;
 
-  displayedColumns: string[] = ['columnName', 'categorization', 'actions'];
+  displayedColumns: string[] = ['columnType', 'columnName', 'categorization', 'actions'];
 
   annotations: EventLogAnnotation[];
   addAnnotation: EventLogAnnotation = { };
