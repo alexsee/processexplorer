@@ -339,6 +339,12 @@ public class QueryManager {
         return result;
     }
 
+    /**
+     * Returns a drill down on case attribute data.
+     *
+     * @param query
+     * @return
+     */
     public DrillDownResult getDrillDown(DrillDownQuery query) {
         var db = new DatabaseModel(query.getLogName());
         var result = new DrillDownResult();

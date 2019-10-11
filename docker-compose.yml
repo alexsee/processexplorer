@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  postgresql:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: test123
+      POSTGRES_DB: openpmdb
+
+  webportal:
+    container_name: webportal
+    build:
+      context: webportal/
+      dockerfile: Dockerfile
+    volumes:
+      - webportal/:/app
+      - /app/node_modules
+    ports:
+      - 4200:4200
+
+  webservice:
+    container_name: webservice
+    build:
+      context: webservice/
+      dockerfile: Dockerfile
+    volumes:
+      - webservice/:/app
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/openpmdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: test123
+    depends_on:
+      - postgresql
+
+volumes:
+  webportal: {}
+  webservice: {}
