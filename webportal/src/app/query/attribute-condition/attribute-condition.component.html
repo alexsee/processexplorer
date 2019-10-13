@@ -1,43 +1,56 @@
-<mat-expansion-panel>
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            <span *ngIf="data.attribute">
-                <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.values}}</b>
-            </span>
-            <span *ngIf="!data.attribute">
-                Attribute Condition
-            </span>
-        </mat-panel-title>
-    </mat-expansion-panel-header>
+<nz-card nzTitle="Attribute Condition" 
+    nzSize="small"
+    nz-popover
+    nzPopoverTitle="Attribute Condition"
+    nzPopoverTrigger="click"
+    [nzPopoverContent]="contentTemplate">
+    <span *ngIf="data.attribute">
+        <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.values}}</b>
+    </span>
+    <span *ngIf="!data.attribute">
+        Attribute Condition
+    </span>
+</nz-card>
 
-    <mat-form-field>
-        <mat-label>Attribute</mat-label>
-        <mat-select [(value)]='data.attribute' (selectionChange)="onSelectionChange()">
-            <mat-option *ngFor="let attribute of context.caseAttributes" [value]="attribute.columnName">
-                {{attribute.columnName}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-     <mat-form-field>
-        <mat-label>Binary Type</mat-label>
-        <mat-select [(value)]='data.binaryType'>
-            <mat-option value='EQUAL_TO'>=</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field *ngIf="options.categorical">
-        <mat-label>Value</mat-label>
-        <mat-select [(value)]='data.values' *ngIf="options.categorical" multiple>
-            <mat-option *ngFor="let value of options.values" [value]="value">
-                {{value}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field *ngIf="!options.categorical">
-        <mat-label>Start</mat-label>
-        <input matInput [(ngModel)]="data.rangeStart" />
-    </mat-form-field>
-    <mat-form-field *ngIf="!options.categorical">
-        <mat-label>End</mat-label>
-        <input matInput [(ngModel)]="data.rangeEnd" />
-    </mat-form-field>
-</mat-expansion-panel>
+<ng-template #contentTemplate>
+    <form nz-form class="attribute-form">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="attribute">Attribute</nz-form-label>
+            <nz-form-control [nzSm]="18" >
+                <nz-select name="attribute" [(ngModel)]="data.attribute" nzPlaceHolder="Choose" (ngModelChange)="onSelectionChange()">
+                    <nz-option *ngFor="let attribute of context.caseAttributes" [nzValue]="attribute.columnName" [nzLabel]="attribute.columnName"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">Binary Type</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <nz-select name="binaryType" [(ngModel)]="data.binaryType" nzPlaceHolder="Choose">
+                    <nz-option nzValue="EQUAL_TO" nzLabel="="></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item *ngIf="options.categorical">
+            <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <nz-select name="values" [(ngModel)]="data.values" nzPlaceHolder="Choose" nzMode="multiple">
+                    <nz-option *ngFor="let value of options.values" [nzValue]="value" [nzLabel]="value"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+    </form>
+
+<!-- 
+
+            <mat-form-field *ngIf="!options.categorical">
+                <mat-label>Start</mat-label>
+                <input matInput [(ngModel)]="data.rangeStart" />
+            </mat-form-field>
+            <mat-form-field *ngIf="!options.categorical">
+                <mat-label>End</mat-label>
+                <input matInput [(ngModel)]="data.rangeEnd" />
+            </mat-form-field> -->
+</ng-template>

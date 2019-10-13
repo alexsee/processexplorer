@@ -1,43 +1,47 @@
-<mat-expansion-panel>
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            <span *ngIf="data.conditionType == 'START_END'">
-                <span *ngIf="data.start">Starts with <b>{{context.activities[data.start]}}</b>&nbsp;</span>
-                <span *ngIf="data.end">Ends with <b>{{context.activities[data.end]}}</b></span>
-            </span>
-            <span *ngIf="data.conditionType == 'RESPONSE'">
-                Eventually followed by
-            </span>
-        </mat-panel-title>
+<nz-card nzTitle="Path Condition" 
+    nzSize="small"
+    nz-popover
+    nzPopoverTitle="Path Condition"
+    nzPopoverTrigger="click"
+    [nzPopoverContent]="contentTemplate">
+    <span *ngIf="data.conditionType == 'START_END'">
+        <span *ngIf="data.start">Starts with <b>{{context.activities[data.start]}}</b>&nbsp;</span>
+        <span *ngIf="data.end">Ends with <b>{{context.activities[data.end]}}</b></span>
+    </span>
+    <span *ngIf="data.conditionType == 'RESPONSE'">
+        Eventually followed by
+    </span>
+    <span *ngIf="data.conditionType == 'RESPONSE'">
+        {{context.activities[data.start]}} -> {{context.activities[data.end]}}
+    </span>
+</nz-card>
 
-        <mat-panel-description>
-            <span *ngIf="data.conditionType == 'RESPONSE'">
-                {{context.activities[data.start]}} --> {{context.activities[data.end]}}
-            </span>
-        </mat-panel-description>
-    </mat-expansion-panel-header>
-    
-    <mat-form-field>
-        <mat-label>Path Type</mat-label>
-        <mat-select [(value)]='data.conditionType'>
-            <mat-option value='START_END'>Start and End</mat-option>
-            <mat-option value='RESPONSE'>Eventually followed by</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>Start Activity</mat-label>
-        <mat-select [(value)]="data.start">
-            <mat-option *ngFor="let activity of context.activities; let i = index" [value]="i">
-                {{activity}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-        <mat-label>End Activity</mat-label>
-        <mat-select [(value)]="data.end">
-                <mat-option *ngFor="let activity of context.activities; let i = index" [value]="i">
-                    {{activity}}
-                </mat-option>
-            </mat-select>
-    </mat-form-field>
-</mat-expansion-panel>
+<ng-template #contentTemplate>
+    <form nz-form class="path-form">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="type">Path Type</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <nz-select name="type" [(ngModel)]="data.conditionType" nzPlaceHolder="Choose">
+                    <nz-option nzValue="START_END" nzLabel="Start and End"></nz-option>
+                    <nz-option nzValue="RESPONSE" nzLabel="Eventually followed by"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="start">Start Activity</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <nz-select name="start" [(ngModel)]="data.start" nzPlaceHolder="Choose">
+                    <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="i" [nzLabel]="activity"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="end">End Activity</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <nz-select name="end" [(ngModel)]="data.end" nzPlaceHolder="Choose">
+                    <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="i" [nzLabel]="activity"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</ng-template>

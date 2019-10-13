@@ -6,21 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AnalysisComponent } from './modules/analysis/analysis.component';
 
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTableModule } from '@angular/material/table';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
-// import { ChartsModule } from 'ng2-charts';
+import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProcessMapComponent } from './processmining/process-map/processmap.component';
@@ -69,25 +55,13 @@ import { LogUploadComponent } from './modules/log-upload/log-upload.component';
     AppRoutingModule,
     BrowserAnimationsModule,
 
-    MatToolbarModule,
-    MatTableModule,
-    MatSelectModule,
-    MatInputModule,
-    MatCardModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatExpansionModule,
-    MatChipsModule,
-    MatProgressBarModule,
-    MatListModule,
-    MatProgressSpinnerModule,
-
-    // ChartsModule,
+    NgZorroAntdModule,
 
     FormsModule
   ],
-  providers: [],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US }
+  ],
   entryComponents: [ AttributeConditionComponent, PathConditionComponent, VariantConditionComponent, ClusterConditionComponent ],
   bootstrap: [AppComponent]
 })

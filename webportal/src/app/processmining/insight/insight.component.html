@@ -1,9 +1,5 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>{{insight.title}}</mat-card-title>
-        <mat-card-subtitle [innerHtml]="insight.subTitle"></mat-card-subtitle>
-        <mat-icon mat-card-avatar [ngClass]="color">{{icon}}</mat-icon>
-    </mat-card-header>
+<nz-card>
+    <nz-card-meta [nzTitle]="insight.title" [nzDescription]="insight.subTitle"></nz-card-meta>
 
     <p *ngIf="insight.format == 'DURATION'">
         <span>{{humanizeDuration(insight.averageWithin)}}</span> vs. <span>{{humanizeDuration(insight.averageWithout)}}</span>
@@ -11,7 +7,5 @@
     <p *ngIf="insight.format == 'NUMBER'">
         <span>{{insight.averageWithin | number}}</span> vs. <span>{{insight.averageWithout | number}}</span>
     </p>
-    <!-- <div *ngIf="insight.format == 'DISTRIBUTION'"> -->
-        <div #chart></div>
-    <!-- </div> -->
-</mat-card>
+    <div #chart></div>
+</nz-card>

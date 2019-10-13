@@ -3,12 +3,9 @@
     </div>
 
     <div class="navigation">
-        <mat-form-field>
-            <mat-label>Display</mat-label>
-            <mat-select [(value)]="settings.mode" (selectionChange)="onSettingsChange()">
-                <mat-option value="duration">Duration</mat-option>
-                <mat-option value="occurrence">Occurrence</mat-option>
-            </mat-select>
-        </mat-form-field>
+        <nz-select [(ngModel)]="settings.mode" nzAllowClear nzPlaceHolder="Choose" (ngModelChange)="onSettingsChange()">
+            <nz-option nzValue="duration" nzLabel="Duration"></nz-option>
+            <nz-option nzValue="occurrence" nzLabel="Occurrence"></nz-option>
+        </nz-select>
     </div>
 </div>

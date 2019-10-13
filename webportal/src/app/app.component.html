@@ -1,11 +1,12 @@
-<mat-toolbar>
-    <span>ProcessExplorer</span>
-    <span class="toolbar-buttons">
-        <button mat-raised-button color="primary" routerLink="/analysis"><mat-icon>timeline</mat-icon> Analysis</button>
-        <button mat-raised-button color="primary" routerLink="/logs"><mat-icon>folder_open</mat-icon> Log Management</button>
-    </span>
-</mat-toolbar>
-
-<div class="app-content">
-    <router-outlet></router-outlet>
-</div>
+<nz-layout>
+    <nz-header>
+        <div class="logo">ProcessExplorer</div>
+        <ul nz-menu nzTheme="dark" nzMode="horizontal">
+        <li nz-menu-item routerLink="/analysis">Analysis</li>
+        <li nz-menu-item routerLink="/logs">Log Management</li>
+        </ul>
+    </nz-header>
+    <nz-content>
+        <router-outlet></router-outlet>
+    </nz-content>
+</nz-layout>

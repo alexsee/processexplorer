@@ -1,12 +1,24 @@
-<mat-expansion-panel>
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            Variant Condition
-        </mat-panel-title>
-    </mat-expansion-panel-header>
+<nz-card nzTitle="Variant Condition" 
+    nzSize="small"
+    nz-popover
+    nzPopoverTitle="Variant Condition"
+    nzPopoverTrigger="click"
+    [nzPopoverContent]="contentTemplate">
+    <span *ngIf="data.variantId">
+        Variant: <b>{{data.clusterIndex}}</b>
+    </span>
+    <span *ngIf="!data.variantId">
+        Variant Condition
+    </span>
+</nz-card>
 
-    <mat-form-field>
-        <mat-label>Variant Id</mat-label>
-        <input matInput [(ngModel)]="data.variantId" />
-    </mat-form-field>
-</mat-expansion-panel>
+<ng-template #contentTemplate>
+    <form nz-form class="cluster-form">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="variantId">Variant</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <input nz-input name="variantId" placeholder="Variant" [(ngModel)]="data.variantId" />
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</ng-template>

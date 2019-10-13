@@ -1,12 +1,24 @@
-<mat-expansion-panel>
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            Cluster Condition
-        </mat-panel-title>
-    </mat-expansion-panel-header>
+<nz-card nzTitle="Cluster Condition" 
+    nzSize="small"
+    nz-popover
+    nzPopoverTitle="Cluster Condition"
+    nzPopoverTrigger="click"
+    [nzPopoverContent]="contentTemplate">
+    <span *ngIf="data.clusterIndex">
+        Cluster: <b>{{data.clusterIndex}}</b>
+    </span>
+    <span *ngIf="!data.clusterIndex">
+        Cluster Condition
+    </span>
+</nz-card>
 
-    <mat-form-field>
-        <mat-label>Cluster Index</mat-label>
-        <input matInput [(ngModel)]="data.clusterIndex" />
-    </mat-form-field>
-</mat-expansion-panel>
+<ng-template #contentTemplate>
+    <form nz-form class="cluster-form">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="clusterIndex">Cluster</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <input nz-input name="clusterIndex" placeholder="Cluster" [(ngModel)]="data.clusterIndex" />
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</ng-template>

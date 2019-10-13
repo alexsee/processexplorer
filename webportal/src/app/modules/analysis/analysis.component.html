@@ -1,26 +1,34 @@
-<div class="process-explorer-dashboard">
-  <div class="process-explorer-conditions">
-    <div class="buttons">
-      <button mat-raised-button color="primary" (click)="onUpdate()">Update</button>
-      <button mat-raised-button [matMenuTriggerFor]="menu"><mat-icon>post_add</mat-icon>Add Selection</button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onAddCondition('attribute')"><mat-icon>list</mat-icon> Attribute selection</button>
-        <button mat-menu-item (click)="onAddCondition('path')"><mat-icon>call_split</mat-icon> Process flow selection</button>
-        <button mat-menu-item (click)="onAddCondition('variant')"><mat-icon>crop</mat-icon> Variant selection</button>
-        <button mat-menu-item (click)="onAddCondition('cluster')"><mat-icon>border_outer</mat-icon> Cluster selection</button>
-      </mat-menu>
+<nz-breadcrumb>
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Analysis</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{logName}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<div class="inner-content">
+  <div class="process-explorer-dashboard">
+    <div class="process-explorer-conditions">
+      <div class="buttons">
+        <button nz-button nzType="primary" (click)="onUpdate()">Update</button>
+        <button nz-button nz-dropdown [nzDropdownMenu]="menu">Add Selection</button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="onAddCondition('attribute')">Attribute selection</li>
+            <li nz-menu-item (click)="onAddCondition('path')">Process flow selection</li>
+            <li nz-menu-item (click)="onAddCondition('variant')">Variant selection</li>
+            <li nz-menu-item (click)="onAddCondition('cluster')">Cluster selection</li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+      
+      <app-condition-list [context]="context" [conditions]="conditions"></app-condition-list>
     </div>
-    
-    <app-condition-list [context]="context" [conditions]="conditions"></app-condition-list>
-  </div>
 
-  <div class="process-explorer-map">
-    <mat-card>
+    <div class="process-explorer-map">
       <app-processmap [conditions]="conditions" [logName]="logName"></app-processmap>
-    </mat-card>
-  </div>
+    </div>
 
-  <div class="process-explorer-insights">
-    <app-insight-list [conditions]="conditions" [logName]="logName"></app-insight-list>
+    <div class="process-explorer-insights">
+      <app-insight-list [conditions]="conditions" [logName]="logName"></app-insight-list>
+    </div>
   </div>
 </div>

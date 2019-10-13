@@ -29,7 +29,7 @@ export class AttributeConditionComponent implements OnInit, ConditionComponent {
   }
 
   onSelectionChange() {
-    if(this.data.attribute) {
+    if (this.data.attribute) {
       this.queryService.getCaseAttributeValues(this.context.logName, this.data.attribute, [])
         .subscribe(response => this.options = response);
     }

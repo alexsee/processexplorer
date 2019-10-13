@@ -11,7 +11,7 @@ import { Log } from 'src/app/entities/log';
                     [condition]="condition"
                     [context]="context">
                   </app-condition-single>
-                  <button mat-icon-button color="warn" (click)="onDelete(condition)"><mat-icon>delete</mat-icon></button>
+                  <button nz-button color="warn" (click)="onDelete(condition)">Delete</button>
                 </div>
               </div>
             `

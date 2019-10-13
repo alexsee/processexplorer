@@ -1,16 +1,9 @@
-.log-list-container {
-    display: grid;
-    grid-template-areas: 'body';
-    grid-template-columns: 1200px;
-    justify-content: center;
-    height: 100%;
-    overflow-y: scroll;
+nz-breadcrumb {
+    margin: 16px 0;
 }
 
-.log-list-body {
-    grid-area: body;
-}
-
-.log-list-body table {
-    width: 100%;
+.inner-content {
+    background: #fff;
+    padding: 24px;
+    min-height: 280px;
 }

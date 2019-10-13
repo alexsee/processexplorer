@@ -3,14 +3,11 @@
         <app-insight [insight]="insight"></app-insight>
     </div>
     <div [hidden]="noData" class="no-data-container">
-        <div class="no-data">
-            <p>No insights found.</p>
-        </div>
+        <nz-empty></nz-empty>
     </div>
     <div [hidden]="!progress" class="progress-container">
-        <div class="progress">
-            <mat-spinner></mat-spinner>
-            <p>Insights will be computed...</p>
-        </div>
+        <nz-spin nzSimple>
+            Insights will be computed...
+        </nz-spin>
     </div>
 </div>
