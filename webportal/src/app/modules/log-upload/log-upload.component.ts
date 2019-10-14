@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LogService } from 'src/app/services/log.service';
 import { Router } from '@angular/router';
+import { UploadFile } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-log-upload',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
 export class LogUploadComponent implements OnInit {
 
   logName: string;
-  file: File;
+  fileList: UploadFile[] = [];
 
   constructor(
     private logService: LogService,
@@ -20,16 +21,17 @@ export class LogUploadComponent implements OnInit {
   ngOnInit() {
   }
 
-  onFileInput(files: FileList) {
-    this.file = files.item(0);
-  }
+  beforeUpload = (file: UploadFile): boolean => {
+    this.fileList = [];
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
 
   doUpload() {
-    this.logService.upload(this.logName, this.file).subscribe(x => {
+    this.logService.upload(this.logName, this.fileList[0]).subscribe(x => {
       this.router.navigate(['/logs']);
     }, error => {
 
     });
   }
-
 }

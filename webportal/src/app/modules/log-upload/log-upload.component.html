@@ -1,13 +1,44 @@
-<!-- <div class="log-upload-container">
-    <div class="log-upload-body">
+<nz-breadcrumb>
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Log Management</nz-breadcrumb-item>
+    <nz-breadcrumb-item>List</nz-breadcrumb-item>
+</nz-breadcrumb>
+<nz-layout class="inner-layout">
+    <nz-sider nzWidth="200px" nzTheme="light">
+        <ul nz-menu nzMode="inline" class="sider-menu">
+            <li nz-menu-item [routerLink]="['/logs']">
+                <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                <span>Overview</span>
+            </li>
+            <li nz-menu-item [routerLink]="['/logs', 'upload']" nzSelected>
+                <i nz-icon nzType="upload"></i>
+                <span>Upload event log</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-content class="inner-content">
         <h1>Upload an Event Log</h1>
 
-            <mat-label>Event Log Name</mat-label>
-            <input matInput type="text" [(ngModel)]="logName">
-
-            <mat-label>File (*.xes, *.xes.gz)</mat-label>
-            <input type="file" (change)="onFileInput($event.target.files)">
-
-        <button mat-raised-button color="primary" (click)="doUpload()">Upload</button>
-    </div>
-</div> -->
+        <form nz-form>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6">Workspace Name</nz-form-label>
+                <nz-form-control [nzSpan]="14">
+                    <input nz-input name="logName" placeholder="Workspace Name" [(ngModel)]="logName" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="6">File (*.xes, *.xes.gz)</nz-form-label>
+                <nz-form-control [nzSpan]="14">
+                    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
+                        <button nz-button><i nz-icon nzType="upload"></i><span>Select File</span></button>
+                    </nz-upload>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                    <button nz-button nzType="primary" (click)="doUpload()" [disabled]="fileList.length == 0">Upload</button>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </nz-content>
+</nz-layout>    

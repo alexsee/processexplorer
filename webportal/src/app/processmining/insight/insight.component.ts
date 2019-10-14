@@ -67,6 +67,9 @@ export class InsightComponent implements OnChanges {
         },
         legend: {
           hide: true
+        },
+        size: {
+          width: 346
         }
       });
     }

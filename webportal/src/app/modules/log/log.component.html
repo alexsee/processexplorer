@@ -1,44 +1,54 @@
 <nz-breadcrumb>
     <nz-breadcrumb-item>Home</nz-breadcrumb-item>
     <nz-breadcrumb-item>Log Management</nz-breadcrumb-item>
-    <nz-breadcrumb-item>List</nz-breadcrumb-item>
 </nz-breadcrumb>
-<div class="inner-content">
-    <nz-table #basicTable [nzData]="logs">
-        <thead>
-            <tr>
-                <th>Log Name</th>
-                <th>Creation Date</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let log of basicTable.data">
-            <td>
-                <a [routerLink]="['/analysis', log.logName]">{{log.logName}}</a>
-            </td>
-            <td>{{log.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
-            <td>
-                <span *ngIf="log.processing">
-                    <nz-spin nzSimple></nz-spin>
-                </span>
-                <span *ngIf="!log.processing">
-                    <span *ngIf="log.imported && log.processed">Imported & Processed</span>
-                    <span *ngIf="log.imported && !log.processed">Imported</span>
-                    <span *ngIf="!log.imported && !log.processed">Uploaded</span>
-                </span>
-            </td>
-            <td>
-                <a>Action</a>
-                <nz-divider nzType="vertical"></nz-divider>
-                <a>Delete</a>
 
-                <span *ngIf="log.imported && !log.processed && !log.processing"><button nz-button color="primary" (click)="doProcess(log)">Process</button></span>
-                <span *ngIf="!log.imported && !log.processed && !log.processing"><button nz-button color="primary" (click)="doImport(log)">Import Event Log</button></span>
-                <span *ngIf="log.imported && log.processed"><button nz-button color="primary" [routerLink]="['/logs/annotations/', log.logName]">Annotate</button></span>
-            </td>
-            </tr>
-        </tbody>
-    </nz-table>
-</div>
+<nz-layout class="inner-layout">
+    <nz-sider nzWidth="200px" nzTheme="light">
+        <ul nz-menu nzMode="inline" class="sider-menu">
+            <li nz-menu-item [routerLink]="['/logs']" nzSelected>
+                <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                <span>Overview</span>
+            </li>
+            <li nz-menu-item [routerLink]="['/logs', 'upload']">
+                <i nz-icon nzType="upload"></i>
+                <span>Upload event log</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-content class="inner-content">
+        <nz-table #basicTable [nzData]="logs">
+            <thead>
+                <tr>
+                    <th>Log Name</th>
+                    <th>Creation Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let log of basicTable.data">
+                <td>
+                    <a [routerLink]="['/analysis', log.logName]">{{log.logName}}</a>
+                </td>
+                <td>{{log.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
+                <td>
+                    <span *ngIf="log.processing">
+                        <nz-spin nzSimple></nz-spin>
+                    </span>
+                    <span *ngIf="!log.processing">
+                        <span *ngIf="log.imported && log.processed">Imported & Processed</span>
+                        <span *ngIf="log.imported && !log.processed">Imported</span>
+                        <span *ngIf="!log.imported && !log.processed">Uploaded</span>
+                    </span>
+                </td>
+                <td>
+                    <span *ngIf="log.imported && !log.processed && !log.processing"><button nz-button color="primary" (click)="doProcess(log)">Process</button></span>
+                    <span *ngIf="!log.imported && !log.processed && !log.processing"><button nz-button color="primary" (click)="doImport(log)">Import Event Log</button></span>
+                    <span *ngIf="log.imported && log.processed"><button nz-button color="primary" [routerLink]="['/logs/annotations/', log.logName]">Annotate</button></span>
+                </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-content>
+</nz-layout>
