@@ -1,11 +1,45 @@
 <nz-card>
-    <nz-card-meta [nzTitle]="insight.title" [nzDescription]="insight.subTitle"></nz-card-meta>
+    <div *ngIf="insight.format == 'DURATION'">
+        <h1>{{insight.title}}</h1>
+        <h2>{{insight.subTitle}}</h2>
+            
+        <nz-row [nzGutter]="16">
+            <nz-col [nzSpan]="12">
+                <nz-statistic
+                    [nzValue]="humanizeDuration(insight.averageWithin)"
+                    [nzValueStyle]="{ color: '#CF1322' }">
+                </nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="12">
+                <nz-statistic
+                    [nzValue]="humanizeDuration(insight.averageWithout)"
+                    [nzPrefix]="'vs. '"
+                    [nzValueStyle]="{ color: '#3F8600' }">
+                </nz-statistic>
+            </nz-col>
+        </nz-row>
+    </div>
+    <div *ngIf="insight.format == 'NUMBER'">
+        <h1>{{insight.title}}</h1>
+        <h2>{{insight.subTitle}}</h2>
 
-    <p *ngIf="insight.format == 'DURATION'">
-        <span>{{humanizeDuration(insight.averageWithin)}}</span> vs. <span>{{humanizeDuration(insight.averageWithout)}}</span>
-    </p>
-    <p *ngIf="insight.format == 'NUMBER'">
-        <span>{{insight.averageWithin | number}}</span> vs. <span>{{insight.averageWithout | number}}</span>
-    </p>
-    <div #chart></div>
+        <nz-row [nzGutter]="16">
+            <nz-col [nzSpan]="12">
+                <nz-statistic
+                    [nzValue]="insight.averageWithin | number"
+                    [nzValueStyle]="{ color: '#CF1322' }">
+                </nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="12">
+                <nz-statistic
+                    [nzValue]="insight.averageWithout | number"
+                    [nzPrefix]="'vs. '"
+                    [nzValueStyle]="{ color: '#3F8600' }">
+                </nz-statistic>
+            </nz-col>
+        </nz-row>
+    </div>
+
+    <nz-card-meta [nzTitle]="insight.title" [nzDescription]="insight.subTitle" *ngIf="insight.format == 'DISTRIBUTION'"></nz-card-meta>
+    <div style="height: 320px; width: 100%" #chart></div>
 </nz-card>

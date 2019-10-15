@@ -72,6 +72,8 @@ export class InsightComponent implements OnChanges {
           width: 346
         }
       });
+    } else {
+      this.chartContainer.nativeElement.style.display = 'none';
     }
 
     // set icon
