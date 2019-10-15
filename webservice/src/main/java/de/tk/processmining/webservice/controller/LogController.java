@@ -55,6 +55,12 @@ public class LogController {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity deleteLog(@RequestParam("logName") String logName) {
+        logService.deleteLog(logName);
+        return ResponseEntity.ok().build();
+    }
+
     @RequestMapping(value = "/annotations", method = RequestMethod.GET)
     public ResponseEntity<Iterable<EventLogAnnotation>> getAnnotations(@RequestParam("logName") String logName) {
         var result = logAnnotationService.findByLogName(logName);

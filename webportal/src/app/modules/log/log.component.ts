@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { LogService } from 'src/app/services/log.service';
 import { Log } from 'src/app/entities/log';
 import { EventLog } from 'src/app/entities/eventlog';
+
+import { LogService } from 'src/app/services/log.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { AnalysisService } from 'src/app/services/analysis.service';
 
 @Component({
   selector: 'app-log',
@@ -13,7 +16,9 @@ export class LogComponent implements OnInit {
   public displayedColumns = ['logName', 'creationDate', 'status', 'actions'];
 
   constructor(
-    private logService: LogService
+    private nzMessageService: NzMessageService,
+    private logService: LogService,
+    private analysisService: AnalysisService
   ) { }
 
   ngOnInit() {
@@ -33,5 +38,27 @@ export class LogComponent implements OnInit {
   doImport(log: EventLog) {
     this.logService.import(log.logName)
       .subscribe(x => log.processing = true);
+  }
+
+  doDelete(log: EventLog) {
+    this.logService.delete(log.logName)
+      .subscribe(x => {
+        this.loadList();
+        this.nzMessageService.success('Event log <b>' + log.logName + '</b> deleted successfully.');
+      }, error => {
+        this.nzMessageService.error('Could not delete <b>' + log.logName + '</b>.');
+      });
+  }
+
+  doClustering(log: EventLog) {
+    log.processing = true;
+    this.analysisService.executeTraceClustering(log.logName)
+      .subscribe(x => {
+        this.nzMessageService.success('Event log <b>' + log.logName + '</b> clustered successfully.');
+        log.processing = false;
+      }, error => {
+        this.nzMessageService.error('An error occurred during the clustering of <b>' + log.logName + '</b>.');
+        log.processing = false;
+      });
   }
 }

@@ -1,10 +1,10 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { Condition } from 'src/app/entities/conditions/condition';
 import { Insight } from 'src/app/entities/insight';
-import { QueryService } from 'src/app/services/query.service';
 
 import * as moment from 'moment';
 import { QueryConvertService } from 'src/app/services/query-convert.service';
+import { AnalysisService } from 'src/app/services/analysis.service';
 
 @Component({
   selector: 'app-insight-list',
@@ -20,7 +20,7 @@ export class InsightListComponent implements OnChanges {
   public progress = false;
 
   constructor(
-    private queryService: QueryService,
+    private analysisService: AnalysisService,
     private queryConvertService: QueryConvertService
   ) { }
 
@@ -36,7 +36,7 @@ export class InsightListComponent implements OnChanges {
     this.noData = true;
     this.progress = true;
 
-    this.queryService.getInsights(this.logName, this.queryConvertService.convertToQuery(this.conditions))
+    this.analysisService.getInsights(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(insights => {
         this.insights = insights;
         this.insights.sort(this.sortByEffectSize);

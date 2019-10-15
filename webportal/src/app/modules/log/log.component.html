@@ -43,9 +43,18 @@
                     </span>
                 </td>
                 <td>
-                    <span *ngIf="log.imported && !log.processed && !log.processing"><button nz-button color="primary" (click)="doProcess(log)">Process</button></span>
-                    <span *ngIf="!log.imported && !log.processed && !log.processing"><button nz-button color="primary" (click)="doImport(log)">Import Event Log</button></span>
-                    <span *ngIf="log.imported && log.processed"><button nz-button color="primary" [routerLink]="['/logs/annotations/', log.logName]">Annotate</button></span>
+                    <span *ngIf="log.imported && !log.processed && !log.processing"><a (click)="doProcess(log)">Process</a></span>
+                    <span *ngIf="!log.imported && !log.processed && !log.processing"><a (click)="doImport(log)">Import Event Log</a></span>
+                    <span *ngIf="log.imported && log.processed">
+                        <a (click)="doClustering(log)">Clustering</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a [routerLink]="['/logs/annotations/', log.logName]">Annotate</a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                        <a nz-popconfirm
+                            nzPopconfirmTitle="Are you sure delete this event log?"
+                            nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="doDelete(log)">Delete</a>
+                    </span>
                 </td>
                 </tr>
             </tbody>

@@ -38,10 +38,7 @@ export class QueryService {
     return this.http.get<Log>(environment.serviceUrl + '/query/statistics?logName=' + logName);
   }
 
-  getInsights(logName: string, conditions: Condition[]): Observable<Insight[]> {
-    return this.http.post<Insight[]>(environment.serviceUrl + '/analysis/insights?logName=' + logName, conditions, httpOptions);
-  }
-
+  
   getCaseAttributeValues(logName: string, attributeName: string, conditions: Condition[]): Observable<CaseAttributeValueResult> {
     return this.http.post<CaseAttributeValueResult>(
       environment.serviceUrl + '/query/case_attribute_values',
@@ -52,7 +49,7 @@ export class QueryService {
   getDrillDown(logName: string, selections: any[], conditions: Condition[]): Observable<DrillDownResult> {
     return this.http.post<DrillDownResult>(
       environment.serviceUrl + '/query/drill_down',
-      { logName, selections: selections, conditions }
+      { logName, selections, conditions }
     );
   }
 }

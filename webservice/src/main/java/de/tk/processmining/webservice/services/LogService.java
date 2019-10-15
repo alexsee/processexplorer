@@ -1,5 +1,6 @@
 package de.tk.processmining.webservice.services;
 
+import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.XLog2Database;
 import de.tk.processmining.data.XLogUtils;
 import de.tk.processmining.data.analysis.DirectlyFollowsGraphMiner;
@@ -91,6 +92,9 @@ public class LogService {
 
             // update database
             eventLog.setImported(true);
+
+            // delete file
+            storageService.delete(eventLog.getFileName());
         } else {
             eventLog.setImported(false);
             eventLog.setErrorMessage("Not supported");
@@ -151,5 +155,30 @@ public class LogService {
         eventLogs.forEach(x -> result.add(queryService.getLogStatistics(x.getLogName())));
 
         return result;
+    }
+
+    /**
+     * Deletes all data tables from the database and removes all entries from the database.
+     *
+     * @param logName
+     */
+    public void deleteLog(String logName) {
+        var eventLog = eventLogRepository.findByLogName(logName);
+
+        if (eventLog == null) {
+            return;
+        }
+
+        // remove metadata
+        eventLogRepository.delete(eventLog);
+
+        // remove data tables
+        var db = new DatabaseModel(logName);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseTable.getTableNameSQL());
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.variantsTable.getTableNameSQL());
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseAttributeTable.getTableNameSQL());
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.graphTable.getTableNameSQL());
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.activityTable.getTableNameSQL());
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.eventTable.getTableNameSQL());
     }
 }

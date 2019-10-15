@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LogService } from 'src/app/services/log.service';
 import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-log-upload',
@@ -13,6 +14,7 @@ export class LogUploadComponent implements OnInit {
   fileList: File[] = [];
 
   constructor(
+    private nzMessageService: NzMessageService,
     private logService: LogService,
     private router: Router
   ) { }
@@ -29,8 +31,9 @@ export class LogUploadComponent implements OnInit {
   doUpload() {
     this.logService.upload(this.logName, this.fileList[0]).subscribe(x => {
       this.router.navigate(['/logs']);
+      this.nzMessageService.success('Event log <b>' + this.logName + '</b> uploaded successfully.');
     }, error => {
-
+      this.nzMessageService.error('Could not upload <b>' + this.logName + '</b>.');
     });
   }
 }

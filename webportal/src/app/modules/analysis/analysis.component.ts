@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { QueryService } from '../../services/query.service';
-import { ProcessMap } from '../../entities/processmap';
 import { Condition } from '../../entities/conditions/condition';
 import { PathConditionComponent } from '../../query/path-condition/path-condition.component';
 import { Log } from '../../entities/log';

@@ -35,6 +35,10 @@ export class LogService {
     return this.http.get(environment.serviceUrl + '/logs/process?logName=' + logName);
   }
 
+  delete(logName: string) {
+    return this.http.delete(environment.serviceUrl + '/logs?logName=' + logName);
+  }
+
   getAllLogs(): Observable<Log[]> {
     return this.http.get<Log[]>(environment.serviceUrl + '/logs/all_statistics');
   }
