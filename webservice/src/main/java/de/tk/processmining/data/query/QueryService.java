@@ -27,14 +27,14 @@ import static de.tk.processmining.data.DatabaseConstants.getEventsTableName;
  * @author Alexander Seeliger on 23.09.2019.
  */
 @Service
-public class QueryManager {
+public class QueryService {
 
     private JdbcTemplate jdbcTemplate;
 
     private EventLogAnnotationRepository eventLogAnnotationRepository;
 
     @Autowired
-    public QueryManager(JdbcTemplate jdbcTemplate,
+    public QueryService(JdbcTemplate jdbcTemplate,
                         EventLogAnnotationRepository eventLogAnnotationRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.eventLogAnnotationRepository = eventLogAnnotationRepository;

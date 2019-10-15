@@ -18,36 +18,36 @@ import java.util.List;
 @RestController
 public class QueryController {
 
-    private final QueryManager queryManager;
+    private final QueryService queryService;
 
     @Autowired
-    public QueryController(QueryManager queryManager) {
-        this.queryManager = queryManager;
+    public QueryController(QueryService queryService) {
+        this.queryService = queryService;
     }
 
     @RequestMapping("/query/statistics")
     public Log getStatistics(String logName) {
-        return queryManager.getLogStatistics(logName);
+        return queryService.getLogStatistics(logName);
     }
 
     @RequestMapping("/query/get_all_paths")
     public List<Variant> getAllPaths(String logName, @RequestBody List<Condition> conditions) {
-        return queryManager.getAllPaths(logName, conditions);
+        return queryService.getAllPaths(logName, conditions);
     }
 
     @RequestMapping(value = "/query/process_map", method = RequestMethod.POST)
     public ProcessMapResult getProcessMap(@RequestBody ProcessMapQuery query) {
-        return queryManager.getProcessMap(query);
+        return queryService.getProcessMap(query);
     }
 
     @RequestMapping(value = "/query/case_attribute_values", method = RequestMethod.POST)
     public CaseAttributeValueResult getCaseAttributeValues(@RequestBody CaseAttributeValueQuery query) {
-        return queryManager.getCaseAttributeValues(query);
+        return queryService.getCaseAttributeValues(query);
     }
 
     @RequestMapping(value = "/query/drill_down", method = RequestMethod.POST)
     public DrillDownResult getDrillDown(@RequestBody DrillDownQuery query) {
-        return queryManager.getDrillDown(query);
+        return queryService.getDrillDown(query);
     }
 
 }

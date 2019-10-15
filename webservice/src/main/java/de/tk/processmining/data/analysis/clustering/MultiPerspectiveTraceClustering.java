@@ -1,7 +1,7 @@
 package de.tk.processmining.data.analysis.clustering;
 
 import de.tk.processmining.data.query.CasesQuery;
-import de.tk.processmining.data.query.QueryManager;
+import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.data.query.condition.Condition;
 import de.tk.processmining.data.query.condition.VariantCondition;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class MultiPerspectiveTraceClustering {
 
-    private QueryManager queryManager;
+    private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
     private String logName;
 
@@ -22,12 +22,12 @@ public class MultiPerspectiveTraceClustering {
         this.jdbcTemplate = jdbcTemplate;
         this.logName = logName;
 
-        this.queryManager = new QueryManager(jdbcTemplate, null);
+        this.queryService = new QueryService(jdbcTemplate, null);
     }
 
     public void generateCaseAttributeDb() {
-        var categoricalAttributes = queryManager.getCategoricalCaseAttributes(logName);
-        var variants = queryManager.getAllPaths(logName, new ArrayList<>());
+        var categoricalAttributes = queryService.getCategoricalCaseAttributes(logName);
+        var variants = queryService.getAllPaths(logName, new ArrayList<>());
 
         var itemsetValues = new HashMap<FieldValue, Integer>();
 
@@ -36,7 +36,7 @@ public class MultiPerspectiveTraceClustering {
             var conditions = new ArrayList<Condition>();
             conditions.add(new VariantCondition(variant.getId()));
 
-            var cases = queryManager.getCases(new CasesQuery(logName, conditions, categoricalAttributes));
+            var cases = queryService.getCases(new CasesQuery(logName, conditions, categoricalAttributes));
             var transactions = new ArrayList<>();
 
             for (var c : cases) {

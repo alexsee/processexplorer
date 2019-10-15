@@ -4,7 +4,7 @@ import de.tk.processmining.data.XLog2Database;
 import de.tk.processmining.data.XLogUtils;
 import de.tk.processmining.data.analysis.DirectlyFollowsGraphMiner;
 import de.tk.processmining.data.model.Log;
-import de.tk.processmining.data.query.QueryManager;
+import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.data.storage.StorageService;
 import de.tk.processmining.webservice.database.EventLogRepository;
 import de.tk.processmining.webservice.database.entities.EventLog;
@@ -29,19 +29,19 @@ public class LogService {
     private EventLogRepository eventLogRepository;
     private SimpMessagingTemplate messagingTemplate;
     private StorageService storageService;
-    private QueryManager queryManager;
+    private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
     public LogService(EventLogRepository eventLogRepository,
                       SimpMessagingTemplate messagingTemplate,
                       StorageService storageService,
-                      QueryManager queryManager,
+                      QueryService queryService,
                       JdbcTemplate jdbcTemplate) {
         this.eventLogRepository = eventLogRepository;
         this.messagingTemplate = messagingTemplate;
         this.storageService = storageService;
-        this.queryManager = queryManager;
+        this.queryService = queryService;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -148,7 +148,7 @@ public class LogService {
     public List<Log> getAllLogs() {
         var eventLogs = eventLogRepository.findAll();
         var result = new ArrayList<Log>();
-        eventLogs.forEach(x -> result.add(queryManager.getLogStatistics(x.getLogName())));
+        eventLogs.forEach(x -> result.add(queryService.getLogStatistics(x.getLogName())));
 
         return result;
     }

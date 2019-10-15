@@ -6,7 +6,7 @@ import com.healthmarketscience.sqlbuilder.QueryPreparer;
 import com.healthmarketscience.sqlbuilder.UpdateQuery;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.analysis.metrics.SequenceMetrics;
-import de.tk.processmining.data.query.QueryManager;
+import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.utils.ClusterUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,17 +22,17 @@ import java.util.ArrayList;
 @Service
 public class SimpleTraceClustering {
 
-    private QueryManager queryManager;
+    private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public SimpleTraceClustering(QueryManager queryManager, JdbcTemplate jdbcTemplate) {
-        this.queryManager = queryManager;
+    public SimpleTraceClustering(QueryService queryService, JdbcTemplate jdbcTemplate) {
+        this.queryService = queryService;
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public void cluster(String logName) {
-        var variants = queryManager.getAllPaths(logName, new ArrayList<>());
+        var variants = queryService.getAllPaths(logName, new ArrayList<>());
 
         // compute distance matrix
         double[][] distanceMatrix = new double[variants.size()][variants.size()];

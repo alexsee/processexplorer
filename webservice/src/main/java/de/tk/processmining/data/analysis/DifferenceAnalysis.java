@@ -2,7 +2,7 @@ package de.tk.processmining.data.analysis;
 
 import de.tk.processmining.data.analysis.metrics.insights.*;
 import de.tk.processmining.data.model.Insight;
-import de.tk.processmining.data.query.QueryManager;
+import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.data.query.condition.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,12 +14,12 @@ import java.util.List;
 @Service
 public class DifferenceAnalysis {
 
-    private QueryManager queryManager;
+    private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public DifferenceAnalysis(QueryManager queryManager, JdbcTemplate jdbcTemplate) {
-        this.queryManager = queryManager;
+    public DifferenceAnalysis(QueryService queryService, JdbcTemplate jdbcTemplate) {
+        this.queryService = queryService;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -45,8 +45,8 @@ public class DifferenceAnalysis {
         result.add(new CaseDurationMetric(logName));
         result.add(new CaseEventDurationMetric(logName));
 
-        queryManager.getCategoricalCaseAttributes(logName).forEach(attr -> result.add(new CaseAttributeMetric(logName, attr)));
-        queryManager.getLogStatistics(logName).getActivities().forEach(evt -> result.add(new EventResourceMetric(logName, evt)));
+        queryService.getCategoricalCaseAttributes(logName).forEach(attr -> result.add(new CaseAttributeMetric(logName, attr)));
+        queryService.getLogStatistics(logName).getActivities().forEach(evt -> result.add(new EventResourceMetric(logName, evt)));
         return result;
     }
 
