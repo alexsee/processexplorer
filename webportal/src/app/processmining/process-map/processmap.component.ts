@@ -1,11 +1,10 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 
 import * as moment from 'moment';
+import * as d3 from 'd3';
+import * as dagreD3 from 'dagre-d3';
 
-import * as dagre from 'cytoscape-dagre';
-import * as cytoscape from 'cytoscape';
-
-import {ProcessMap} from '../../entities/processmap';
+import { ProcessMap } from '../../entities/processmap';
 import { QueryService } from 'src/app/services/query.service';
 import { Condition } from 'src/app/entities/conditions/condition';
 import { ProcessMapSettings } from 'src/app/entities/settings/process-map-settings';
@@ -28,11 +27,9 @@ export class ProcessMapComponent implements OnChanges {
 
   public zoom: any;
   public svg: any;
-  public g: any;
-  public graph: any;
+  public inner: any;
 
-  public noData = false;
-  public progress = true;
+  public graph: any;
 
   constructor(
     private queryService: QueryService,
@@ -50,8 +47,6 @@ export class ProcessMapComponent implements OnChanges {
     }
 
     // query process map
-    this.progress = true;
-
     this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(response => {
         this.data = response.processMap;
@@ -79,122 +74,81 @@ export class ProcessMapComponent implements OnChanges {
   }
 
   createProcessMap() {
-    this.progress = false;
-
     if (this.data.edges.length === 0) {
-      this.noData = true;
       return;
     }
 
-    const element = this.processmapContainer.nativeElement;
-
-    const elements = {
-      nodes: [],
-      edges: []
-    };
+    this.graph = new dagreD3.graphlib.Graph({directed: true, multigraph: true, compound: true})
+      .setGraph({acyclicer: 'greedy'});
 
     const nodes = [];
     for (const edge of this.data.edges) {
       // add as nodes
       if (nodes.indexOf(edge.sourceEvent) === -1) {
         nodes.push(edge.sourceEvent);
+        this.addNode(edge.sourceEvent, this.graph);
       }
       if (nodes.indexOf(edge.targetEvent) === -1) {
         nodes.push(edge.targetEvent);
+        this.addNode(edge.targetEvent, this.graph);
       }
 
-      elements.edges.push({data: {
-        occurrence: edge.occurrence,
-        edgeWeight: edge.occurrence,
-
-        averageDuration: moment.duration(edge.avgDuration, 'seconds').humanize(),
-
-        source: this.getCleanName(edge.sourceEvent),
-        target: this.getCleanName(edge.targetEvent)
-      }});
+      // add edge
+      this.graph.setEdge(this.getCleanName(edge.sourceEvent), this.getCleanName(edge.targetEvent),
+        {
+          label: this.settings.mode === 'occurrence' ? edge.occurrence : moment.duration(edge.avgDuration, 'seconds').humanize(),
+          curve: d3.curveBasis,
+          weight: edge.occurrence
+        });
     }
 
-    for (const node of nodes) {
-      if (node === 'Startknoten') {
-        elements.nodes.push({data: {id: this.getCleanName(node), label: node}, style: {backgroundColor: '#00cc66'}});
-      } else if (node === 'Endknoten') {
-        elements.nodes.push({data: {id: this.getCleanName(node), label: node}, style: {backgroundColor: '#ff3300'}});
-      } else {
-        elements.nodes.push({data: {id: this.getCleanName(node), label: node}});
-      }
+    // generate the renderer
+    const render = new dagreD3.render();
+
+    // render graph into svg g
+    this.svg = d3.select(this.processmapContainer.nativeElement);
+    this.inner = this.svg.select('g');
+
+    // set zoom support
+    this.zoom = d3.zoom()
+      .on('zoom', x => {
+        this.inner.attr('transform', d3.event.transform);
+      });
+    this.svg.call(this.zoom);
+
+    render(this.inner, this.graph);
+
+    // set initial scale
+    const containerWidth = this.svg.node().getBoundingClientRect().width;
+
+    const minScale = Math.min(this.svg.node().getBoundingClientRect().width / this.graph.graph().width,
+      this.svg.node().getBoundingClientRect().height / this.graph.graph().height);
+
+    this.svg.call(this.zoom.transform,
+      d3.zoomIdentity.translate((containerWidth - this.graph.graph().width * minScale) / 2, 0)
+      .scale(minScale));
+  }
+
+  addNode(node: string, graph: any) {
+    if (node === 'Startknoten') {
+      graph.setNode(this.getCleanName(node), {
+        label: node,
+        rx: 5,
+        ry: 5,
+        labelStyle: 'font-size: 0.75em; fill: white;',
+        style: 'fill: #00cc66'
+      });
+    } else if (node === 'Endknoten') {
+      graph.setNode(this.getCleanName(node), {
+        label: node,
+        rx: 5,
+        ry: 5,
+        labelStyle: 'font-size: 0.75em; fill: white;',
+        style: 'fill: #ff3300'
+      });
+    } else {
+      graph.setNode(this.getCleanName(node), {label: node, rx: 5, ry: 5});
     }
-
-
-    cytoscape.use(dagre);
-    const cy = cytoscape({
-      container: element,
-
-      boxSelectionEnabled: false,
-      autounselectify: true,
-
-      layout: {
-        name: 'dagre',
-        // name: 'klay',
-        // name: 'dot'
-
-        // klay: {
-        //   aspectRatio: 1.8,
-        //   direction: 'DOWN',
-        //   edgeRouting: 'SPLINES',
-        //   nodeLayering: 'LONGEST_PATH',
-        //   layoutHierarchy: true,
-        //   thoroughness: 10,
-        //   feedbackEdges: true,
-        //   fixedAlignment: 'BALANCED',
-        //   linearSegmentsDeflectionDampening: 0
-        // }
-        rankDir: 'TB',
-
-        edgeSep: 50,
-        nodeSep: 50,
-
-        nodeDimensionsIncludeLabels: true,
-        padding: 0,
-        minLen: (edge) => (edge.source === 'Startknoten' || edge.target === 'Endknoten') ? 2 : 1
-      },
-
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'content': 'data(label)',
-            'background-color': '#11479e',
-            'shape': 'diamond',
-            'font-size': '12px',
-            'text-valign': 'center',
-            'text-halign': 'right',
-            'text-margin-x': '0.3em',
-            'overlay-padding': '6px',
-            'z-index': '10',
-            'height': '1.2em',
-            'width': '1.2em'
-          }
-        },
-        {
-          selector: 'edge',
-          style: {
-            'label': this.settings.mode === 'duration' ? 'data(averageDuration)' : 'data(occurrence)',
-            'target-arrow-shape': 'triangle',
-            'line-color': '#9dbaea',
-            'target-arrow-color': '#9dbaea',
-            'curve-style': 'bezier',
-            'font-size': '9px',
-            'text-halign': 'right',
-            'text-background-color': 'black',
-            'text-background-opacity': 0.2,
-            'text-background-shape': 'roundrectangle',
-            'text-background-padding': '3px'
-          }
-        }
-      ],
-
-      elements: elements
-    });
   }
 
   getCleanName(text: string) {

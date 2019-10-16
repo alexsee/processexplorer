@@ -4,3 +4,27 @@ html, body { height: 100%; }
 body { 
     background-color: #f0f2f5;
 }
+
+// process map
+.d3-process-map {
+    text {
+    font-weight: 300;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+        font-size: 14px;
+    }
+
+    .node rect {
+        stroke: #333;
+        fill: #fff;
+    }
+
+    .edgePath path {
+        stroke: #333;
+        fill: #333;
+        stroke-width: 1.5px;
+    }
+
+    .node text {
+        pointer-events: none;
+    }
+}
