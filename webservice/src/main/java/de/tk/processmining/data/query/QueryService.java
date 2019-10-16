@@ -139,6 +139,7 @@ public class QueryService {
 
         var sqlT = sql.addGroupings(db.graphSourceEventCol, db.graphTargetEventCol)
                 .addJoins(SelectQuery.JoinType.INNER, db.graphVariantJoin, db.graphCaseAttributeJoin)
+                .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
         var rowMapper = new RowMapper<GraphEdge>() {

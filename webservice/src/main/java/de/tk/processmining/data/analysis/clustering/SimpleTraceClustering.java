@@ -8,6 +8,8 @@ import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.analysis.metrics.SequenceMetrics;
 import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.utils.ClusterUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 @Service
 public class SimpleTraceClustering {
 
+    private static Logger logger = LoggerFactory.getLogger(SimpleTraceClustering.class);
+
     private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
 
@@ -32,6 +36,8 @@ public class SimpleTraceClustering {
     }
 
     public void cluster(String logName) {
+        logger.info("Begin simple trace clustering for \"{}\"", logName);
+
         var variants = queryService.getAllPaths(logName, new ArrayList<>());
 
         // compute distance matrix
@@ -79,6 +85,8 @@ public class SimpleTraceClustering {
             batch.add(new Object[]{result[i], variants.get(i).getId()});
         }
         jdbcTemplate.batchUpdate(sql, batch);
+
+        logger.info("Finished simple trace clustering for \"{}\"", logName);
     }
 
 }

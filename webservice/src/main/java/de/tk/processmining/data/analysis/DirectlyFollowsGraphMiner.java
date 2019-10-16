@@ -2,12 +2,16 @@ package de.tk.processmining.data.analysis;
 
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.utils.OutputBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author Alexander Seeliger on 23.09.2019.
  */
 public class DirectlyFollowsGraphMiner {
+
+    private static Logger logger = LoggerFactory.getLogger(DirectlyFollowsGraphMiner.class);
 
     private JdbcTemplate jdbcTemplate;
 
@@ -16,6 +20,8 @@ public class DirectlyFollowsGraphMiner {
     }
 
     public void mine(String logName) {
+        logger.info("Begin generating directly-follows graph for \"{}\"", logName);
+
         var db = new DatabaseModel(logName);
 
         // clean tables
@@ -86,6 +92,8 @@ public class DirectlyFollowsGraphMiner {
 
         // create index
         jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.graphTable.getTableNameSQL() + " ON " + logName + "_graph (case_id)");
+
+        logger.info("Finished generating directly-follows graph for \"{}\"", logName);
     }
 
     private String getPathsTableQuery(String variantsTableName) {

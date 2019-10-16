@@ -79,7 +79,10 @@ export class ProcessMapComponent implements OnChanges {
     }
 
     this.graph = new dagreD3.graphlib.Graph({directed: true, multigraph: true, compound: true})
-      .setGraph({acyclicer: 'greedy'});
+      .setGraph({
+        acyclicer: 'greedy',
+        align: 'DR'
+      });
 
     const nodes = [];
     for (const edge of this.data.edges) {

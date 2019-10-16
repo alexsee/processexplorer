@@ -78,13 +78,13 @@ export class InsightComponent implements OnChanges {
 
     // set icon
     if (Math.abs(this.insight.effectSize) > 0.8) {
-      this.icon = 'error';
+      this.icon = 'exclamation-circle';
       this.color = 'red';
     } else if (Math.abs(this.insight.effectSize) > 0.5) {
       this.icon = 'warning';
-      this.color = 'yellow';
+      this.color = 'orange';
     } else {
-      this.icon = 'info';
+      this.icon = 'info-circle';
       this.color = 'green';
     }
 

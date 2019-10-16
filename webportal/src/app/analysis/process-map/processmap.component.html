@@ -6,7 +6,7 @@
     </div>
 
     <div class="navigation">
-        <nz-select [(ngModel)]="settings.mode" nzAllowClear nzPlaceHolder="Choose" (ngModelChange)="onSettingsChange()">
+        <nz-select [(ngModel)]="settings.mode" nzPlaceHolder="Choose" (ngModelChange)="onSettingsChange()">
             <nz-option nzValue="duration" nzLabel="Duration"></nz-option>
             <nz-option nzValue="occurrence" nzLabel="Occurrence"></nz-option>
         </nz-select>

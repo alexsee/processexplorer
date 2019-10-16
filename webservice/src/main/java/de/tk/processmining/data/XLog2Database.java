@@ -12,6 +12,8 @@ import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import static de.tk.processmining.data.DatabaseConstants.*;
  * @author Alexander Seeliger on 20.09.2019.
  */
 public class XLog2Database {
+
+    private static Logger logger = LoggerFactory.getLogger(XLog2Database.class);
 
     private final int bufferSize = 1000;
 
@@ -42,6 +46,8 @@ public class XLog2Database {
     }
 
     public void importLog(XLog log) {
+        logger.info("Begin importing event log \"{}\"", this.logName);
+
         // read general log properties
         var logInfo = XLogInfoFactory.createLogInfo(log);
         var traceAttributes = log.getGlobalTraceAttributes();
@@ -107,6 +113,8 @@ public class XLog2Database {
 
         jdbcTemplate.batchUpdate(insertEventSql, insertEventValues);
         jdbcTemplate.batchUpdate(insertTraceSql, insertTraceValues);
+
+        logger.info("Finished importing event log \"{}\"", this.logName);
     }
 
     /**

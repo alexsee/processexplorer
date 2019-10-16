@@ -1,8 +1,10 @@
 <nz-card>
     <div *ngIf="insight.format == 'DURATION'">
+        <nz-avatar [nzIcon]="icon" [ngStyle]="{ 'background-color': color }" [nzShape]="'square'"></nz-avatar>
+         
         <h1>{{insight.title}}</h1>
-        <h2>{{insight.subTitle}}</h2>
-            
+        <h2 [innerHTML]="insight.subTitle"></h2>
+           
         <nz-row [nzGutter]="16">
             <nz-col [nzSpan]="12">
                 <nz-statistic
@@ -20,8 +22,10 @@
         </nz-row>
     </div>
     <div *ngIf="insight.format == 'NUMBER'">
+        <nz-avatar [nzIcon]="icon" [ngStyle]="{ 'background-color': color }" [nzShape]="'square'"></nz-avatar>
+         
         <h1>{{insight.title}}</h1>
-        <h2>{{insight.subTitle}}</h2>
+        <h2 [innerHTML]="insight.subTitle"></h2>
 
         <nz-row [nzGutter]="16">
             <nz-col [nzSpan]="12">
@@ -40,6 +44,12 @@
         </nz-row>
     </div>
 
-    <nz-card-meta [nzTitle]="insight.title" [nzDescription]="insight.subTitle" *ngIf="insight.format == 'DISTRIBUTION'"></nz-card-meta>
+    <div *ngIf="insight.format == 'DISTRIBUTION'">
+        <nz-avatar [nzIcon]="icon" [ngStyle]="{ 'background-color': color }" [nzShape]="'square'"></nz-avatar>
+         
+        <h1>{{insight.title}}</h1>
+        <h2 [innerHTML]="insight.subTitle"></h2>
+    </div>
+    
     <div style="height: 320px; width: 100%" #chart></div>
 </nz-card>
