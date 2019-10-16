@@ -9,12 +9,13 @@ import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model
                 <div class="condition-query-item" *ngFor="let condition of conditions">
                   <app-condition-single
                     [condition]="condition"
-                    [context]="context">
+                    [context]="context"
+                    (delete)="onDelete(condition)">
                   </app-condition-single>
-                  <button nz-button color="warn" (click)="onDelete(condition)">Delete</button>
                 </div>
               </div>
-            `
+            `,
+  styleUrls: ['./condition-list.component.scss']
 })
 export class ConditionListComponent implements OnInit {
   @Input() conditions: Condition[];
@@ -26,6 +27,6 @@ export class ConditionListComponent implements OnInit {
   }
 
   onDelete(condition: Condition) {
-    this.conditions.splice(this.conditions.indexOf(condition), 1);
+    setTimeout(x => this.conditions.splice(this.conditions.indexOf(condition), 1), 1);
   }
 }

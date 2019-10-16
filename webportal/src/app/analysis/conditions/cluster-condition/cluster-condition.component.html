@@ -1,9 +1,6 @@
 <nz-card nzTitle="Cluster Condition" 
     nzSize="small"
-    nz-popover
-    nzPopoverTitle="Cluster Condition"
-    nzPopoverTrigger="click"
-    [nzPopoverContent]="contentTemplate">
+    [nzExtra]="moreTemplate">
     <span *ngIf="data.clusterIndex">
         Cluster: <b>{{data.clusterIndex}}</b>
     </span>
@@ -11,6 +8,17 @@
         Cluster Condition
     </span>
 </nz-card>
+
+<ng-template #moreTemplate>
+    <a nz-popover
+        nzPopoverTitle="Cluster Condition"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate">Edit</a>
+        
+    <nz-divider nzType="vertical"></nz-divider>
+
+    <a (click)="doDelete()">Delete</a>
+</ng-template>
 
 <ng-template #contentTemplate>
     <form nz-form class="cluster-form">

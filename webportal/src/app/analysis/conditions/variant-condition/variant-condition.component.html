@@ -1,9 +1,6 @@
 <nz-card nzTitle="Variant Condition" 
     nzSize="small"
-    nz-popover
-    nzPopoverTitle="Variant Condition"
-    nzPopoverTrigger="click"
-    [nzPopoverContent]="contentTemplate">
+    [nzExtra]="moreTemplate">
     <span *ngIf="data.variantId">
         Variant: <b>{{data.clusterIndex}}</b>
     </span>
@@ -11,6 +8,17 @@
         Variant Condition
     </span>
 </nz-card>
+
+<ng-template #moreTemplate>
+    <a nz-popover
+        nzPopoverTitle="Variant Condition"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate">Edit</a>
+        
+    <nz-divider nzType="vertical"></nz-divider>
+
+    <a (click)="doDelete()">Delete</a>
+</ng-template>
 
 <ng-template #contentTemplate>
     <form nz-form class="cluster-form">

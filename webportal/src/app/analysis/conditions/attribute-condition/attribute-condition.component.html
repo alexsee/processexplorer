@@ -1,9 +1,6 @@
 <nz-card nzTitle="Attribute Condition" 
     nzSize="small"
-    nz-popover
-    nzPopoverTitle="Attribute Condition"
-    nzPopoverTrigger="click"
-    [nzPopoverContent]="contentTemplate">
+    [nzExtra]="moreTemplate">
     <span *ngIf="data.attribute">
         <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.values}}</b>
     </span>
@@ -11,6 +8,17 @@
         Attribute Condition
     </span>
 </nz-card>
+
+<ng-template #moreTemplate>
+    <a nz-popover
+        nzPopoverTitle="Attribute Condition"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate">Edit</a>
+        
+    <nz-divider nzType="vertical"></nz-divider>
+
+    <a (click)="doDelete()">Delete</a>
+</ng-template>
 
 <ng-template #contentTemplate>
     <form nz-form class="attribute-form">

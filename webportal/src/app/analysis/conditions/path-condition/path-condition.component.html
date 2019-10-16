@@ -1,9 +1,6 @@
 <nz-card nzTitle="Path Condition" 
     nzSize="small"
-    nz-popover
-    nzPopoverTitle="Path Condition"
-    nzPopoverTrigger="click"
-    [nzPopoverContent]="contentTemplate">
+    [nzExtra]="moreTemplate">
     <span *ngIf="data.conditionType == 'START_END'">
         <span *ngIf="data.start">Starts with <b>{{context.activities[data.start]}}</b>&nbsp;</span>
         <span *ngIf="data.end">Ends with <b>{{context.activities[data.end]}}</b></span>
@@ -15,6 +12,17 @@
         {{context.activities[data.start]}} -> {{context.activities[data.end]}}
     </span>
 </nz-card>
+
+<ng-template #moreTemplate>
+    <a nz-popover
+        nzPopoverTitle="Path Condition"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate">Edit</a>
+        
+    <nz-divider nzType="vertical"></nz-divider>
+
+    <a (click)="doDelete()">Delete</a>
+</ng-template>
 
 <ng-template #contentTemplate>
     <form nz-form class="path-form">
