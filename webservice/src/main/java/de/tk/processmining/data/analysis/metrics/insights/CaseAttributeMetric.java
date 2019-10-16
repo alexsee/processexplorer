@@ -1,8 +1,6 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
-import com.healthmarketscience.sqlbuilder.Condition;
-import com.healthmarketscience.sqlbuilder.FunctionCall;
-import com.healthmarketscience.sqlbuilder.SelectQuery;
+import com.healthmarketscience.sqlbuilder.*;
 import de.tk.processmining.data.analysis.categorization.AnalysisTargetCodes;
 import de.tk.processmining.data.analysis.categorization.DomainCodes;
 import de.tk.processmining.data.analysis.categorization.EventAttributeCodes;
