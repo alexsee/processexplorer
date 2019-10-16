@@ -1,17 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-
-import { QueryService } from '../../services/query.service';
-import { Condition } from '../../entities/conditions/condition';
-import { PathConditionComponent } from '../../query/path-condition/path-condition.component';
-import { Log } from '../../entities/log';
-import { AttributeConditionComponent } from '../../query/attribute-condition/attribute-condition.component';
-import { LocalStorageService } from '../../services/storage.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { VariantConditionComponent } from 'src/app/query/variant-condition/variant-condition.component';
-import { InsightListComponent } from 'src/app/processmining/insight-list/insight-list.component';
-import { ProcessMapComponent } from 'src/app/processmining/process-map/processmap.component';
-import { ClusterConditionComponent } from 'src/app/query/cluster-condition/cluster-condition.component';
-import { QueryConvertService } from 'src/app/services/query-convert.service';
+import { InsightListComponent } from 'src/app/analysis/insight-list/insight-list.component';
+import { ProcessMapComponent } from 'src/app/analysis/process-map/processmap.component';
+import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
+import { ActivatedRoute } from '@angular/router';
+import { QueryService } from 'src/app/analysis/shared/query.service';
+import { QueryConvertService } from 'src/app/analysis/shared/query-convert.service';
+import { LocalStorageService } from 'src/app/shared/storage.service';
+import { PathConditionComponent } from 'src/app/analysis/conditions/path-condition/path-condition.component';
+import { AttributeConditionComponent } from 'src/app/analysis/conditions/attribute-condition/attribute-condition.component';
+import { VariantConditionComponent } from 'src/app/analysis/conditions/variant-condition/variant-condition.component';
+import { ClusterConditionComponent } from 'src/app/analysis/conditions/cluster-condition/cluster-condition.component';
+import { Condition } from 'src/app/analysis/models/condition.model';
 
 @Component({
   selector: 'app-analysis-module',
@@ -23,7 +22,7 @@ export class AnalysisComponent implements OnInit {
   @ViewChild(ProcessMapComponent, {static: false}) private processMapComponent: ProcessMapComponent;
 
   logName: string;
-  context: Log;
+  context: EventLogStatistics;
 
   conditions: Condition[];
 

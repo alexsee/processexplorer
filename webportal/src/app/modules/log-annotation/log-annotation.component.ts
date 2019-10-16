@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { LogService } from 'src/app/services/log.service';
 import { ActivatedRoute } from '@angular/router';
-import { QueryService } from 'src/app/services/query.service';
-import { Log } from 'src/app/entities/log';
-import { EventLogAnnotation } from 'src/app/entities/eventlog-annotation';
+import { QueryService } from 'src/app/analysis/shared/query.service';
+import { EventLogAnnotation } from 'src/app/log/models/eventlog-annotation.model';
+import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
+import { LogService } from 'src/app/log/shared/log.service';
 
 @Component({
   selector: 'app-log-annotation',
@@ -13,7 +13,7 @@ import { EventLogAnnotation } from 'src/app/entities/eventlog-annotation';
 export class LogAnnotationComponent implements OnInit {
 
   logName: string;
-  context: Log;
+  context: EventLogStatistics;
 
   displayedColumns: string[] = ['columnType', 'columnName', 'categorization', 'actions'];
 

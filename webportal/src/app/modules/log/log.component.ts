@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Log } from 'src/app/entities/log';
-import { EventLog } from 'src/app/entities/eventlog';
 
-import { LogService } from 'src/app/services/log.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AnalysisService } from 'src/app/services/analysis.service';
+import { AnalysisService } from 'src/app/analysis/shared/analysis.service';
+import { EventLog } from 'src/app/log/models/eventlog.model';
+import { LogService } from 'src/app/log/shared/log.service';
 
 @Component({
   selector: 'app-log',

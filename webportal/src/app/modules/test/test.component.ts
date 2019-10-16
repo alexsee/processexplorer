@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Log } from 'src/app/entities/log';
-import { QueryService } from 'src/app/services/query.service';
-import { ChartComponentOptions } from 'src/app/dashboard/chart/chart-component-options';
+import { QueryService } from 'src/app/analysis/shared/query.service';
+import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
+import { ChartComponentOptions } from 'src/app/analysis/models/chart-options.model';
 
 @Component({
   selector: 'app-test',
@@ -10,7 +10,7 @@ import { ChartComponentOptions } from 'src/app/dashboard/chart/chart-component-o
 })
 export class TestComponent implements OnInit {
 
-  public context: Log;
+  public context: EventLogStatistics;
   public options: ChartComponentOptions;
 
   constructor(private queryService: QueryService) { }

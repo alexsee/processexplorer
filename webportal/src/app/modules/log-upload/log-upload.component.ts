@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LogService } from 'src/app/services/log.service';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
+import { LogService } from 'src/app/log/shared/log.service';
 
 @Component({
   selector: 'app-log-upload',

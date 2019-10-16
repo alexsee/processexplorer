@@ -9,22 +9,22 @@ import { AnalysisComponent } from './modules/analysis/analysis.component';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ProcessMapComponent } from './processmining/process-map/processmap.component';
-import { ConditionListComponent } from './query/condition-list/condition-list.component';
-import { ConditionDirective } from './query/condition.directive';
-import { PathConditionComponent } from './query/path-condition/path-condition.component';
-import { ConditionSingleComponent } from './query/condition-single/condition-single.component';
-import { AttributeConditionComponent } from './query/attribute-condition/attribute-condition.component';
 import { FormsModule } from '@angular/forms';
 import { LogComponent } from './modules/log/log.component';
-import { VariantConditionComponent } from './query/variant-condition/variant-condition.component';
-import { InsightComponent } from './processmining/insight/insight.component';
-import { InsightListComponent } from './processmining/insight-list/insight-list.component';
-import { ClusterConditionComponent } from './query/cluster-condition/cluster-condition.component';
-import { ChartComponent } from './dashboard/chart/chart.component';
 import { TestComponent } from './modules/test/test.component';
 import { LogAnnotationComponent } from './modules/log-annotation/log-annotation.component';
 import { LogUploadComponent } from './modules/log-upload/log-upload.component';
+import { ProcessMapComponent } from './analysis/process-map/processmap.component';
+import { ConditionListComponent } from './analysis/condition-list/condition-list.component';
+import { PathConditionComponent } from './analysis/conditions/path-condition/path-condition.component';
+import { VariantConditionComponent } from './analysis/conditions/variant-condition/variant-condition.component';
+import { ClusterConditionComponent } from './analysis/conditions/cluster-condition/cluster-condition.component';
+import { ConditionDirective } from './analysis/condition.directive';
+import { ConditionSingleComponent } from './analysis/condition-single/condition-single.component';
+import { AttributeConditionComponent } from './analysis/conditions/attribute-condition/attribute-condition.component';
+import { InsightComponent } from './analysis/insight/insight.component';
+import { InsightListComponent } from './analysis/insight-list/insight-list.component';
+import { ChartComponent } from './analysis/chart/chart.component';
 
 @NgModule({
   declarations: [
