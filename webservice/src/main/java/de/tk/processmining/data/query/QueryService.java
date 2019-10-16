@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static de.tk.processmining.data.DatabaseConstants.getCaseAttributeTableName;
-import static de.tk.processmining.data.DatabaseConstants.getEventsTableName;
-
 /**
  * @author Alexander Seeliger on 23.09.2019.
  */
@@ -195,9 +192,11 @@ public class QueryService {
      * @return
      */
     public List<String> getCaseAttributes(String logName) {
+        var db = new DatabaseModel(logName);
+
         var columns = jdbcTemplate.queryForList("SELECT column_name " +
                 "FROM information_schema.columns " +
-                "WHERE table_name = '" + getCaseAttributeTableName(logName) + "' AND table_schema = 'public';", String.class);
+                "WHERE table_name = '" + db.caseAttributeTable.getTableNameSQL() + "' AND table_schema = 'public';", String.class);
 
         columns.remove("case_id");
         columns.remove("original_case_id");
@@ -233,9 +232,11 @@ public class QueryService {
      * @return
      */
     public List<String> getEventAttributes(String logName) {
+        var db = new DatabaseModel(logName);
+
         var columns = jdbcTemplate.queryForList("SELECT column_name " +
                 "FROM information_schema.columns " +
-                "WHERE table_name = '" + getEventsTableName(logName) + "' AND table_schema = 'public';", String.class);
+                "WHERE table_name = '" + db.eventTable.getTableNameSQL() + "' AND table_schema = 'public';", String.class);
 
         columns.remove("case_id");
         columns.remove("original_case_id");

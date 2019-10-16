@@ -1,12 +1,8 @@
 package de.tk.processmining.data.analysis;
 
-import de.tk.processmining.data.DatabaseConstants;
+import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.utils.OutputBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import static de.tk.processmining.data.DatabaseConstants.*;
-import static de.tk.processmining.data.DatabaseConstants.getGraphTableName;
 
 /**
  * @author Alexander Seeliger on 23.09.2019.
@@ -20,10 +16,12 @@ public class DirectlyFollowsGraphMiner {
     }
 
     public void mine(String logName) {
+        var db = new DatabaseModel(logName);
+
         // clean tables
-        jdbcTemplate.update("DROP TABLE IF EXISTS " + getCaseTableName(logName));
-        jdbcTemplate.update("DROP TABLE IF EXISTS " + getVariantsTableName(logName));
-        jdbcTemplate.execute(getPathsTableQuery(getVariantsTableName(logName)));
+        jdbcTemplate.update("DROP TABLE IF EXISTS " + db.caseTable.getTableNameSQL());
+        jdbcTemplate.update("DROP TABLE IF EXISTS " + db.variantsTable.getTableNameSQL());
+        jdbcTemplate.execute(getPathsTableQuery(db.variantsTable.getTableNameSQL()));
 
         jdbcTemplate.update("DROP TABLE IF EXISTS " + logName + "_graph");
 
@@ -39,11 +37,11 @@ public class DirectlyFollowsGraphMiner {
         sql.print("    COUNT(DISTINCT %s) AS %s,", "resource", "num_users");
         sql.print("    CAST(%s AS interval) AS %s,", "age(MAX(timestamp), MIN(timestamp))", "duration");
         sql.print("    CONCAT(':', STRING_AGG(CAST(event_id AS VARCHAR(5)), '::' ORDER BY timestamp, lifecycle, event_id), ':') AS variant");
-        sql.print("  FROM %s AS log", getEventsTableName(logName));
+        sql.print("  FROM %s AS log", db.eventTable.getTableNameSQL());
         sql.print("  GROUP BY case_id),");
 
         sql.print("  ins AS (");
-        sql.print("    INSERT INTO %s (%s)", getVariantsTableName(logName), "variant");
+        sql.print("    INSERT INTO %s (%s)", db.variantsTable.getTableNameSQL(), "variant");
         sql.print("    SELECT %s FROM sel GROUP BY variant ORDER BY COUNT(*) DESC RETURNING %s AS %s, %s)", "variant", "id", "variant_id", "variant");
         sql.print("SELECT %s, %s, %s, %s, %s, %s, %s",
                 "sel.case_id",
@@ -53,13 +51,13 @@ public class DirectlyFollowsGraphMiner {
                 "sel.num_users",
                 "sel.duration",
                 "variant_id");
-        sql.print("INTO %s", getCaseTableName(logName));
+        sql.print("INTO %s", db.caseTable.getTableNameSQL());
         sql.print("FROM sel LEFT JOIN ins USING (variant)");
 
         jdbcTemplate.execute(sql.toString());
 
         // create index for cases table
-        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + getCaseTableName(logName) + " ON " + getCaseTableName(logName) + " (case_id)");
+        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.caseTable.getTableNameSQL() + " ON " + db.caseTable.getTableNameSQL() + " (case_id)");
 
         // generate graph?
         sql.clear();
@@ -67,27 +65,27 @@ public class DirectlyFollowsGraphMiner {
         sql.print("  (SELECT");
         sql.print("    ROW_NUMBER() OVER (PARTITION BY case_id ORDER BY timestamp, lifecycle, event_id) AS num_rows,");
         sql.print("    *");
-        sql.print("  FROM %s)", getEventsTableName(logName));
+        sql.print("  FROM %s)", db.eventTable.getTableNameSQL());
         sql.print("SELECT");
         sql.print("  DENSE_RANK() OVER (ORDER BY COALESCE(a.event_name, 'Startknoten'), COALESCE(b.event_name, 'Endknoten')) AS edge_id,");
         sql.print("  COALESCE(a.case_id, b.case_id) AS case_id,");
         sql.print("  COALESCE(a.event_name, 'Startknoten') AS source_event,");
         sql.print("  COALESCE(b.event_name, 'Endknoten') AS target_event,");
         sql.print("  COALESCE(%s, interval '0') AS duration,", "age(b.timestamp, a.timestamp)");
-        sql.print("  CAST(%s AS INT) AS variant_id", getCaseTableName(logName) + ".variant_id");
-        sql.print("INTO %s", getGraphTableName(logName));
+        sql.print("  CAST(%s AS INT) AS variant_id", db.caseTable.getTableNameSQL() + ".variant_id");
+        sql.print("INTO %s", db.graphTable.getTableNameSQL());
         sql.print("FROM ordered AS a");
-        sql.print("INNER JOIN %s ON", getActivityTableName(logName));
-        sql.print("  %s = %s", getActivityTableName(logName) + ".id", "a.event_id");
+        sql.print("INNER JOIN %s ON", db.activityTable.getTableNameSQL());
+        sql.print("  %s = %s", db.activityTable.getTableNameSQL() + ".id", "a.event_id");
         sql.print("FULL OUTER JOIN ordered AS b ON");
         sql.print("  b.case_id = a.case_id");
         sql.print("  AND b.num_rows = a.num_rows + 1");
-        sql.print("LEFT JOIN " + getCaseTableName(logName) + " ON COALESCE(a.case_id, b.case_id) = " + getCaseTableName(logName) + ".case_id");
+        sql.print("LEFT JOIN " + db.caseTable.getTableNameSQL() + " ON COALESCE(a.case_id, b.case_id) = " + db.caseTable.getTableNameSQL() + ".case_id");
 
         jdbcTemplate.execute(sql.toString());
 
         // create index
-        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + getGraphTableName(logName) + " ON " + logName + "_graph (case_id)");
+        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.graphTable.getTableNameSQL() + " ON " + logName + "_graph (case_id)");
     }
 
     private String getPathsTableQuery(String variantsTableName) {
