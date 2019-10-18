@@ -63,6 +63,8 @@ public class LogService {
         eventLog.setType((file.getOriginalFilename().endsWith(".xes") || file.getOriginalFilename().endsWith(".xes.gz")) ? "xes" : "csv");
         eventLog = eventLogRepository.save(eventLog);
 
+        // report finished process
+        messagingTemplate.convertAndSend("/notifications/logs/stored", eventLog);
         return eventLog;
     }
 
@@ -78,6 +80,9 @@ public class LogService {
         var eventLog = eventLogRepository.findByLogName(logName);
         eventLog.setProcessing(true);
         eventLog = eventLogRepository.save(eventLog);
+
+        // report processing
+        messagingTemplate.convertAndSend("/notifications/logs/import_started", eventLog);
 
         // load file from storage service
         var fileName = storageService.load(eventLog.getFileName()).toFile().getAbsolutePath();
@@ -120,6 +125,9 @@ public class LogService {
         var eventLog = eventLogRepository.findByLogName(logName);
         eventLog.setProcessing(true);
         eventLog = eventLogRepository.save(eventLog);
+
+        // report processing
+        messagingTemplate.convertAndSend("/notifications/logs/processing_started", eventLog);
 
         // perform dfg miner
         var dfgMiner = new DirectlyFollowsGraphMiner(jdbcTemplate);
@@ -180,5 +188,8 @@ public class LogService {
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.graphTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.activityTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.eventTable.getTableNameSQL());
+
+        // report finished deletion
+        messagingTemplate.convertAndSend("/notifications/logs/deleted", logName);
     }
 }

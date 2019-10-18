@@ -1,6 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
+
+import { rxStompConfig } from './rx-stomp.config';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -60,7 +63,17 @@ import { ChartComponent } from './analysis/chart/chart.component';
     FormsModule
   ],
   providers: [
-    { provide: NZ_I18N, useValue: en_US }
+    {
+      provide: NZ_I18N,
+      useValue: en_US
+    }, {
+      provide: InjectableRxStompConfig,
+      useValue: rxStompConfig
+    }, {
+      provide: RxStompService,
+      useFactory: rxStompServiceFactory,
+      deps: [InjectableRxStompConfig]
+    }
   ],
   entryComponents: [ AttributeConditionComponent, PathConditionComponent, VariantConditionComponent, ClusterConditionComponent ],
   bootstrap: [AppComponent]

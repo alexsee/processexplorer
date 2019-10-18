@@ -20,7 +20,9 @@
     "@angular/platform-browser": "~8.2.10",
     "@angular/platform-browser-dynamic": "~8.2.10",
     "@angular/router": "~8.2.10",
+    "@stomp/ng2-stompjs": "^7.2.0",
     "@types/d3": "^5.7.2",
+    "@types/stompjs": "^2.3.4",
     "c3": "^0.7.11",
     "d3": "^5.12.0",
     "dagre": "^0.8.4",
@@ -30,8 +32,6 @@
     "ng-zorro-antd": "^8.3.1",
     "ngx-webstorage-service": "^4.1.0",
     "rxjs": "~6.5.3",
-    "sockjs-client": "^1.4.0",
-    "stompjs": "^2.3.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

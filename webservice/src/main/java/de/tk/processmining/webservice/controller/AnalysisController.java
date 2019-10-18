@@ -5,6 +5,7 @@ import de.tk.processmining.data.analysis.clustering.SimpleTraceClustering;
 import de.tk.processmining.data.query.condition.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,5 +42,4 @@ public class AnalysisController {
         var diffAnalysis = differenceAnalysis.getInsights(differenceAnalysis.getDefaultMetrics(logName), conditions);
         return ResponseEntity.ok(diffAnalysis);
     }
-
 }

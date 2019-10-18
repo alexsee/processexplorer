@@ -8,15 +8,21 @@ import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.analysis.metrics.SequenceMetrics;
 import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.utils.ClusterUtils;
+import de.tk.processmining.webservice.database.EventLogRepository;
+import de.tk.processmining.webservice.database.entities.EventLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import smile.clustering.HierarchicalClustering;
 import smile.clustering.linkage.WardLinkage;
 
 import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 /**
  * @author Alexander Seeliger on 27.09.2019.
@@ -26,21 +32,36 @@ public class SimpleTraceClustering {
 
     private static Logger logger = LoggerFactory.getLogger(SimpleTraceClustering.class);
 
+    private EventLogRepository eventLogRepository;
+    private SimpMessagingTemplate messagingTemplate;
     private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public SimpleTraceClustering(QueryService queryService, JdbcTemplate jdbcTemplate) {
+    public SimpleTraceClustering(EventLogRepository eventLogRepository,
+                                 SimpMessagingTemplate messagingTemplate,
+                                 QueryService queryService,
+                                 JdbcTemplate jdbcTemplate) {
+        this.eventLogRepository = eventLogRepository;
+        this.messagingTemplate = messagingTemplate;
         this.queryService = queryService;
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void cluster(String logName) {
+    @Async
+    public Future<EventLog> cluster(String logName) {
         logger.info("Begin simple trace clustering for \"{}\"", logName);
 
-        var variants = queryService.getAllPaths(logName, new ArrayList<>());
+        // get event log
+        var eventLog = eventLogRepository.findByLogName(logName);
+        eventLog.setProcessing(true);
+        eventLog = eventLogRepository.save(eventLog);
+
+        // report processing
+        messagingTemplate.convertAndSend("/notifications/logs/analysis_started", eventLog);
 
         // compute distance matrix
+        var variants = queryService.getAllPaths(logName, new ArrayList<>());
         double[][] distanceMatrix = new double[variants.size()][variants.size()];
 
         for (int i = 0; i < variants.size(); i++) {
@@ -87,6 +108,14 @@ public class SimpleTraceClustering {
         jdbcTemplate.batchUpdate(sql, batch);
 
         logger.info("Finished simple trace clustering for \"{}\"", logName);
+
+        eventLog.setProcessing(false);
+        eventLog = eventLogRepository.save(eventLog);
+
+        // report processing
+        messagingTemplate.convertAndSend("/notifications/logs/analysis_finished", eventLog);
+
+        return new AsyncResult<>(eventLog);
     }
 
 }

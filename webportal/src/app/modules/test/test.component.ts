@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { QueryService } from 'src/app/analysis/shared/query.service';
-import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
+import { EventLogStatistics } from '../../log/models/eventlog-statistics.model';
 import { ChartComponentOptions } from 'src/app/analysis/models/chart-options.model';
+import { QueryService } from 'src/app/analysis/shared/query.service';
+
 
 @Component({
   selector: 'app-test',
@@ -13,7 +14,9 @@ export class TestComponent implements OnInit {
   public context: EventLogStatistics;
   public options: ChartComponentOptions;
 
-  constructor(private queryService: QueryService) { }
+  constructor(
+    private queryService: QueryService) {
+  }
 
   ngOnInit() {
     this.queryService.getStatistics('bpi2019').subscribe(statistics => this.context = statistics);
