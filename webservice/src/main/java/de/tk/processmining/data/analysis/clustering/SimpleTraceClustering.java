@@ -8,8 +8,10 @@ import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.analysis.metrics.SequenceMetrics;
 import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.utils.ClusterUtils;
+import de.tk.processmining.webservice.database.EventLogFeatureRepository;
 import de.tk.processmining.webservice.database.EventLogRepository;
 import de.tk.processmining.webservice.database.entities.EventLog;
+import de.tk.processmining.webservice.database.entities.EventLogFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +35,19 @@ public class SimpleTraceClustering {
     private static Logger logger = LoggerFactory.getLogger(SimpleTraceClustering.class);
 
     private EventLogRepository eventLogRepository;
+    private EventLogFeatureRepository eventLogFeatureRepository;
     private SimpMessagingTemplate messagingTemplate;
     private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
     public SimpleTraceClustering(EventLogRepository eventLogRepository,
+                                 EventLogFeatureRepository eventLogFeatureRepository,
                                  SimpMessagingTemplate messagingTemplate,
                                  QueryService queryService,
                                  JdbcTemplate jdbcTemplate) {
         this.eventLogRepository = eventLogRepository;
+        this.eventLogFeatureRepository = eventLogFeatureRepository;
         this.messagingTemplate = messagingTemplate;
         this.queryService = queryService;
         this.jdbcTemplate = jdbcTemplate;
@@ -111,6 +116,17 @@ public class SimpleTraceClustering {
 
         eventLog.setProcessing(false);
         eventLog = eventLogRepository.save(eventLog);
+
+        // store clustering feature
+        var feature = eventLogFeatureRepository.findByEventLogLogNameAndFeature(logName, "clustering");
+        if (feature == null) {
+            feature = new EventLogFeature();
+            feature.setEventLog(eventLog);
+            feature.setFeature("clustering");
+            feature.setValues("simple_trace_clustering");
+
+            feature = eventLogFeatureRepository.save(feature);
+        }
 
         // report processing
         messagingTemplate.convertAndSend("/notifications/logs/analysis_finished", eventLog);

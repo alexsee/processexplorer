@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -99,7 +100,7 @@ public class LogService {
             eventLog.setImported(true);
 
             // delete file
-            storageService.delete(eventLog.getFileName());
+//            storageService.delete(eventLog.getFileName());
         } else {
             eventLog.setImported(false);
             eventLog.setErrorMessage("Not supported");

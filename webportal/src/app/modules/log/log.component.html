@@ -23,6 +23,7 @@
                     <th>Log Name</th>
                     <th>Creation Date</th>
                     <th>Status</th>
+                    <th>Features</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -37,10 +38,13 @@
                         <nz-spin nzSimple></nz-spin>
                     </span>
                     <span *ngIf="!log.processing">
-                        <span *ngIf="log.imported && log.processed">Imported & Processed</span>
+                        <span *ngIf="log.imported && log.processed"><i nz-icon nzType="check-circle" nzTheme="outline"></i> Imported & Processed</span>
                         <span *ngIf="log.imported && !log.processed">Imported</span>
                         <span *ngIf="!log.imported && !log.processed">Uploaded</span>
                     </span>
+                </td>
+                <td>
+                    <span *ngFor="let feature of log.features">{{feature.feature}}</span>
                 </td>
                 <td>
                     <span *ngIf="log.imported && !log.processed && !log.processing"><a (click)="doProcess(log)">Process</a></span>

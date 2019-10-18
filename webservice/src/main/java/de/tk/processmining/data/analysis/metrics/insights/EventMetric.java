@@ -28,7 +28,9 @@ public abstract class EventMetric extends ClusterMetric {
         var measures = new HashMap<Measure, Double>();
 
         for (var item : result) {
-            var measure = new EventMetric.Measure(eventName, item.get("attr").toString());
+            var attr = item.get("attr");
+
+            var measure = new EventMetric.Measure(eventName, attr == null ? "" : attr.toString());
             measures.put(measure, Double.parseDouble(item.get("occurrence").toString()));
         }
 

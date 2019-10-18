@@ -264,7 +264,7 @@ public class QueryService {
                     .addFromTable(db.caseAttributeTable);
 
             var result = jdbcTemplate.queryForObject(sql.validate().toString(), Double.class);
-            if (result != null && result <= 0.01) {
+            if (result != null && result <= 0.1) {
                 categoricalAttrs.add(attr);
             }
         }
@@ -331,7 +331,7 @@ public class QueryService {
         var result = new CaseAttributeValueResult();
         result.setAttributeName(query.getAttributeName());
 
-        if (values.size() > 100) {
+        if (values.size() > 500) {
             result.setCategorical(false);
         } else {
             result.setValues(values);

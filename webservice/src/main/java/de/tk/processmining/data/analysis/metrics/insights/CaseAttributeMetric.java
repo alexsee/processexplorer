@@ -71,7 +71,9 @@ public class CaseAttributeMetric extends ClusterMetric {
         var measures = new HashMap<ClusterMetric.Measure, Double>();
 
         for (var item : result) {
-            var measure = new ClusterMetric.Measure(attributeName, item.get("attr").toString());
+            var value = item.get("attr");
+
+            var measure = new ClusterMetric.Measure(attributeName, value == null ? "" : value.toString());
             measures.put(measure, Double.parseDouble(item.get("occurrence").toString()));
         }
 

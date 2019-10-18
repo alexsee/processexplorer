@@ -1,10 +1,11 @@
 package de.tk.processmining.webservice.database.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "_meta_event_log_annotation")
-public class EventLogAnnotation {
+public class EventLogAnnotation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

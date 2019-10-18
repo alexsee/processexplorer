@@ -1,15 +1,19 @@
 package de.tk.processmining.webservice.database.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * @author Alexander Seeliger on 26.09.2019.
  */
 @Entity
 @Table(name = "_meta_event_log")
-public class EventLog {
+public class EventLog implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +43,10 @@ public class EventLog {
 
     @Column(name = "error_message")
     private String errorMessage;
+
+    @OneToMany(mappedBy = "eventLog", targetEntity = EventLogFeature.class, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<EventLogFeature> features;
 
     protected EventLog() {
     }
@@ -118,5 +126,13 @@ public class EventLog {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public List<EventLogFeature> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(List<EventLogFeature> features) {
+        this.features = features;
     }
 }
