@@ -16,43 +16,8 @@
     height: 100%;
 }
 
-.no-data {
-    width: 100%;
-    height: 100%;
-  
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-areas: no-data;
-    justify-content: center;
-    align-content: center;
-  }
-  
-  .no-data p {
-    grid-template: no-data;
-    text-align: center;
-  }
-
 .progress-container {
   width: 100%;
   height: 100%;
+  text-align: center;
 }
-  
-.progress {
-  width: 100%;
-    height: 100%;
-  
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-areas: "progress";
-    justify-content: center;
-    align-content: center;
-  }
-  
-  .progress .mat-spinner {
-    grid-template: "progress";
-    margin: 0 auto;
-  }
-
-  .progress p {
-    text-align: center;
-  }

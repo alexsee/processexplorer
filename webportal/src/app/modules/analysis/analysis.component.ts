@@ -11,6 +11,7 @@ import { AttributeConditionComponent } from 'src/app/analysis/conditions/attribu
 import { VariantConditionComponent } from 'src/app/analysis/conditions/variant-condition/variant-condition.component';
 import { ClusterConditionComponent } from 'src/app/analysis/conditions/cluster-condition/cluster-condition.component';
 import { Condition } from 'src/app/analysis/models/condition.model';
+import { Recommendation } from 'src/app/analysis/models/recommendation';
 
 @Component({
   selector: 'app-analysis-module',
@@ -73,5 +74,9 @@ export class AnalysisComponent implements OnInit {
       case 'cluster':
         this.conditions.push(new Condition(ClusterConditionComponent, { }));
     }
+  }
+
+  onApplyRecommendation(recommendation: Recommendation) {
+    this.conditions = this.queryConvertService.convertFromQuery(recommendation.conditions);
   }
 }
