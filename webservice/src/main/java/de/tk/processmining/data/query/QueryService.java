@@ -347,6 +347,23 @@ public class QueryService {
     }
 
     /**
+     * Returns a list of available cluster indexes.
+     *
+     * @param logName
+     * @return
+     */
+    public List<Long> getClusterValues(String logName) {
+        var db = new DatabaseModel(logName);
+
+        var sql = new SelectQuery(true)
+                .addColumns(db.variantsTable.addColumn("cluster_index"))
+                .addFromTable(db.variantsTable);
+
+        var values = jdbcTemplate.queryForList(sql.validate().toString(), Long.class);
+        return values;
+    }
+
+    /**
      * Returns a drill down on case attribute data.
      *
      * @param query

@@ -1,0 +1,5 @@
+<ul>
+    <li *ngFor="let recommendation of recommendations">
+        <a (click)="doApply(recommendation)">{{recommendation.score | number}}</a>
+    </li>
+</ul>
