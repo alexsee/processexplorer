@@ -3,20 +3,23 @@ package de.tk.processmining.data.query.condition;
 import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import de.tk.processmining.data.DatabaseModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ClusterCondition extends Condition {
 
     private Long clusterIndex;
 
+    public ClusterCondition() {
+    }
+
+    public ClusterCondition(Long clusterIndex) {
+        this.clusterIndex = clusterIndex;
+    }
+
     @Override
-    public List<com.healthmarketscience.sqlbuilder.Condition> getCondition(DatabaseModel db) {
-        var conditions = new ArrayList<com.healthmarketscience.sqlbuilder.Condition>();
+    public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
         if (clusterIndex != null) {
-            conditions.add(BinaryCondition.equalTo(db.variantsTable.addColumn("cluster_index"), clusterIndex));
+            return BinaryCondition.equalTo(db.variantsTable.addColumn("cluster_index"), clusterIndex);
         }
-        return conditions;
+        return null;
     }
 
     public void setClusterIndex(Long clusterIndex) {

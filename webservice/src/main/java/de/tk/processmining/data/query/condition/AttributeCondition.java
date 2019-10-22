@@ -1,23 +1,14 @@
 package de.tk.processmining.data.query.condition;
 
+import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import com.healthmarketscience.sqlbuilder.InCondition;
+import com.healthmarketscience.sqlbuilder.NotCondition;
 import de.tk.processmining.data.DatabaseModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alexander Seeliger on 24.09.2019.
  */
 public class AttributeCondition extends Condition {
-
-    public void setBinaryType(BinaryType binaryType) {
-        this.binaryType = binaryType;
-    }
-
-    public enum BinaryType {
-        EQUAL_TO
-    }
 
     private BinaryType binaryType;
 
@@ -25,24 +16,64 @@ public class AttributeCondition extends Condition {
 
     private Object[] values;
 
-    @Override
-    public List<com.healthmarketscience.sqlbuilder.Condition> getCondition(DatabaseModel db) {
-        var conditions = new ArrayList<com.healthmarketscience.sqlbuilder.Condition>();
+    public enum BinaryType {
+        EQUAL_TO,
+        NOT_EQUAL_TO
+    }
 
-        switch (binaryType) {
-            case EQUAL_TO:
-                conditions.add(new InCondition(db.caseAttributeTable.addColumn("\"" + attribute + "\""), values));
-                break;
+    public AttributeCondition() {
+    }
+
+    public AttributeCondition(String attribute, BinaryType binaryType, Object[] values) {
+        this.attribute = attribute;
+        this.binaryType = binaryType;
+        this.values = values;
+    }
+
+    @Override
+    public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
+
+        if (values == null) {
+            switch (binaryType) {
+                case EQUAL_TO:
+                    return (new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.caseAttributeTable.addColumn("\"" + attribute + "\""), values));
+                case NOT_EQUAL_TO:
+                    return (new NotCondition(new BinaryCondition(BinaryCondition.Op.NOT_EQUAL_TO, db.caseAttributeTable.addColumn("\"" + attribute + "\""), values)));
+            }
+        } else {
+            switch (binaryType) {
+                case EQUAL_TO:
+                    return (new InCondition(db.caseAttributeTable.addColumn("\"" + attribute + "\""), values));
+                case NOT_EQUAL_TO:
+                    return (new NotCondition(new InCondition(db.caseAttributeTable.addColumn("\"" + attribute + "\""), values)));
+            }
         }
 
-        return conditions;
+        return null;
+    }
+
+    public BinaryType getBinaryType() {
+        return binaryType;
+    }
+
+    public void setBinaryType(BinaryType binaryType) {
+        this.binaryType = binaryType;
+    }
+
+    public String getAttribute() {
+        return attribute;
     }
 
     public void setAttribute(String attribute) {
         this.attribute = attribute;
     }
 
+    public Object[] getValues() {
+        return values;
+    }
+
     public void setValues(Object[] values) {
         this.values = values;
     }
+
 }

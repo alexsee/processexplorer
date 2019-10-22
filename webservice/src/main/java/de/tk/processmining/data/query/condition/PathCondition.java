@@ -3,9 +3,6 @@ package de.tk.processmining.data.query.condition;
 import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import de.tk.processmining.data.DatabaseModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Alexander Seeliger on 24.09.2019.
  */
@@ -33,19 +30,17 @@ public class PathCondition extends Condition {
 
     private String end;
 
-    public PathCondition() {}
+    public PathCondition() {
+    }
 
     @Override
-    public List<com.healthmarketscience.sqlbuilder.Condition> getCondition(DatabaseModel db) {
-        var conditions = new ArrayList<com.healthmarketscience.sqlbuilder.Condition>();
+    public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
 
         switch (conditionType) {
             case RESPONSE:
-                conditions.add(BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%:" + end + ":%"));
-                break;
+                return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%:" + end + ":%"));
             case EXISTS:
-                conditions.add(BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%"));
-                break;
+                return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%"));
             case START_END:
                 var path = "";
                 if (start != null)
@@ -53,14 +48,12 @@ public class PathCondition extends Condition {
                 path += "%";
                 if (end != null)
                     path += ":" + end + ":";
-                conditions.add(BinaryCondition.like(db.variantsVariantCol, path));
-                break;
+                return (BinaryCondition.like(db.variantsVariantCol, path));
             case CUSTOM:
             case CUSTOM_EXACT:
-                conditions.add(BinaryCondition.like(db.variantsVariantCol, start));
-                break;
+                return (BinaryCondition.like(db.variantsVariantCol, start));
         }
 
-        return conditions;
+        return null;
     }
 }

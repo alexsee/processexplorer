@@ -85,7 +85,8 @@ public class QueryService {
                 .addCustomOrdering("occurrence", OrderObject.Dir.DESCENDING);
 
         for (var rule : conditions) {
-            for (var condition : rule.getCondition(db)) {
+            var condition = rule.getCondition(db);
+            if (condition != null) {
                 sql.addCondition(condition);
             }
         }
@@ -132,7 +133,8 @@ public class QueryService {
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence");
 
         for (var rule : query.getConditions()) {
-            for (var condition : rule.getCondition(db)) {
+            var condition = rule.getCondition(db);
+            if (condition != null) {
                 sql.addCondition(condition);
             }
         }
@@ -264,7 +266,7 @@ public class QueryService {
                     .addFromTable(db.caseAttributeTable);
 
             var result = jdbcTemplate.queryForObject(sql.validate().toString(), Double.class);
-            if (result != null && result <= 0.1) {
+            if (result != null && result <= 0.05) {
                 categoricalAttrs.add(attr);
             }
         }
@@ -280,7 +282,7 @@ public class QueryService {
      */
     public List<Map<String, Object>> getCases(CasesQuery query) {
         var db = new DatabaseModel(query.getLogName());
-        query.getAttributes().forEach(x -> db.caseAttributeTable.addColumn(x));
+        query.getAttributes().forEach(x -> db.caseAttributeTable.addColumn("\"" + x + "\""));
 
         var sql = new SelectQuery()
                 .addColumns(db.caseCaseIdCol)
@@ -288,14 +290,16 @@ public class QueryService {
 
         // add selected columns
         for (var attr : query.getAttributes()) {
-            sql = sql.addColumns(db.caseAttributeTable.findColumn(attr));
+            sql = sql.addColumns(db.caseAttributeTable.findColumn("\"" + attr + "\""));
         }
 
         sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin);
+        sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseVariantJoin);
 
         // add conditions
         for (var rule : query.getConditions()) {
-            for (var condition : rule.getCondition(db)) {
+            var condition = rule.getCondition(db);
+            if (condition != null) {
                 sql.addCondition(condition);
             }
         }
@@ -321,7 +325,8 @@ public class QueryService {
 
         // add conditions
         for (var rule : query.getConditions()) {
-            for (var condition : rule.getCondition(db)) {
+            var condition = rule.getCondition(db);
+            if (condition != null) {
                 sql.addCondition(condition);
             }
         }
@@ -389,8 +394,9 @@ public class QueryService {
 
         // add conditions
         for (var rule : query.getConditions()) {
-            for (var condition : rule.getCondition(db)) {
-                sql = sql.addCondition(condition);
+            var condition = rule.getCondition(db);
+            if (condition != null) {
+                sql.addCondition(condition);
             }
         }
 

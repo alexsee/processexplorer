@@ -45,7 +45,7 @@ public abstract class ClusterMetric implements InsightMetric {
 
         var conditions = new ArrayList<>();
         for (var rule : queryConditions) {
-            conditions.addAll(rule.getCondition(db));
+            conditions.add(rule.getCondition(db));
         }
 
         // get occurrence

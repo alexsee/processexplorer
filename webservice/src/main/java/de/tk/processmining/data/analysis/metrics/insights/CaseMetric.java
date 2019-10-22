@@ -1,12 +1,13 @@
 package de.tk.processmining.data.analysis.metrics.insights;
 
-import com.healthmarketscience.sqlbuilder.*;
+import com.healthmarketscience.sqlbuilder.ComboCondition;
+import com.healthmarketscience.sqlbuilder.Condition;
+import com.healthmarketscience.sqlbuilder.NotCondition;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.model.Insight;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements Ins
 
         var conditions = new ArrayList<>();
         for (var rule : queryConditions) {
-            conditions.addAll(rule.getCondition(db));
+            conditions.add(rule.getCondition(db));
         }
 
         // get occurrence

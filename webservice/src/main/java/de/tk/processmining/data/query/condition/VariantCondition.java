@@ -3,9 +3,6 @@ package de.tk.processmining.data.query.condition;
 import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import de.tk.processmining.data.DatabaseModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Alexander Seeliger on 27.09.2019.
  */
@@ -21,12 +18,11 @@ public class VariantCondition extends Condition {
     }
 
     @Override
-    public List<com.healthmarketscience.sqlbuilder.Condition> getCondition(DatabaseModel db) {
-        var conditions = new ArrayList<com.healthmarketscience.sqlbuilder.Condition>();
+    public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
         if (variantId != null) {
-            conditions.add(BinaryCondition.equalTo(db.variantsIdCol, variantId));
+            return BinaryCondition.equalTo(db.variantsIdCol, variantId);
         }
-        return conditions;
+        return null;
     }
 
     public void setVariantId(long variantId) {

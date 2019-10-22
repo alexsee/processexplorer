@@ -18,6 +18,6 @@ import java.util.List;
 })
 public abstract class Condition {
 
-    public abstract List<com.healthmarketscience.sqlbuilder.Condition> getCondition(DatabaseModel db);
+    public abstract com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db);
 
 }
