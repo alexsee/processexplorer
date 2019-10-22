@@ -25,7 +25,11 @@ public class VariantCondition extends Condition {
         return null;
     }
 
-    public void setVariantId(long variantId) {
+    public Long getVariantId() {
+        return variantId;
+    }
+
+    public void setVariantId(Long variantId) {
         this.variantId = variantId;
     }
 }

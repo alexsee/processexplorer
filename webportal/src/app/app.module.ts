@@ -28,6 +28,7 @@ import { AttributeConditionComponent } from './analysis/conditions/attribute-con
 import { InsightComponent } from './analysis/insight/insight.component';
 import { InsightListComponent } from './analysis/insight-list/insight-list.component';
 import { ChartComponent } from './analysis/chart/chart.component';
+import { RecommendationListComponent } from './analysis/recommendation-list/recommendation-list.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { ChartComponent } from './analysis/chart/chart.component';
     ChartComponent,
     TestComponent,
     LogAnnotationComponent,
-    LogUploadComponent
+    LogUploadComponent,
+    RecommendationListComponent
   ],
   imports: [
     BrowserModule,

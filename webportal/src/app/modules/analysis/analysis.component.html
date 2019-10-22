@@ -23,6 +23,10 @@
       <app-condition-list [context]="context" [conditions]="conditions"></app-condition-list>
     </div>
 
+    <div class="process-explorer-recommendations">
+      <app-recommendation-list [logName]="logName" [conditions]="conditions" (apply)="onApplyRecommendation($event)"></app-recommendation-list>
+    </div>
+
     <div class="process-explorer-map">
       <app-processmap [conditions]="conditions" [logName]="logName"></app-processmap>
     </div>

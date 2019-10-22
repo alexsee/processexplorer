@@ -22,6 +22,10 @@ public class ClusterCondition extends Condition {
         return null;
     }
 
+    public Long getClusterIndex() {
+        return clusterIndex;
+    }
+
     public void setClusterIndex(Long clusterIndex) {
         this.clusterIndex = clusterIndex;
     }

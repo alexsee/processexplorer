@@ -8,18 +8,6 @@ import de.tk.processmining.data.DatabaseModel;
  */
 public class PathCondition extends Condition {
 
-    public void setConditionType(ConditionType conditionType) {
-        this.conditionType = conditionType;
-    }
-
-    public void setStart(String start) {
-        this.start = start;
-    }
-
-    public void setEnd(String end) {
-        this.end = end;
-    }
-
     public enum ConditionType {
         RESPONSE, EXISTS, START_END, CUSTOM, CUSTOM_EXACT
     }
@@ -55,5 +43,30 @@ public class PathCondition extends Condition {
         }
 
         return null;
+    }
+
+
+    public ConditionType getConditionType() {
+        return conditionType;
+    }
+
+    public void setConditionType(ConditionType conditionType) {
+        this.conditionType = conditionType;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
     }
 }

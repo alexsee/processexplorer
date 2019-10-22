@@ -58,7 +58,7 @@ public class AnalysisController {
     }
 
     @RequestMapping("/recommendations")
-    public ResponseEntity recommendations(@RequestParam("logName") String logName) {
+    public ResponseEntity recommendations(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
         var recommendations = recommendationService.getRecommendations(logName);
 
         return ResponseEntity.ok(recommendations);

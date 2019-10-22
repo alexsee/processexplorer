@@ -28,22 +28,34 @@ export class InsightComponent implements OnChanges {
       const dataset: any[] = ['count'];
       const labels: string[] = ['x'];
       let otherCount = 0;
+      let c = 0;
 
+      // zip together
+      const values = [];
       for (let i = 0; i < this.insight.labels.length; i++) {
-        const n_vt = this.insight.within[i];
+        values.push({ label: this.insight.labels[i], within: this.insight.within[i], without: this.insight.without[i] });
+      }
+
+      values.sort((a, b) => {
+        return ((a.within < b.within) ? -1 : ((a.within === b.within) ? 0 : 1)) * -1;
+      });
+
+      for (const value of values) {
+        const n_vt = value.within;
         const n_vNt = this.insight.within.reduce((a, b) => a + b, 0) - n_vt;
         const n_v = n_vt + n_vNt;
 
-        const n_t = n_vt + this.insight.without[i];
+        const n_t = n_vt + value.without;
         const n_s = this.insight.within.reduce((a, b) => a + b, 0) + this.insight.without.reduce((a, b) => a + b, 0);
 
-        if (this.unusualness(n_vt, n_v, n_t, n_s) > 0) {
-          if (this.insight.within[i] > 0) {
-            dataset.push(this.insight.within[i]);
-            labels.push(this.insight.labels[i]);
+        if (this.unusualness(n_vt, n_v, n_t, n_s) > 0 && c < 10) {
+          if (value.within > 0) {
+            dataset.push(value.within);
+            labels.push(value.label);
           }
+          c++;
         } else {
-          otherCount += this.insight.within[i];
+          otherCount += value.within;
         }
       }
 

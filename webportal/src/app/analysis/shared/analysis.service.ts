@@ -4,6 +4,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Insight } from '../models/insight.model';
 import { Condition } from '../models/condition.model';
+import { Recommendation } from '../models/recommendation';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -21,11 +22,24 @@ export class AnalysisService {
   ) { }
 
   executeTraceClustering(logName: string) {
-    return this.http.post(environment.serviceUrl + '/analysis/simple_trace_clustering?logName=' + logName, null, httpOptions);
+    return this.http.post(
+      environment.serviceUrl + '/analysis/simple_trace_clustering?logName=' + logName,
+      null,
+      httpOptions);
   }
 
   getInsights(logName: string, conditions: Condition[]): Observable<Insight[]> {
-    return this.http.post<Insight[]>(environment.serviceUrl + '/analysis/insights?logName=' + logName, conditions, httpOptions);
+    return this.http.post<Insight[]>(
+      environment.serviceUrl + '/analysis/insights?logName=' + logName,
+      conditions,
+      httpOptions);
+  }
+
+  getRecommendations(logName: string, conditions: Condition[]): Observable<Recommendation[]> {
+    return this.http.post<Recommendation[]>(
+      environment.serviceUrl + '/analysis/recommendations?logName=' + logName,
+      conditions,
+      httpOptions);
   }
 
 }

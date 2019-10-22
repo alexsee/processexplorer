@@ -13,6 +13,13 @@ public class Recommendation {
 
     private List<Condition> conditions;
 
+    public Recommendation() { }
+
+    public Recommendation(Double score, List<Condition> conditions) {
+        this.score = score;
+        this.conditions = conditions;
+    }
+
     public Double getScore() {
         return score;
     }

@@ -1,8 +1,9 @@
 .process-explorer-dashboard {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: auto;
-    grid-template-areas: "conditions map insights";
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "conditions map insights"
+                         "recommendations map insights";
     height: 100%;
 }
 
@@ -36,6 +37,10 @@
     grid-area: insights;
     overflow-y: scroll;
     height: 700px;
+}
+
+.process-explorer-recommendations {
+    grid-area: recommendations;
 }
 
 nz-breadcrumb {

@@ -6,16 +6,16 @@ import de.tk.processmining.data.analysis.itemsets.FrequentItemsetMiner;
 import de.tk.processmining.data.model.Insight;
 import de.tk.processmining.data.model.Recommendation;
 import de.tk.processmining.data.query.CasesQuery;
+import de.tk.processmining.data.query.DrillDownQuery;
 import de.tk.processmining.data.query.QueryService;
 import de.tk.processmining.data.query.condition.*;
+import de.tk.processmining.data.query.selection.CountCasesSelection;
+import de.tk.processmining.data.query.selection.Selection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import smile.association.ItemSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Alexander Seeliger on 22.10.2019.
