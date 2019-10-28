@@ -146,10 +146,10 @@ public class QueryService {
         var rowMapper = new RowMapper<Variant>() {
             public Variant mapRow(ResultSet rs, int rowNum) throws SQLException {
                 var result = new Variant();
-                result.setId(rs.getLong(1));
-                result.setOccurrence(rs.getLong(3));
+                result.setId(rs.getLong("id"));
+                result.setOccurrence(rs.getLong("occurrence"));
 
-                var path = rs.getString(2).split("::");
+                var path = rs.getString("variant").split("::");
                 var path_index = new int[path.length];
 
                 for (int i = 0; i < path.length; i++) {

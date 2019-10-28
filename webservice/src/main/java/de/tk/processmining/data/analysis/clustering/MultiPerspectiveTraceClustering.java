@@ -162,9 +162,6 @@ public class MultiPerspectiveTraceClustering {
             if (variant.getOccurrence() <= 2)
                 continue;
 
-            var itemsetValues = new HashMap<FieldValue, Integer>();
-            var valueMap = new HashMap<Integer, FieldValue>();
-
             // query for cases
             var conditions = new ArrayList<Condition>();
             conditions.add(new VariantCondition(variant.getId()));
@@ -172,12 +169,11 @@ public class MultiPerspectiveTraceClustering {
             var cases = queryService.getCases(new CasesQuery(logName, conditions, categoricalAttributes));
 
             // extract itemsets
+            var itemsetValues = new HashMap<FieldValue, Integer>();
             var closedItemSets = itemsetMiner.getClosedItemsets(cases, itemsetValues, minSupport);
 
             // generate reverse map
-            for (var keyValue : itemsetValues.entrySet()) {
-                valueMap.put(keyValue.getValue(), keyValue.getKey());
-            }
+            var valueMap = itemsetMiner.getReversed(itemsetValues);
 
             for (var itemset : closedItemSets) {
                 var values = new Itemset();

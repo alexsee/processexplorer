@@ -5,8 +5,6 @@ import ca.pfv.spmf.patterns.itemset_array_integers_with_count.Itemsets;
 import de.tk.processmining.data.analysis.clustering.FieldValue;
 import de.tk.processmining.data.analysis.itemsets.spmf.frequentpatterns.AlgoFPClose;
 import org.springframework.stereotype.Service;
-import smile.association.FPGrowth;
-import smile.association.ItemSet;
 
 import java.util.*;
 
@@ -16,45 +14,9 @@ import java.util.*;
 @Service
 public class FrequentItemsetMiner {
 
-    //    public List<ItemSet> getItemsets(List<Map<String, Object>> cases, Map<FieldValue, Integer> itemsetValues, double support) {
-    //        var transactions = getTransactions(itemsetValues, cases);
-    //
-    //        var growth = new FPGrowth(transactions, support);
-    //        return growth.learn();
-    //    }
-
     public Set<FrequentItemset> getClosedItemsets(List<Map<String, Object>> cases, Map<FieldValue, Integer> itemsetValues, double support) {
         var transactions = getTransactions(itemsetValues, cases);
-
-        var growth = fpClose(transactions, support);
-        return growth;
-    }
-
-    public List<ItemSet> getClosedSets(List<ItemSet> itemSets) {
-        var result = new ArrayList<ItemSet>();
-
-        for (int i = 0; i < itemSets.size(); i++) {
-            var itemset = itemSets.get(i);
-
-            // check if we have an itemset containing the items with a higher support
-            boolean isSuper = true;
-            for (int j = i; j < itemSets.size(); j++) {
-                if (i == j)
-                    continue;
-
-                var other = itemSets.get(j);
-                if (contains(itemset.items, other.items) && other.support >= itemset.support) {
-                    isSuper = false;
-                    break;
-                }
-            }
-
-            if (isSuper) {
-                result.add(itemset);
-            }
-        }
-
-        return result;
+        return fpClose(transactions, support);
     }
 
     public Map<Integer, FieldValue> getReversed(Map<FieldValue, Integer> itemsetValues) {
@@ -65,23 +27,6 @@ public class FrequentItemsetMiner {
         return vals;
     }
 
-    private boolean contains(int[] list1, int[] list2) {
-        for (int i = 0; i < list1.length; i++) {
-            boolean contains = false;
-            for (int j = 0; j < list2.length; j++) {
-                if (list1[i] == list2[j]) {
-                    contains = true;
-                    break;
-                }
-            }
-
-            if (!contains)
-                return false;
-        }
-
-        return true;
-    }
-
     private List<List<Integer>> getTransactions(Map<FieldValue, Integer> itemsetValues, List<Map<String, Object>> cases) {
         var transactions = new ArrayList<List<Integer>>();
 
@@ -89,6 +34,9 @@ public class FrequentItemsetMiner {
             var transaction = new ArrayList<Integer>();
 
             for (var attr : c.entrySet()) {
+                if (attr.getKey().equals("variant_id"))
+                    continue;
+
                 var value = new FieldValue(attr.getKey(), attr.getValue());
 
                 Integer itemsetValue = itemsetValues.get(value);
