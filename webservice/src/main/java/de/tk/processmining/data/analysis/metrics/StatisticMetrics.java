@@ -21,10 +21,16 @@ public class StatisticMetrics {
         return (meanX - meanY) / Math.sqrt((variance(x) + variance(y)) / 2);
     }
 
+    /**
+     * Norms the given values by the sum.
+     *
+     * @param values
+     * @return
+     */
     public static double[] norm(double[] values) {
         double count = sum(values);
         double[] p = new double[values.length];
-        for(int i = 0; i < values.length; i++) {
+        for (int i = 0; i < values.length; i++) {
             p[i] = values[i] / count;
         }
         return p;

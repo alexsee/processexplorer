@@ -99,7 +99,7 @@ export class ProcessMapComponent implements OnChanges {
       // add edge
       this.graph.setEdge(this.getCleanName(edge.sourceEvent), this.getCleanName(edge.targetEvent),
         {
-          label: this.settings.mode === 'occurrence' ? edge.occurrence : moment.duration(edge.avgDuration, 'seconds').humanize(),
+          label: this.settings.mode === 'occurrence' ? edge.occurrence + '' : moment.duration(edge.avgDuration, 'seconds').humanize(),
           curve: d3.curveBasis,
           weight: edge.occurrence
         });

@@ -37,7 +37,12 @@ public class ClusterRecommender {
         var clusters = queryService.getClusterValues(logName);
 
         for (var cluster : clusters) {
-            result.add(new Recommendation(1.0, Arrays.asList(new Condition[]{new ClusterCondition(cluster)})));
+            var recommendation = new Recommendation(1.0, Arrays.asList(new Condition[]{new ClusterCondition(cluster)}));
+            var logStatistics = queryService.getLogStatistics(logName, recommendation.getConditions());
+
+            recommendation.setNumTraces(logStatistics.getNumTraces());
+
+            result.add(recommendation);
         }
 
         return result;

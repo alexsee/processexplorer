@@ -7,6 +7,17 @@
 <div class="inner-content">
   <div class="process-explorer-dashboard">
     <div class="process-explorer-conditions">
+      <div class="statistics">
+        <nz-row [nzGutter]="16">
+          <nz-col [nzSpan]="12">
+              <nz-statistic [nzTitle]="'# Traces'" [nzValue]="context.numTraces | number"></nz-statistic>
+          </nz-col>
+          <nz-col [nzSpan]="12">
+              <nz-statistic [nzTitle]="'# Events'" [nzValue]="context.numEvents | number"></nz-statistic>
+          </nz-col>
+        </nz-row>
+      </div>
+
       <div class="buttons">
         <button nz-button nzType="primary" (click)="onUpdate()">Update</button>
         <button nz-button nz-dropdown [nzDropdownMenu]="menu">Add Selection</button>

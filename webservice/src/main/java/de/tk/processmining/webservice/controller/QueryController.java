@@ -5,10 +5,7 @@ import de.tk.processmining.data.model.Variant;
 import de.tk.processmining.data.query.*;
 import de.tk.processmining.data.query.condition.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,9 +22,14 @@ public class QueryController {
         this.queryService = queryService;
     }
 
-    @RequestMapping("/query/statistics")
+    @RequestMapping(value = "/query/statistics", method = RequestMethod.GET)
     public Log getStatistics(String logName) {
         return queryService.getLogStatistics(logName);
+    }
+
+    @RequestMapping(value = "/query/statistics", method = RequestMethod.POST)
+    public Log getStatistics(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
+        return queryService.getLogStatistics(logName, conditions);
     }
 
     @RequestMapping("/query/get_all_paths")

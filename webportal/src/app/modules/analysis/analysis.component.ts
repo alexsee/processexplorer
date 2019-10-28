@@ -37,7 +37,6 @@ export class AnalysisComponent implements OnInit {
 
   ngOnInit() {
     this.logName = this.route.snapshot.paramMap.get('logName');
-    this.queryService.getStatistics(this.logName).subscribe(statistics => this.context = statistics);
 
     // load queries from local storage
     const query = this.storageService.readQueryConditions(this.logName);
@@ -48,6 +47,9 @@ export class AnalysisComponent implements OnInit {
   }
 
   onUpdate() {
+    this.queryService.getStatistics(this.logName, this.queryConvertService.convertToQuery(this.conditions))
+      .subscribe(statistics => this.context = statistics);
+
     // store queries to local storage
     this.storageService.writeQueryConditions(this.logName, this.queryConvertService.convertToQuery(this.conditions));
 
@@ -78,5 +80,8 @@ export class AnalysisComponent implements OnInit {
 
   onApplyRecommendation(recommendation: Recommendation) {
     this.conditions = this.queryConvertService.convertFromQuery(recommendation.conditions);
+
+    this.queryService.getStatistics(this.logName, this.queryConvertService.convertToQuery(this.conditions))
+      .subscribe(statistics => this.context = statistics);
   }
 }

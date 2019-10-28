@@ -51,6 +51,7 @@ public class DifferenceAnalysis {
         result.add(new TransitionDurationMetric(logName));
         result.add(new CaseDurationMetric(logName));
         result.add(new CaseEventDurationMetric(logName));
+        result.add(new ActivityMetric(logName));
 
         queryService.getCategoricalCaseAttributes(logName).forEach(attr -> result.add(new CaseAttributeMetric(logName, attr)));
         queryService.getLogStatistics(logName).getActivities().forEach(evt -> result.add(new EventResourceMetric(logName, evt)));

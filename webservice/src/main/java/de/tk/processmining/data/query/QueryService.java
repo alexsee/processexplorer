@@ -5,9 +5,11 @@ import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import de.tk.processmining.data.DatabaseModel;
 import de.tk.processmining.data.analysis.categorization.EventAttributeCodes;
 import de.tk.processmining.data.model.*;
+import de.tk.processmining.data.query.condition.Condition;
 import de.tk.processmining.data.query.selection.SelectionOrder;
 import de.tk.processmining.webservice.database.EventLogAnnotationRepository;
 import de.tk.processmining.webservice.database.entities.EventLogAnnotation;
+import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -49,6 +51,56 @@ public class QueryService {
         var activities = jdbcTemplate.queryForList(new SelectQuery().addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), String.class);
         var numEvents = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events").toString(), Long.class);
         var numTraces = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.caseAttributeCaseIdCol), "num_traces").toString(), Long.class);
+
+        var caseAttributes = getCaseAttributesDetails(logName);
+        var eventAttributes = getEventAttributesDetails(logName);
+
+        var result = new Log();
+        result.setLogName(logName);
+        result.setNumActivities(activities.size());
+        result.setActivities(activities);
+        result.setNumEvents(numEvents);
+        result.setNumTraces(numTraces);
+
+        result.setCaseAttributes(caseAttributes);
+        result.setEventAttributes(eventAttributes);
+
+        return result;
+    }
+
+    /**
+     * Returns basic statistics about a loaded event log.
+     *
+     * @param logName
+     * @return
+     */
+    public Log getLogStatistics(String logName, List<de.tk.processmining.data.query.condition.Condition> conditions) {
+        var db = new DatabaseModel(logName);
+
+        // get activities
+        var sql_activities =new SelectQuery()
+                .addColumns(db.activityNameCol)
+                .addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING);
+
+        var activities = jdbcTemplate.queryForList(sql_activities.toString(), String.class);
+
+        // get number of events
+        var sql_num_events = new SelectQuery()
+                .addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events")
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin, db.caseVariantJoin);
+
+        addConditionsToSql(sql_num_events, db, conditions);
+
+        var numEvents = jdbcTemplate.queryForObject(sql_num_events.toString(), Long.class);
+
+        // get number of traces
+        var sql_num_traces = new SelectQuery()
+                .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.caseAttributeCaseIdCol), "num_traces")
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin, db.caseVariantJoin);
+
+        addConditionsToSql(sql_num_traces, db, conditions);
+
+        var numTraces = jdbcTemplate.queryForObject(sql_num_traces.toString(), Long.class);
 
         var caseAttributes = getCaseAttributesDetails(logName);
         var eventAttributes = getEventAttributesDetails(logName);
@@ -324,12 +376,7 @@ public class QueryService {
         sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin, db.caseVariantJoin);
 
         // add conditions
-        for (var rule : query.getConditions()) {
-            var condition = rule.getCondition(db);
-            if (condition != null) {
-                sql.addCondition(condition);
-            }
-        }
+        addConditionsToSql(sql, db, query.getConditions());
 
         var values = jdbcTemplate.queryForList(sql.validate().toString(), String.class);
 
@@ -410,12 +457,7 @@ public class QueryService {
         }
 
         // add conditions
-        for (var rule : query.getConditions()) {
-            var condition = rule.getCondition(db);
-            if (condition != null) {
-                sql.addCondition(condition);
-            }
-        }
+        addConditionsToSql(sql, db, query.getConditions());
 
         var values = jdbcTemplate.queryForList(sql.validate().toString());
 
@@ -430,5 +472,15 @@ public class QueryService {
         }
 
         return result;
+    }
+
+    private void addConditionsToSql(SelectQuery sql, DatabaseModel db, List<Condition> conditions) {
+        // add conditions
+        for (var rule : conditions) {
+            var condition = rule.getCondition(db);
+            if (condition != null) {
+                sql.addCondition(condition);
+            }
+        }
     }
 }

@@ -33,8 +33,14 @@ export class QueryService {
     );
   }
 
-  getStatistics(logName: string): Observable<EventLogStatistics> {
-    return this.http.get<EventLogStatistics>(environment.serviceUrl + '/query/statistics?logName=' + logName);
+  getStatistics(logName: string, conditions?: Condition[]): Observable<EventLogStatistics> {
+    if (conditions) {
+      return this.http.post<EventLogStatistics>(
+        environment.serviceUrl + '/query/statistics?logName=' + logName,
+        conditions);
+    } else {
+      return this.http.get<EventLogStatistics>(environment.serviceUrl + '/query/statistics?logName=' + logName);
+    }
   }
 
   getCaseAttributeValues(logName: string, attributeName: string, conditions: Condition[]): Observable<CaseAttributeValueResult> {

@@ -11,6 +11,8 @@ public class Recommendation {
 
     private Double score;
 
+    private Long numTraces;
+
     private List<Condition> conditions;
 
     public Recommendation() { }
@@ -34,5 +36,13 @@ public class Recommendation {
 
     public void setConditions(List<Condition> conditions) {
         this.conditions = conditions;
+    }
+
+    public Long getNumTraces() {
+        return numTraces;
+    }
+
+    public void setNumTraces(Long numTraces) {
+        this.numTraces = numTraces;
     }
 }
