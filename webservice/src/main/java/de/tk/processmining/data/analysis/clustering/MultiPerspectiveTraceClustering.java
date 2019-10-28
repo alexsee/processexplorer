@@ -22,6 +22,10 @@ import de.tk.processmining.data.query.condition.ComboCondition;
 import de.tk.processmining.data.query.condition.ComboType;
 import de.tk.processmining.data.query.condition.Condition;
 import de.tk.processmining.data.query.condition.VariantCondition;
+import de.tk.processmining.webservice.database.EventLogFeatureRepository;
+import de.tk.processmining.webservice.database.EventLogRepository;
+import de.tk.processmining.webservice.database.entities.EventLog;
+import de.tk.processmining.webservice.database.entities.EventLogFeature;
 import net.metaopt.swarm.FitnessFunction;
 import net.metaopt.swarm.pso.Particle;
 import net.metaopt.swarm.pso.Swarm;
@@ -29,11 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import smile.clustering.HierarchicalClustering;
 import smile.clustering.linkage.WardLinkage;
 
 import java.util.*;
+import java.util.concurrent.Future;
 
 /**
  * @author Alexander Seeliger on 27.09.2019.
@@ -45,6 +53,9 @@ public class MultiPerspectiveTraceClustering {
 
     private QueryService queryService;
     private JdbcTemplate jdbcTemplate;
+    private EventLogRepository eventLogRepository;
+    private EventLogFeatureRepository eventLogFeatureRepository;
+    private SimpMessagingTemplate messagingTemplate;
     private FrequentItemsetMiner itemsetMiner;
 
     private int numParticles = 10;
@@ -56,15 +67,32 @@ public class MultiPerspectiveTraceClustering {
     private List<String> categoricalAttributes;
 
     @Autowired
-    public MultiPerspectiveTraceClustering(FrequentItemsetMiner itemsetMiner,
+    public MultiPerspectiveTraceClustering(EventLogRepository eventLogRepository,
+                                           EventLogFeatureRepository eventLogFeatureRepository,
+                                           SimpMessagingTemplate messagingTemplate,
+                                           FrequentItemsetMiner itemsetMiner,
                                            QueryService queryService,
                                            JdbcTemplate jdbcTemplate) {
+        this.eventLogRepository = eventLogRepository;
+        this.eventLogFeatureRepository = eventLogFeatureRepository;
+        this.messagingTemplate = messagingTemplate;
         this.itemsetMiner = itemsetMiner;
         this.queryService = queryService;
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public EventLogClusters cluster(String logName) {
+    @Async
+    public Future<EventLog> cluster(String logName) {
+        logger.info("Begin multi perspective trace clustering for \"{}\"", logName);
+
+        // get event log
+        var eventLog = eventLogRepository.findByLogName(logName);
+        eventLog.setProcessing(true);
+        eventLog = eventLogRepository.save(eventLog);
+
+        // report processing
+        messagingTemplate.convertAndSend("/notifications/logs/analysis_started", eventLog);
+
         this.logName = logName;
         this.log = queryService.getLogStatistics(logName);
 
@@ -84,7 +112,7 @@ public class MultiPerspectiveTraceClustering {
         // set default pso values
         swarm.setInertia(0.729844);
         swarm.setMaxPosition(new double[]{0.8, Math.min(Math.max(2, variants.size()), 50), 1});
-        swarm.setMinPosition(new double[]{0.1, 5, 0});
+        swarm.setMinPosition(new double[]{0.2, 5, 0});
         swarm.setMaxMinVelocity(0.2);
         swarm.setGlobalIncrement(1.49618);
         swarm.setParticleIncrement(1.49618);
@@ -112,11 +140,28 @@ public class MultiPerspectiveTraceClustering {
 
             // update database
             updateDatabase(clusters);
-
-            return clusters;
         }
 
-        return null;
+        logger.info("Finished simple trace clustering for \"{}\"", logName);
+
+        eventLog.setProcessing(false);
+        eventLog = eventLogRepository.save(eventLog);
+
+        // store clustering feature
+        var feature = eventLogFeatureRepository.findByEventLogLogNameAndFeature(logName, "clustering");
+        if (feature == null) {
+            feature = new EventLogFeature();
+            feature.setEventLog(eventLog);
+            feature.setFeature("clustering");
+            feature.setValues("simple_trace_clustering");
+
+            feature = eventLogFeatureRepository.save(feature);
+        }
+
+        // report processing
+        messagingTemplate.convertAndSend("/notifications/logs/analysis_finished", eventLog);
+
+        return new AsyncResult<>(eventLog);
     }
 
     private void updateDatabase(EventLogClusters clusters) {

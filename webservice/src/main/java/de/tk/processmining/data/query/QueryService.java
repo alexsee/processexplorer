@@ -9,7 +9,6 @@ import de.tk.processmining.data.query.condition.Condition;
 import de.tk.processmining.data.query.selection.SelectionOrder;
 import de.tk.processmining.webservice.database.EventLogAnnotationRepository;
 import de.tk.processmining.webservice.database.entities.EventLogAnnotation;
-import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -78,7 +77,7 @@ public class QueryService {
         var db = new DatabaseModel(logName);
 
         // get activities
-        var sql_activities =new SelectQuery()
+        var sql_activities = new SelectQuery()
                 .addColumns(db.activityNameCol)
                 .addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING);
 

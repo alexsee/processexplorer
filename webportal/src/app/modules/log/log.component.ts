@@ -82,4 +82,13 @@ export class LogComponent implements OnInit, OnDestroy {
         log.processing = false;
       });
   }
+
+  doMultiClustering(log: EventLog) {
+    log.processing = true;
+    this.analysisService.executeMultiPerspectiveTraceClustering(log.logName)
+      .subscribe(x => { }, error => {
+        this.nzMessageService.error('An error occurred during the clustering of <b>' + log.logName + '</b>.');
+        log.processing = false;
+      });
+  }
 }

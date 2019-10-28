@@ -28,6 +28,13 @@ export class AnalysisService {
       httpOptions);
   }
 
+  executeMultiPerspectiveTraceClustering(logName: string) {
+    return this.http.post(
+      environment.serviceUrl + '/analysis/multi_trace_clustering?logName=' + logName,
+      null,
+      httpOptions);
+  }
+
   getInsights(logName: string, conditions: Condition[]): Observable<Insight[]> {
     return this.http.post<Insight[]>(
       environment.serviceUrl + '/analysis/insights?logName=' + logName,

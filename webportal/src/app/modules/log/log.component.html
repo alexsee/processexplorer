@@ -50,7 +50,16 @@
                     <span *ngIf="log.imported && !log.processed && !log.processing"><a (click)="doProcess(log)">Process</a></span>
                     <span *ngIf="!log.imported && !log.processed && !log.processing"><a (click)="doImport(log)">Import Event Log</a></span>
                     <span *ngIf="log.imported && log.processed">
-                        <a (click)="doClustering(log)">Clustering</a>
+                        <a nz-dropdown [nzDropdownMenu]="menu">
+                            Analysis
+                            <i nz-icon nzType="down"></i>
+                        </a>
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <ul nz-menu nzSelectable>
+                                <li nz-menu-item><a (click)="doClustering(log)">Simple Clustering</a></li>
+                                <li nz-menu-item><a (click)="doMultiClustering(log)">Multi-Perspective Clustering</a></li>
+                            </ul>
+                        </nz-dropdown-menu>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a [routerLink]="['/logs/annotations/', log.logName]">Annotate</a>
                         <nz-divider nzType="vertical"></nz-divider>
