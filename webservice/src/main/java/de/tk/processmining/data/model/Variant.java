@@ -1,5 +1,7 @@
 package de.tk.processmining.data.model;
 
+import java.util.Objects;
+
 /**
  * @author Alexander Seeliger on 23.09.2019.
  */
@@ -43,5 +45,19 @@ public class Variant {
 
     public void setPathIndex(int[] pathIndex) {
         this.pathIndex = pathIndex;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Variant) {
+            var other = (Variant) obj;
+            return other.getId() == getId();
+        }
+        return false;
     }
 }

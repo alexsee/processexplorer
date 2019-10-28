@@ -83,7 +83,8 @@ public class NonFrequentRecommender {
         var categoricalAttributes = queryService.getCategoricalCaseAttributes(logName);
         var cases = queryService.getCases(new CasesQuery(logName, new ArrayList<>(), categoricalAttributes));
 
-        return frequentItemsetMiner.getClosedItemsets(cases, itemsetValues, MIN_SUPPORT);
+//        return frequentItemsetMiner.getClosedItemsets(cases, itemsetValues, MIN_SUPPORT);
+        return null;
     }
 
 }

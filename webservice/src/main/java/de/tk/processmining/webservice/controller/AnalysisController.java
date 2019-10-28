@@ -52,7 +52,7 @@ public class AnalysisController {
 
     @RequestMapping("/multi_trace_clustering")
     public ResponseEntity multiTraceClustering(@RequestParam("logName") String logName) {
-        multiPerspectiveTraceClustering.generateCaseAttributeDb(logName);
+        multiPerspectiveTraceClustering.cluster(logName);
 
         return ResponseEntity.ok().build();
     }
