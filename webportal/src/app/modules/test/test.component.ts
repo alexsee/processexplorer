@@ -19,7 +19,7 @@ export class TestComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.queryService.getStatistics('bpi2019').subscribe(statistics => this.context = statistics);
+    this.queryService.getStatistics('bpi19_small').subscribe(statistics => this.context = statistics);
 
     this.options = {
       type: 'bar',

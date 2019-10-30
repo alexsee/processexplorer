@@ -6,16 +6,20 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.2.0.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>de.tk.processmining</groupId>
 	<artifactId>webservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>webservice</name>
-	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>12</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<java.version>13</java.version>
+		<maven.compiler.source>13</maven.compiler.source>
+		<maven.compiler.target>13</maven.compiler.target>
 	</properties>
 
 	<repositories>
@@ -118,11 +122,6 @@
 			<artifactId>openxes-xstream</artifactId>
 			<version>2.0</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>processmining</groupId>-->
-<!--			<artifactId>spex</artifactId>-->
-<!--			<version>2.0</version>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>processmining</groupId>
 			<artifactId>xpp3_min</artifactId>

@@ -2,7 +2,7 @@ package ca.pfv.spmf.algorithms.frequentpatterns.fin_prepost;
 
 
 import ca.pfv.spmf.tools.MemoryLogger;
-import de.tk.processmining.data.analysis.itemsets.FrequentItemset;
+import de.processmining.data.analysis.itemsets.FrequentItemset;
 
 import java.io.IOException;
 import java.util.*;

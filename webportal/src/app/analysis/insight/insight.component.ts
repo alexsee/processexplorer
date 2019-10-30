@@ -48,10 +48,11 @@ export class InsightComponent implements OnChanges {
         const n_t = n_vt + value.without;
         const n_s = this.insight.within.reduce((a, b) => a + b, 0) + this.insight.without.reduce((a, b) => a + b, 0);
 
-        if (this.unusualness(n_vt, n_v, n_t, n_s) > 0 && c < 10) {
+        // if (this.unusualness(n_vt, n_v, n_t, n_s) > 0 && c < 10) {
+        if (c < 10) {
           if (value.within > 0) {
             dataset.push(value.within);
-            labels.push(value.label);
+            labels.push(value.label === '' ? '-NULL-' : value.label);
           }
           c++;
         } else {
@@ -61,7 +62,7 @@ export class InsightComponent implements OnChanges {
 
       if (otherCount > 0) {
         dataset.push(otherCount);
-        labels.push('Other');
+        labels.push('-OTHER-');
       }
 
       // generate chart in container
