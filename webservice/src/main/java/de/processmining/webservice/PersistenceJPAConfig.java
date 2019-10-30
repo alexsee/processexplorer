@@ -46,7 +46,7 @@ public class PersistenceJPAConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         var em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(this.dataSource);
-        em.setPackagesToScan(new String[] { "de.tk.processmining.webservice.database" });
+        em.setPackagesToScan(new String[] { "de.processmining.webservice.database" });
 
         var vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
