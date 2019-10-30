@@ -19,7 +19,7 @@
 
 package de.processmining.data.analysis.itemsets.spmf.sequentialpatterns;
 
-import ca.pfv.spmf.patterns.itemset_list_integers_without_support.Itemset;
+import de.processmining.data.analysis.itemsets.spmf.patterns.itemset_list_integers_without_support.Itemset;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

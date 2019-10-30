@@ -19,7 +19,7 @@
 
 package de.processmining.data.analysis.itemsets.spmf.frequentpatterns;
 
-import ca.pfv.spmf.patterns.itemset_array_integers_with_count.Itemset;
+import de.processmining.data.analysis.itemsets.spmf.patterns.itemset_array_integers_with_count.Itemset;
 
 import java.util.HashMap;
 import java.util.List;

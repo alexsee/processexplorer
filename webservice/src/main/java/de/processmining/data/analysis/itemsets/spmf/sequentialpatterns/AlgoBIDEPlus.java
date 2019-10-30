@@ -19,8 +19,7 @@
 
 package de.processmining.data.analysis.itemsets.spmf.sequentialpatterns;
 
-import ca.pfv.spmf.patterns.itemset_list_integers_without_support.Itemset;
-import ca.pfv.spmf.tools.MemoryLogger;
+import de.processmining.data.analysis.itemsets.spmf.patterns.itemset_list_integers_without_support.Itemset;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -137,7 +136,6 @@ public class AlgoBIDEPlus {
     public SequentialPatterns runAlgorithm(SequenceDatabase sequenceDatabase, double minsup) throws IOException {
         // initialize variables for statistics
         patternCount = 0;
-        MemoryLogger.getInstance().reset();
 
         // save the minsup chosen  by the user
         this.minsuppAbsolute = (int) Math.ceil(minsup * sequenceDatabase.size());
@@ -1197,9 +1195,6 @@ public class AlgoBIDEPlus {
             }
         }
 
-        // check the current memory usage
-        MemoryLogger.getInstance().checkMemory();
-
         // Return the largest support among all extensions explored by this method.
         return maxSupport;
     }
@@ -1535,8 +1530,6 @@ public class AlgoBIDEPlus {
                 }
             }
         }
-        // check the current memory usage
-        MemoryLogger.getInstance().checkMemory();
 
         // return the support of the largest extension of the current pattern
         return maxSupport;
@@ -2177,7 +2170,7 @@ public class AlgoBIDEPlus {
                 }
             }
         }
-        MemoryLogger.getInstance().checkMemory();  // check the memory for statistics.
+
         // return the map of pairs
         return mapItemsPseudoSequences;
     }
@@ -2319,32 +2312,8 @@ public class AlgoBIDEPlus {
                 }
             }
         }
-        MemoryLogger.getInstance().checkMemory();  // check the memory for statistics.
         // return the map of pairs
         return mapsPairs;
-    }
-
-    /**
-     * Print statistics about the algorithm execution to System.out.
-     */
-    public void printStatistics() {
-        StringBuilder r = new StringBuilder(200);
-        r.append("============  BIDE+ - SPMF 0.99c - 2016 - STATISTICS =====\n Total time ~ ");
-        r.append(endTime - startTime);
-        r.append(" ms\n");
-        r.append(" Frequent sequences count : " + patternCount);
-        r.append('\n');
-        r.append(" Max memory (mb) : ");
-        r.append(MemoryLogger.getInstance().getMaxMemory());
-        r.append('\n');
-        r.append(" minsup = " + minsuppAbsolute + " sequences.");
-        r.append('\n');
-        r.append(" Pattern count : ");
-        r.append(patternCount);
-        r.append('\n');
-        r.append("==========================================================\n");
-        // if the result was save into memory, print it
-        System.out.println(r.toString());
     }
 
     /**

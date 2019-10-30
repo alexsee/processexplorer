@@ -18,8 +18,8 @@
 
 package de.processmining.data.analysis.itemsets;
 
-import ca.pfv.spmf.patterns.itemset_array_integers_with_count.Itemset;
-import ca.pfv.spmf.patterns.itemset_array_integers_with_count.Itemsets;
+import de.processmining.data.analysis.itemsets.spmf.patterns.itemset_array_integers_with_count.Itemset;
+import de.processmining.data.analysis.itemsets.spmf.patterns.itemset_array_integers_with_count.Itemsets;
 import de.processmining.data.model.FieldValue;
 import de.processmining.data.analysis.itemsets.spmf.frequentpatterns.AlgoFPClose;
 import org.springframework.stereotype.Service;

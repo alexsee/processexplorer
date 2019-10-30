@@ -19,9 +19,8 @@
 
 package de.processmining.data.analysis.itemsets.spmf.frequentpatterns;
 
-import ca.pfv.spmf.patterns.itemset_array_integers_with_count.Itemset;
-import ca.pfv.spmf.patterns.itemset_array_integers_with_count.Itemsets;
-import ca.pfv.spmf.tools.MemoryLogger;
+import de.processmining.data.analysis.itemsets.spmf.patterns.itemset_array_integers_with_count.Itemset;
+import de.processmining.data.analysis.itemsets.spmf.patterns.itemset_array_integers_with_count.Itemsets;
 
 import java.util.*;
 
@@ -103,10 +102,6 @@ public class AlgoFPClose {
         // number of itemsets found
         itemsetCount = 0;
 
-        //initialize tool to record memory usage
-        MemoryLogger.getInstance().reset();
-        MemoryLogger.getInstance().checkMemory();
-
         // if the user want to keep the result into memory
         patterns = new Itemsets("FREQUENT ITEMSETS");
 
@@ -164,13 +159,9 @@ public class AlgoFPClose {
         // record the execution end time
         endTime = System.currentTimeMillis();
 
-        // check the memory usage
-        MemoryLogger.getInstance().checkMemory();
-
         // return the result (if saved to memory)
         return patterns;
     }
-
 
     /**
      * Mine an FP-Tree having more than one path.
@@ -461,19 +452,6 @@ public class AlgoFPClose {
         }
 
         return mapSupport;
-    }
-
-    /**
-     * Print statistics about the algorithm execution to System.out.
-     */
-    public void printStats() {
-        System.out.println("=============  FP-Close v0.96r14  - STATS =============");
-        long temps = endTime - startTimestamp;
-        System.out.println(" Transactions count from database : " + transactionCount);
-        System.out.print(" Max memory usage: " + MemoryLogger.getInstance().getMaxMemory() + " mb \n");
-        System.out.println(" Closed frequent itemset count : " + itemsetCount);
-        System.out.println(" Total time ~ " + temps + " ms");
-        System.out.println("===================================================");
     }
 
     /**
