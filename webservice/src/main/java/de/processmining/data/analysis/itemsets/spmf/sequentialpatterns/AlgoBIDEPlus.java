@@ -1,5 +1,6 @@
 /*
  * ProcessExplorer
+ * Copyright (C) 2008-2013 Philippe Fournier-Viger
  * Copyright (C) 2019  Alexander Seeliger
  *
  * This program is free software: you can redistribute it and/or modify
@@ -67,8 +68,8 @@ public class AlgoBIDEPlus {
     boolean showSequenceIdentifiers = false;
 
     /**
-     * buffer for storing the current pattern that is mined when performing mining
-     * the idea is to always reuse the same buffer to reduce memory usage.
+     * buffer for storing the current pattern that is mined when performing mining the idea is to always reuse the same
+     * buffer to reduce memory usage.
      **/
     final int BUFFERS_SIZE = 2000;
     private int[] patternBuffer = new int[BUFFERS_SIZE];
@@ -89,34 +90,34 @@ public class AlgoBIDEPlus {
     boolean containsItemsetsWithMultipleItems = false;
 
     /**
-     * A set that is used to remember which items we have already seen in a sequence. It is
-     * a variable reused by various methods, to save memory
+     * A set that is used to remember which items we have already seen in a sequence. It is a variable reused by various
+     * methods, to save memory
      */
     Set<Integer> alreadySeen = new HashSet<Integer>();
     /**
-     * A set that is used to remember which items we have already seen in a sequence. It is
-     * a variable reused by various methods, to save memory
+     * A set that is used to remember which items we have already seen in a sequence. It is a variable reused by various
+     * methods, to save memory
      */
     Set<Integer> alreadySeenPostfix = new HashSet<Integer>();
     /**
-     * A set that is used to remember which items we have already seen in a sequence. It is
-     * a variable reused by various methods, to save memory
+     * A set that is used to remember which items we have already seen in a sequence. It is a variable reused by various
+     * methods, to save memory
      */
     Set<Integer> alreadySeenSuffix = new HashSet<Integer>();
 
     /**
-     * A variable reused by various method for counting the support of items that can extend a sequential pattern
-     * by s-extension in a projected database
+     * A variable reused by various method for counting the support of items that can extend a sequential pattern by
+     * s-extension in a projected database
      */
     Map<Integer, Integer> mapItemSupport = new HashMap<Integer, Integer>();
     /**
-     * A variable reused by various method for counting the support of items that can extend a sequential pattern
-     * by i-extension (as part of a postfix) in a projected database
+     * A variable reused by various method for counting the support of items that can extend a sequential pattern by
+     * i-extension (as part of a postfix) in a projected database
      */
     Map<Integer, Integer> mapsItemSupportPostfix = new HashMap<Integer, Integer>();
     /**
-     * A variable reused by various method for counting the support of items that can extend a sequential pattern
-     * by i-extension (as part of a suffix) in a projected database
+     * A variable reused by various method for counting the support of items that can extend a sequential pattern by
+     * i-extension (as part of a suffix) in a projected database
      */
     Map<Integer, Integer> mapsItemSupportSuffix = new HashMap<Integer, Integer>();
 
@@ -164,12 +165,11 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * This is the main method for the BIDE+ algorithm that is called
-     * to start the algorithm.
+     * This is the main method for the BIDE+ algorithm that is called to start the algorithm.
      *
      * @param sequenceDatabase a sequence database
-     * @param outputFilePath   an output file path if the result should be saved to a file
-     *                         or null if the result should be saved to memory.
+     * @param outputFilePath   an output file path if the result should be saved to a file or null if the result should
+     *                         be saved to memory.
      * @throws IOException exception if an error while writing the output file
      */
     private void bide(SequenceDatabase sequenceDatabase, String outputFilePath) throws IOException {
@@ -203,11 +203,12 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Remove infrequent items from the sequence database, then save each pattern of length 1 having a frequency no less than
-     * minsup, then recursively explore larger patterns.
-     * Important: this method is optimized for the case where all sequences in the database contains a single item per itemset.
+     * Remove infrequent items from the sequence database, then save each pattern of length 1 having a frequency no less
+     * than minsup, then recursively explore larger patterns. Important: this method is optimized for the case where all
+     * sequences in the database contains a single item per itemset.
      *
-     * @param mapSequenceID the set of items (Integer) with the corresponding IDs of sequence where they appears (List<Integer>)
+     * @param mapSequenceID the set of items (Integer) with the corresponding IDs of sequence where they appears
+     *                      (List<Integer>)
      * @throws IOException if error writing to file
      */
     private void bideWithSingleItems(Map<Integer, List<Integer>> mapSequenceID) throws IOException {
@@ -309,8 +310,7 @@ public class AlgoBIDEPlus {
 
     /**
      * This method checks if the current pattern respects the backscan pruning condition of the BIDE+ algorithm (if it
-     * should not be pruned).
-     * It is optimized for patterns containing a single item.
+     * should not be pruned). It is optimized for patterns containing a single item.
      *
      * @param the         item the pattern consisting of a single item
      * @param sequenceIDs the identifiers of the sequences containing this pattern
@@ -393,8 +393,8 @@ public class AlgoBIDEPlus {
 
 
     /**
-     * This method checks if the current pattern has a backward extension.
-     * This method is optimized for patterns containing a single item.
+     * This method checks if the current pattern has a backward extension. This method is optimized for patterns
+     * containing a single item.
      *
      * @param the         item a pattern consisting of a single item
      * @param sequenceIDs the identifiers of the sequences containing this pattern
@@ -475,11 +475,12 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Remove infrequent items from the sequence database. Then save each frequent items as a sequential pattern of length 1.
-     * Then, recursively explore extensions of patterns of length 1 using a depth first search.
-     * This method is designed for the case where the sequence database contains sequences having multiple items per itemsets.
+     * Remove infrequent items from the sequence database. Then save each frequent items as a sequential pattern of
+     * length 1. Then, recursively explore extensions of patterns of length 1 using a depth first search. This method is
+     * designed for the case where the sequence database contains sequences having multiple items per itemsets.
      *
-     * @param mapSequenceID a map where the key is an item and the value is the list of identifiers of sequences containing that item
+     * @param mapSequenceID a map where the key is an item and the value is the list of identifiers of sequences
+     *                      containing that item
      * @throws IOException if there is an error while writing the result to the output file.
      */
     private void bideWithMultipleItems(Map<Integer, List<Integer>> mapSequenceID) throws IOException {
@@ -595,9 +596,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Check if a sequential pattern has has a backward extension.
-     * This method is optimized for patterns containing a single item and sequence databases containing multiple
-     * items per itemsets.
+     * Check if a sequential pattern has has a backward extension. This method is optimized for patterns containing a
+     * single item and sequence databases containing multiple items per itemsets.
      *
      * @param item        the item
      * @param sequenceIDs the list of sequence ids where this item appears
@@ -738,9 +738,9 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Check if the current item and its extensions should be pruned using the backscan pruning
-     * This method is optimized for patterns containing a single item, and is designed for sequences
-     * where multiple items may appear in itemsets.
+     * Check if the current item and its extensions should be pruned using the backscan pruning This method is optimized
+     * for patterns containing a single item, and is designed for sequences where multiple items may appear in
+     * itemsets.
      *
      * @param item        the current pattern, consisting of a single item
      * @param sequenceIDs the list of sequence ids where this pattern appears
@@ -859,9 +859,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * This method saves a sequential pattern containing a single item to the output file or
-     * in memory, depending on if the user provided an output file path or not
-     * when he launched the algorithm
+     * This method saves a sequential pattern containing a single item to the output file or in memory, depending on if
+     * the user provided an output file path or not when he launched the algorithm
      *
      * @param item        the pattern to be saved.
      * @param support     the support of this item
@@ -991,10 +990,11 @@ public class AlgoBIDEPlus {
 
 
     /**
-     * Scan the database to obtain the list of identifiers of sequences where each item appears, and also
-     * determine if this database contains multiple items per itemset.
+     * Scan the database to obtain the list of identifiers of sequences where each item appears, and also determine if
+     * this database contains multiple items per itemset.
      *
-     * @return Map where the key is an item and the value is the list of identifiers of sequence where this item appears.
+     * @return Map where the key is an item and the value is the list of identifiers of sequence where this item
+     * appears.
      */
     private Map<Integer, List<Integer>> findSequencesContainingItems() {
         // number of items in the current itemset
@@ -1046,8 +1046,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Create a projected database by pseudo-projection with the initial database and a given item.
-     * This method is optimized for the case of a database containing a single item per itemset in sequences
+     * Create a projected database by pseudo-projection with the initial database and a given item. This method is
+     * optimized for the case of a database containing a single item per itemset in sequences
      *
      * @param item The item to use to make the pseudo-projection
      * @param list The list of sequence ids containing the item
@@ -1086,8 +1086,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Create a projected database by pseudo-projection with the initial database and a given item.
-     * This method is optimized for the case of sequences that may contain multiple items per itemset.
+     * Create a projected database by pseudo-projection with the initial database and a given item. This method is
+     * optimized for the case of sequences that may contain multiple items per itemset.
      *
      * @param item The item to use to make the pseudo-projection
      * @param list The list of sequence ids containing the item
@@ -1129,8 +1129,8 @@ public class AlgoBIDEPlus {
 
 
     /**
-     * Method to recursively grow a given sequential pattern.
-     * This method is optimized for sequence databases that may contain only a single item per itemset in sequences
+     * Method to recursively grow a given sequential pattern. This method is optimized for sequence databases that may
+     * contain only a single item per itemset in sequences
      *
      * @param database           the current projected sequence database
      * @param k                  the prefix length in terms of items
@@ -1205,8 +1205,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * This method checks if the current pattern respects the backscan pruning condition.
-     * This method is optimized for sequence databases that may contain only a single item per itemset in sequences
+     * This method checks if the current pattern respects the backscan pruning condition. This method is optimized for
+     * sequence databases that may contain only a single item per itemset in sequences
      *
      * @param lastBufferPosition the last position used in the buffer for storing the current pattern
      * @param projectedDatabase  the projected dtabase
@@ -1296,8 +1296,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * This method checks if the current pattern respect the backscan pruning condition.
-     * This method is optimized for sequence databases that may contain only a single item per itemset in sequences
+     * This method checks if the current pattern respect the backscan pruning condition. This method is optimized for
+     * sequence databases that may contain only a single item per itemset in sequences
      *
      * @param lastBufferPosition the last position used in the buffer for storing the current prefix
      * @param sequenceIDs        the ids of sequences containing this pattern
@@ -1412,8 +1412,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Method to recursively grow a given sequential pattern.
-     * This method is optimized for sequence databases that may contain multiple items per itemset in sequences.
+     * Method to recursively grow a given sequential pattern. This method is optimized for sequence databases that may
+     * contain multiple items per itemset in sequences.
      *
      * @param database           the current projected sequence database
      * @param k                  the prefix length in terms of items
@@ -1544,8 +1544,8 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Check if there is a backward extension, for a pattern of length greater than 1.
-     * This method is optimized for sequence databases that may contain multiple items per itemset in sequences
+     * Check if there is a backward extension, for a pattern of length greater than 1. This method is optimized for
+     * sequence databases that may contain multiple items per itemset in sequences
      *
      * @param lastBufferPosition the last item of the current pattern in the buffer
      * @param sequences          a projected database
@@ -1838,9 +1838,9 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Check if this pattern should be pruned according to backscan pruning.
-     * This is the general case (pattern of length greater than 1, in a database)
-     * This method is optimized for sequence databases that may contain multiple items per itemset in sequences.
+     * Check if this pattern should be pruned according to backscan pruning. This is the general case (pattern of length
+     * greater than 1, in a database) This method is optimized for sequence databases that may contain multiple items
+     * per itemset in sequences.
      *
      * @param lastBufferPosition the last item of the current pattern in the buffer
      * @param sequences
@@ -2130,14 +2130,14 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Method to find all frequent items in a projected sequence database
-     * This method is optimized for sequence databases that may contain no more than an item per itemset in sequences
+     * Method to find all frequent items in a projected sequence database This method is optimized for sequence
+     * databases that may contain no more than an item per itemset in sequences
      *
      * @param sequences          the set of sequences
      * @param patternBuffer      the current sequential pattern that we want to try to grow
      * @param lastBufferPosition the last position used in the buffer for storing the current prefix
-     * @return A list of pairs, where a pair is an item with (1) a boolean indicating if it
-     * is in an itemset that is "cut" and (2) the sequence IDs where it occurs.
+     * @return A list of pairs, where a pair is an item with (1) a boolean indicating if it is in an itemset that is
+     * "cut" and (2) the sequence IDs where it occurs.
      */
     protected Map<Integer, List<PseudoSequence>> findAllFrequentPairsSingleItems(List<PseudoSequence> sequences, int lastBufferPosition) {
         // We use a Map the store the pairs.
@@ -2184,8 +2184,8 @@ public class AlgoBIDEPlus {
 
 
     /**
-     * This class contains two maps, which are used for counting the
-     * frequencies of items, whether in a postfix itemset or a normal itemset.
+     * This class contains two maps, which are used for counting the frequencies of items, whether in a postfix itemset
+     * or a normal itemset.
      */
     public class MapFrequentPairs {
         public final Map<Pair, Pair> mapPairs = new HashMap<Pair, Pair>();
@@ -2199,8 +2199,8 @@ public class AlgoBIDEPlus {
      *
      * @param sequences          the set of sequences
      * @param lastBufferPosition the last position used in the buffer for storing the current prefix
-     * @return A list of pairs, where a pair is an item with (1) a boolean indicating if it
-     * is in an itemset that is "cut" and (2) the sequence IDs where it occurs.
+     * @return A list of pairs, where a pair is an item with (1) a boolean indicating if it is in an itemset that is
+     * "cut" and (2) the sequence IDs where it occurs.
      */
     protected MapFrequentPairs findAllFrequentPairs(List<PseudoSequence> sequences, int lastBufferPosition) {
         // We use an object containing two maps the store the pairs.
@@ -2366,8 +2366,7 @@ public class AlgoBIDEPlus {
     }
 
     /**
-     * Set that the sequence identifiers should be shown (true) or not (false) for each
-     * pattern found
+     * Set that the sequence identifiers should be shown (true) or not (false) for each pattern found
      *
      * @param showSequenceIdentifiers true or false
      */

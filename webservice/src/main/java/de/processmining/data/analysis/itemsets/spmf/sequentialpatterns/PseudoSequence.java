@@ -1,5 +1,6 @@
 /*
  * ProcessExplorer
+ * Copyright (C) 2008-2013 Philippe Fournier-Viger
  * Copyright (C) 2019  Alexander Seeliger
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,30 +21,32 @@ package de.processmining.data.analysis.itemsets.spmf.sequentialpatterns;
 
 public class PseudoSequence {
 
-	// the corresponding sequence in the original database
-	protected int sequenceID;
+    // the corresponding sequence in the original database
+    protected int sequenceID;
 
-	// the first itemset of this pseudo-sequence in the original sequence
-	protected int indexFirstItem;
-	
-	/**
-	 * Get the original sequence corresponding to this projected sequence.
-	 * @return the original sequence
-	 */
-	public int getOriginalSequenceID() {
-		return sequenceID;
-	}
-	
-	/**
-	 * Create a pseudo-sequence from a sequence that is an original sequence.
-	 * @param sequence the original sequence.
-	 * @param indexFirstItem the item where the pseudo-sequence should start in terms of the original sequence.
-	 */
-	protected  PseudoSequence(int sequenceID, int indexFirstItem){
-		// remember the original sequence
-		this.sequenceID = sequenceID;
-		// remember the starting position of this pseudo-sequence in terms
-		// of the original sequence.
-		this.indexFirstItem = indexFirstItem;
-	}
+    // the first itemset of this pseudo-sequence in the original sequence
+    protected int indexFirstItem;
+
+    /**
+     * Get the original sequence corresponding to this projected sequence.
+     *
+     * @return the original sequence
+     */
+    public int getOriginalSequenceID() {
+        return sequenceID;
+    }
+
+    /**
+     * Create a pseudo-sequence from a sequence that is an original sequence.
+     *
+     * @param sequence       the original sequence.
+     * @param indexFirstItem the item where the pseudo-sequence should start in terms of the original sequence.
+     */
+    protected PseudoSequence(int sequenceID, int indexFirstItem) {
+        // remember the original sequence
+        this.sequenceID = sequenceID;
+        // remember the starting position of this pseudo-sequence in terms
+        // of the original sequence.
+        this.indexFirstItem = indexFirstItem;
+    }
 }
