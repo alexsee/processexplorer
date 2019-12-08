@@ -66,10 +66,13 @@ nz-breadcrumb {
 
 .process-explorer-map {
     grid-area: map;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;   
 }
 
 .process-explorer-insights {
     grid-area: insights;
+    padding: 20px !important;
     overflow-y: scroll;
 }
 
