@@ -29,7 +29,7 @@
     "dagre-d3": "^0.6.3",
     "moment": "^2.24.0",
     "net": "^1.0.2",
-    "ng-zorro-antd": "^8.4.1",
+    "ng-zorro-antd": "^8.5.2",
     "ngx-webstorage-service": "^4.1.0",
     "rxjs": "~6.5.3",
     "tslib": "^1.10.0",

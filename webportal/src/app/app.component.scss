@@ -8,7 +8,7 @@
 }
 
 nz-layout {
-    min-height: calc(100% - 45px);
+    height: calc(100% - 45px);
 }
 
 [nz-menu] {
@@ -17,7 +17,7 @@ nz-layout {
 
 nz-content {
     padding: 0 50px;
-    overflow-y: scroll;
+    height: calc(100vh - 45px);
 }
 
 nz-footer {
