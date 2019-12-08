@@ -89,7 +89,7 @@ public abstract class ClusterMetric implements InsightMetric {
         var effectSize = StatisticMetrics.effectByCohensD(with, without);
         var divergence = Math.JensenShannonDivergence(norm(with), norm(without));
 
-        if (Math.sqrt(divergence) <= maxDivergence && combinations.size() > 1 && sum(with) > minSamples) {
+        if (Math.sqrt(divergence) >= maxDivergence && combinations.size() > 1 && sum(with) > minSamples) {
             result.add(generateInsight(effectSize, new ArrayList<>(combinations), with, without));
         }
 
