@@ -15,9 +15,7 @@ export class InsightListComponent implements OnChanges {
   @Input() public logName: string;
   @Input() public conditions: Condition[];
 
-  public insights: Insight[];
-  public noData = false;
-  public progress = false;
+  public insights: Insight[] = [];
 
   constructor(
     private analysisService: AnalysisService,
@@ -33,16 +31,11 @@ export class InsightListComponent implements OnChanges {
       return;
     }
 
-    this.noData = true;
-    this.progress = true;
+    this.insights = undefined;
 
     this.analysisService.getInsights(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(insights => {
-        this.insights = insights;
-        this.insights.sort(this.sortByEffectSize);
-
-        this.noData = this.insights.length > 0;
-        this.progress = false;
+        this.insights = insights.sort(this.sortByEffectSize);
       });
   }
 

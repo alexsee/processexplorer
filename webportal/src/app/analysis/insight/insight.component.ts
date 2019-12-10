@@ -1,7 +1,10 @@
-import { Component, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import * as moment from 'moment';
-import * as c3 from 'c3';
+// import * as c3 from 'c3';
+
+import * as Highcharts from 'highcharts';
+
 import { Insight } from '../models/insight.model';
 
 @Component({
@@ -9,9 +12,12 @@ import { Insight } from '../models/insight.model';
   templateUrl: './insight.component.html',
   styleUrls: ['./insight.component.scss']
 })
-export class InsightComponent implements OnChanges {
+export class InsightComponent implements OnChanges, AfterViewInit {
   @ViewChild('chart', {static: true}) public chartContainer: ElementRef;
   @Input() public insight: Insight;
+
+  Highcharts: typeof Highcharts = Highcharts;
+  chartOptions: Highcharts.Options = {};
 
   public icon: string;
   public color: string;
@@ -25,8 +31,8 @@ export class InsightComponent implements OnChanges {
 
     // calculate the interesting chart distribution
     if (this.insight.format === 'DISTRIBUTION') {
-      const dataset: any[] = ['count'];
-      const labels: string[] = ['x'];
+      const dataset: any[] = [];
+      const labels: string[] = [];
       let otherCount = 0;
       let c = 0;
 
@@ -66,27 +72,26 @@ export class InsightComponent implements OnChanges {
       }
 
       // generate chart in container
-      c3.generate({
-        bindto: this.chartContainer.nativeElement,
-        data: {
-          x: 'x',
-          columns: [labels, dataset],
-          type: 'bar'
+      this.chartOptions = {
+        title: null,
+        chart: {
+          type: 'column'
         },
-        axis: {
-            x: {
-                type: 'category' // this needed to load string x value
-            }
+        series: [{
+          data: dataset,
+          type: 'column',
+          name: 'Cases',
+          showInLegend: false
+        }],
+        xAxis: {
+          categories: labels
         },
-        legend: {
-          hide: true
-        },
-        size: {
-          width: 346
+        yAxis: {
+          title: {
+            text: 'Cases'
+          }
         }
-      });
-    } else {
-      this.chartContainer.nativeElement.style.display = 'none';
+      };
     }
 
     // set icon
@@ -105,6 +110,10 @@ export class InsightComponent implements OnChanges {
     if (this.insight.subTitle) {
       this.insight.subTitle = this.insight.subTitle.replace('-->', '&#8594;');
     }
+  }
+
+  ngAfterViewInit() {
+    window.dispatchEvent(new Event('resize'));
   }
 
   unusualness(n_vt: number, n_v: number, n_t: number, n_s: number) {

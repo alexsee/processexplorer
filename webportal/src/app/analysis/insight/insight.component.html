@@ -1,4 +1,4 @@
-<nz-card>
+<nz-card #chart>
     <div *ngIf="insight.format == 'DURATION'">
         <nz-avatar [nzIcon]="icon" [ngStyle]="{ 'background-color': color }" [nzShape]="'square'"></nz-avatar>
          
@@ -49,7 +49,12 @@
          
         <h1>{{insight.title}}</h1>
         <h2 [innerHTML]="insight.subTitle"></h2>
+
+        <highcharts-chart
+            [Highcharts]="Highcharts"
+            [options]="chartOptions"
+
+            style="width: 100%; height: 320px; display: block;">
+        </highcharts-chart>
     </div>
-    
-    <div style="height: 320px; width: 100%" #chart></div>
 </nz-card>

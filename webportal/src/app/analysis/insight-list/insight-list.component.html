@@ -1,11 +1,13 @@
 <div class="insights-list">
-    <div *ngFor="let insight of insights" [hidden]="!noData || progress">
-        <app-insight [insight]="insight"></app-insight>
+    <div *ngIf="insights">
+        <div *ngFor="let insight of insights">
+            <app-insight [insight]="insight"></app-insight>
+        </div>
+        <div [hidden]="insights.length > 0" class="no-data-container">
+            <nz-empty></nz-empty>
+        </div>
     </div>
-    <div [hidden]="noData" class="no-data-container">
-        <nz-empty></nz-empty>
-    </div>
-    <div [hidden]="!progress" class="progress-container">
+    <div *ngIf="!insights" class="progress-container">
         <nz-spin nzSimple>
             Insights will be computed...
         </nz-spin>

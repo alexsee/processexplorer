@@ -37,7 +37,7 @@ nz-breadcrumb {
 .process-explorer-insights {
     grid-area: insights;
     padding: 20px;
-    overflow-y: scroll;
+    overflow: hidden;
 }
 
 .artifact-name {

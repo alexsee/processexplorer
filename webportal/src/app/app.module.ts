@@ -11,6 +11,8 @@ import { AnalysisComponent } from './modules/process-mining/analysis/analysis.co
 
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 
+import { HighchartsChartModule } from 'highcharts-angular';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { LogComponent } from './modules/general/log/log.component';
@@ -65,6 +67,7 @@ import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts
     BrowserAnimationsModule,
 
     NgZorroAntdModule,
+    HighchartsChartModule,
 
     FormsModule
   ],
