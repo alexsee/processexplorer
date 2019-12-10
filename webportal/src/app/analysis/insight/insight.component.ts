@@ -80,7 +80,7 @@ export class InsightComponent implements OnChanges, AfterViewInit {
         series: [{
           data: dataset,
           type: 'column',
-          name: 'Cases',
+          name: 'Case count',
           showInLegend: false
         }],
         xAxis: {
@@ -88,7 +88,7 @@ export class InsightComponent implements OnChanges, AfterViewInit {
         },
         yAxis: {
           title: {
-            text: 'Cases'
+            text: 'Case count'
           }
         }
       };

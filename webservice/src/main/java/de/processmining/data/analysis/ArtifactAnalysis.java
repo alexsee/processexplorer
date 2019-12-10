@@ -18,16 +18,18 @@
 
 package de.processmining.data.analysis;
 
-import de.processmining.data.analysis.artifacts.ArtifactBase;
-import de.processmining.data.analysis.artifacts.ArtifactResult;
-import de.processmining.data.analysis.artifacts.ReworkArtifact;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.processmining.data.analysis.artifacts.*;
 import de.processmining.data.query.QueryService;
+import de.processmining.webservice.database.EventLogArtifactRepository;
+import jdk.jfr.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,26 +41,53 @@ public class ArtifactAnalysis {
 
     private Logger logger = LoggerFactory.getLogger(ArtifactAnalysis.class);
 
+    private EventLogArtifactRepository artifactRepository;
+
     private QueryService queryService;
 
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ArtifactAnalysis(QueryService queryService, JdbcTemplate jdbcTemplate) {
+    public ArtifactAnalysis(QueryService queryService, JdbcTemplate jdbcTemplate, EventLogArtifactRepository eventLogArtifactRepository) {
         this.queryService = queryService;
         this.jdbcTemplate = jdbcTemplate;
+        this.artifactRepository = eventLogArtifactRepository;
     }
 
     public List<ArtifactResult> run(String logName) {
         var artifacts = new ArrayList<ArtifactBase>();
         var results = new ArrayList<ArtifactResult>();
 
-        var rework = new ReworkArtifact(queryService, jdbcTemplate);
-        rework.setReworkActivities(new String[]{"Change price", "Change Approval for Purchase Order", "Change Currency", "Change Delivery Indicator", "Change Final Invoice Indicator", "Change Price", "Change Quantity", "Change Storage Location"});
-        rework.setMin(new int[]{2, 2, 2, 2, 2, 2, 2, 2});
-        rework.setMax(new int[]{Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE});
+        // get all artifacts by log name
+        var db_artifacts = artifactRepository.findByLogName(logName);
 
-        artifacts.add(rework);
+        for(var artifact : db_artifacts) {
+            try {
+                // instantiate artifact class
+                var instance = (ArtifactBase)Class.forName(artifact.getType())
+                        .getDeclaredConstructor(QueryService.class, JdbcTemplate.class)
+                        .newInstance(queryService, jdbcTemplate);
+
+                var configurationType = ((ParameterizedType)instance.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+
+                var objectMapper = new ObjectMapper();
+                var configuration = objectMapper
+                        .readValue(artifact.getConfiguration(), (Class) configurationType);
+
+                instance.setConfiguration((ArtifactConfiguration) configuration);
+
+                artifacts.add(instance);
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+        }
+
+//        var rework = new ReworkArtifact(queryService, jdbcTemplate);
+//        rework.setReworkActivities(new String[]{"Change price", "Change Approval for Purchase Order", "Change Currency", "Change Delivery Indicator", "Change Final Invoice Indicator", "Change Price", "Change Quantity", "Change Storage Location"});
+//        rework.setMin(new int[]{2, 2, 2, 2, 2, 2, 2, 2});
+//        rework.setMax(new int[]{Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE});
+//
+//        artifacts.add(rework);
 
         for (var artifact : artifacts) {
             results.addAll(artifact.run(logName));

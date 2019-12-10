@@ -40,7 +40,18 @@ nz-breadcrumb {
     overflow: hidden;
 }
 
+.artifact-cases {
+    margin-left: 15px;
+    text-align: center;
+    font-weight: bold;
+    width: 50px;
+}
+
 .artifact-name {
     margin-left: 15px;
     width: 100%;
+}
+
+.artifact-selected {
+    background-color: lightyellow;
 }

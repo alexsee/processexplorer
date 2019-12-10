@@ -18,36 +18,38 @@
 
 package de.processmining.data.analysis.artifacts;
 
-import de.processmining.data.query.QueryService;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.List;
-
 /**
  * @author Alexander Seeliger on 10.12.2019.
  */
-public abstract class ArtifactBase<T extends ArtifactConfiguration> {
+public class ReworkArtifactConfiguration extends ArtifactConfiguration {
 
-    protected T configuration;
+    private String[] reworkActivities;
 
-    protected QueryService queryService;
+    private int[] min;
 
-    protected JdbcTemplate jdbcTemplate;
+    private int[] max;
 
-    public ArtifactBase(QueryService queryService,
-                        JdbcTemplate jdbcTemplate) {
-        this.queryService = queryService;
-        this.jdbcTemplate = jdbcTemplate;
+    public String[] getReworkActivities() {
+        return reworkActivities;
     }
 
-    public abstract List<ArtifactResult> run(String logName);
-
-    public void setConfiguration(T configuration) {
-        this.configuration = configuration;
+    public void setReworkActivities(String[] reworkActivities) {
+        this.reworkActivities = reworkActivities;
     }
 
-    public Class<? extends ArtifactConfiguration> getConfigurationClass() {
-        return configuration.getClass();
+    public int[] getMin() {
+        return min;
     }
 
+    public void setMin(int[] min) {
+        this.min = min;
+    }
+
+    public int[] getMax() {
+        return max;
+    }
+
+    public void setMax(int[] max) {
+        this.max = max;
+    }
 }

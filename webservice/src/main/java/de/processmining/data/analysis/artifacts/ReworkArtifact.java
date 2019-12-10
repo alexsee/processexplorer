@@ -30,13 +30,7 @@ import java.util.List;
 /**
  * @author Alexander Seeliger on 10.12.2019.
  */
-public class ReworkArtifact extends ArtifactBase {
-
-    private String[] reworkActivities;
-
-    private int[] min;
-
-    private int[] max;
+public class ReworkArtifact extends ArtifactBase<ReworkArtifactConfiguration> {
 
     public ReworkArtifact(QueryService queryService,
                           JdbcTemplate jdbcTemplate) {
@@ -46,14 +40,14 @@ public class ReworkArtifact extends ArtifactBase {
     public List<ArtifactResult> run(String logName) {
         var results = new ArrayList<ArtifactResult>();
 
-        for (var i = 0; i < reworkActivities.length; i++) {
+        for (var i = 0; i < configuration.getReworkActivities().length; i++) {
             var conditions = new ArrayList<Condition>();
-            conditions.add(new ReworkCondition(reworkActivities[i], min[i], max[i]));
+            conditions.add(new ReworkCondition(configuration.getReworkActivities()[i], configuration.getMin()[i], configuration.getMax()[i]));
 
             var log = queryService.getLogStatistics(logName, conditions);
             if(log.getNumTraces() > 0) {
                 var result = new ArtifactResult();
-                result.setName("Rework activity: " + reworkActivities[i]);
+                result.setName("Rework activity: " + configuration.getReworkActivities()[i]);
                 result.setType(ReworkArtifact.class.getCanonicalName());
                 result.setNumAffectedCases(log.getNumTraces());
                 result.setConditions(conditions);
@@ -65,15 +59,7 @@ public class ReworkArtifact extends ArtifactBase {
         return results;
     }
 
-    public void setReworkActivities(String[] reworkActivities) {
-        this.reworkActivities = reworkActivities;
-    }
-
-    public void setMin(int[] min) {
-        this.min = min;
-    }
-
-    public void setMax(int[] max) {
-        this.max = max;
+    public void setConfiguration(ReworkArtifactConfiguration configuration) {
+        this.configuration = configuration;
     }
 }

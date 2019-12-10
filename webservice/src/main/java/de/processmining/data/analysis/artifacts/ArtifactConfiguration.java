@@ -18,36 +18,9 @@
 
 package de.processmining.data.analysis.artifacts;
 
-import de.processmining.data.query.QueryService;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.List;
-
 /**
  * @author Alexander Seeliger on 10.12.2019.
  */
-public abstract class ArtifactBase<T extends ArtifactConfiguration> {
-
-    protected T configuration;
-
-    protected QueryService queryService;
-
-    protected JdbcTemplate jdbcTemplate;
-
-    public ArtifactBase(QueryService queryService,
-                        JdbcTemplate jdbcTemplate) {
-        this.queryService = queryService;
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public abstract List<ArtifactResult> run(String logName);
-
-    public void setConfiguration(T configuration) {
-        this.configuration = configuration;
-    }
-
-    public Class<? extends ArtifactConfiguration> getConfigurationClass() {
-        return configuration.getClass();
-    }
+public abstract class ArtifactConfiguration {
 
 }
