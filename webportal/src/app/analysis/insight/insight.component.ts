@@ -113,6 +113,7 @@ export class InsightComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    // TODO: temporary fix for Highcharts
     window.dispatchEvent(new Event('resize'));
   }
 
