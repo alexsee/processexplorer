@@ -40,8 +40,12 @@ export class AnalysisComponent implements OnInit {
     this.logName = this.route.snapshot.paramMap.get('logName');
 
     // load queries from local storage
-    const query = this.storageService.readQueryConditions(this.logName);
-    this.conditions = this.queryConvertService.convertFromQuery(query);
+    if (window.history.state !== undefined) {
+      this.conditions = this.queryConvertService.convertFromQuery(window.history.state.conditions);
+    } else {
+      const query = this.storageService.readQueryConditions(this.logName);
+      this.conditions = this.queryConvertService.convertFromQuery(query);
+    }
 
     // update view components
     this.onUpdate();

@@ -1,0 +1,46 @@
+.module {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "breadcrumb"
+        "content";
+    height: 100%;
+}
+
+nz-breadcrumb {
+    grid-area: breadcrumb;
+    margin: 16px 0;
+}
+
+.inner-content {
+    background: #fff;
+    padding: 0;
+    grid-area: content;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "header insights"
+                         "artifacts insights";
+}
+
+.process-explorer-header {
+    grid-area: header;
+}
+
+.process-explorer-artifacts {
+    grid-area: artifacts;
+    padding: 30px;
+}
+
+.process-explorer-insights {
+    grid-area: insights;
+    padding: 20px;
+    overflow-y: scroll;
+}
+
+.artifact-name {
+    margin-left: 15px;
+    width: 100%;
+}

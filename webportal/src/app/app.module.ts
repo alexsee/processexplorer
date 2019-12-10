@@ -30,6 +30,7 @@ import { InsightListComponent } from './analysis/insight-list/insight-list.compo
 import { ChartComponent } from './analysis/chart/chart.component';
 import { RecommendationListComponent } from './analysis/recommendation-list/recommendation-list.component';
 import { ReworkConditionComponent } from './analysis/conditions/rework-condition/rework-condition.component';
+import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { ReworkConditionComponent } from './analysis/conditions/rework-condition
     TestComponent,
     LogAnnotationComponent,
     LogUploadComponent,
-    RecommendationListComponent
+    RecommendationListComponent,
+    ArtifactsComponent
   ],
   imports: [
     BrowserModule,
