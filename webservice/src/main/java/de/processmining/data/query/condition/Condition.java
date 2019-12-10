@@ -32,7 +32,8 @@ import de.processmining.data.DatabaseModel;
         @JsonSubTypes.Type(value = VariantCondition.class, name = "variant"),
         @JsonSubTypes.Type(value = ClusterCondition.class, name = "cluster"),
         @JsonSubTypes.Type(value = ComboCondition.class, name = "combo"),
-        @JsonSubTypes.Type(value = NotCondition.class, name = "not")
+        @JsonSubTypes.Type(value = NotCondition.class, name = "not"),
+        @JsonSubTypes.Type(value = ReworkCondition.class, name = "rework")
 })
 public abstract class Condition {
 

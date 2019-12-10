@@ -1,0 +1,49 @@
+<nz-card nzTitle="Rework Condition" 
+    nzSize="small"
+    [nzExtra]="moreTemplate">
+    <span *ngIf="data.activity">
+        <b>{{data.activity}}</b> occurs between <b>{{data.min}}</b> and <b>{{data.max}}</b> times per case
+    </span>
+    <span *ngIf="!data.activity">
+        Rework Condition
+    </span>
+</nz-card>
+
+<ng-template #moreTemplate>
+    <a nz-popover
+        nzPopoverTitle="Rework Condition"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate">Edit</a>
+        
+    <nz-divider nzType="vertical"></nz-divider>
+
+    <a (click)="doDelete()">Delete</a>
+</ng-template>
+
+<ng-template #contentTemplate>
+    <form nz-form class="rework-form">
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="activity">Activity</nz-form-label>
+            <nz-form-control [nzSm]="18" >
+                <nz-select name="activity" [(ngModel)]="data.activity" nzPlaceHolder="Choose">
+                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="min">Min occurrence</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <input nz-input name="min" placeholder="Min occurrence" [(ngModel)]="data.min" />
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="max">Max occurrence</nz-form-label>
+            <nz-form-control [nzSm]="18">
+                <input nz-input name="max" placeholder="Max occurrence" [(ngModel)]="data.max" />
+            </nz-form-control>
+        </nz-form-item>
+
+    </form>
+</ng-template>

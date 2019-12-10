@@ -12,6 +12,7 @@ import { VariantConditionComponent } from 'src/app/analysis/conditions/variant-c
 import { ClusterConditionComponent } from 'src/app/analysis/conditions/cluster-condition/cluster-condition.component';
 import { Condition } from 'src/app/analysis/models/condition.model';
 import { Recommendation } from 'src/app/analysis/models/recommendation';
+import { ReworkConditionComponent } from 'src/app/analysis/conditions/rework-condition/rework-condition.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -75,6 +76,10 @@ export class AnalysisComponent implements OnInit {
         break;
       case 'cluster':
         this.conditions.push(new Condition(ClusterConditionComponent, { }));
+        break;
+      case 'rework':
+        this.conditions.push(new Condition(ReworkConditionComponent, { }));
+        break;
     }
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EventLogStatistics } from '../../log/models/eventlog-statistics.model';
+import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 import { ChartComponentOptions } from 'src/app/analysis/models/chart-options.model';
 import { QueryService } from 'src/app/analysis/shared/query.service';
 

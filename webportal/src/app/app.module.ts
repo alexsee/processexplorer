@@ -7,16 +7,16 @@ import { rxStompConfig } from './rx-stomp.config';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AnalysisComponent } from './modules/analysis/analysis.component';
+import { AnalysisComponent } from './modules/process-mining/analysis/analysis.component';
 
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { LogComponent } from './modules/log/log.component';
-import { TestComponent } from './modules/test/test.component';
-import { LogAnnotationComponent } from './modules/log-annotation/log-annotation.component';
-import { LogUploadComponent } from './modules/log-upload/log-upload.component';
+import { LogComponent } from './modules/general/log/log.component';
+import { TestComponent } from './modules/process-mining/test/test.component';
+import { LogAnnotationComponent } from './modules/general/log-annotation/log-annotation.component';
+import { LogUploadComponent } from './modules/general/log-upload/log-upload.component';
 import { ProcessMapComponent } from './analysis/process-map/processmap.component';
 import { ConditionListComponent } from './analysis/condition-list/condition-list.component';
 import { PathConditionComponent } from './analysis/conditions/path-condition/path-condition.component';
@@ -29,6 +29,7 @@ import { InsightComponent } from './analysis/insight/insight.component';
 import { InsightListComponent } from './analysis/insight-list/insight-list.component';
 import { ChartComponent } from './analysis/chart/chart.component';
 import { RecommendationListComponent } from './analysis/recommendation-list/recommendation-list.component';
+import { ReworkConditionComponent } from './analysis/conditions/rework-condition/rework-condition.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { RecommendationListComponent } from './analysis/recommendation-list/reco
     PathConditionComponent,
     VariantConditionComponent,
     ClusterConditionComponent,
+    ReworkConditionComponent,
 
     ConditionDirective,
     ConditionSingleComponent,
@@ -77,7 +79,13 @@ import { RecommendationListComponent } from './analysis/recommendation-list/reco
       deps: [InjectableRxStompConfig]
     }
   ],
-  entryComponents: [ AttributeConditionComponent, PathConditionComponent, VariantConditionComponent, ClusterConditionComponent ],
+  entryComponents: [
+    AttributeConditionComponent,
+    PathConditionComponent,
+    VariantConditionComponent,
+    ClusterConditionComponent,
+    ReworkConditionComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

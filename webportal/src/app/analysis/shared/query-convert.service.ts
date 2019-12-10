@@ -4,6 +4,7 @@ import { PathConditionComponent } from '../conditions/path-condition/path-condit
 import { AttributeConditionComponent } from '../conditions/attribute-condition/attribute-condition.component';
 import { VariantConditionComponent } from '../conditions/variant-condition/variant-condition.component';
 import { ClusterConditionComponent } from '../conditions/cluster-condition/cluster-condition.component';
+import { ReworkConditionComponent } from '../conditions/rework-condition/rework-condition.component';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,8 @@ export class QueryConvertService {
         conditions.push(new Condition(VariantConditionComponent, qry));
       } else if (qry.type === 'cluster') {
         conditions.push(new Condition(ClusterConditionComponent, qry));
+      } else if (qry.type === 'rework') {
+        conditions.push(new Condition(ReworkConditionComponent, qry));
       }
     }
 
