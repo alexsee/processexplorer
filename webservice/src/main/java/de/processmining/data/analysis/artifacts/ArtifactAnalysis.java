@@ -56,6 +56,12 @@ public class ArtifactAnalysis {
         this.artifactRepository = eventLogArtifactRepository;
     }
 
+    /**
+     * Executes the artifacts that correspond to the event log.
+     *
+     * @param logName
+     * @return
+     */
     public List<ArtifactResult> run(String logName) {
         var artifacts = new ArrayList<ArtifactBase<?>>();
         var results = new ArrayList<ArtifactResult>();
@@ -209,6 +215,13 @@ public class ArtifactAnalysis {
         return result;
     }
 
+    /**
+     * Stores an artifact configuration to the database.
+     *
+     * @param logName
+     * @param configuration
+     * @return
+     */
     public EventLogArtifact save(String logName, ArtifactUIConfiguration configuration) {
         var config = artifactRepository.findById(configuration.getId());
         var entity = config.orElse(new EventLogArtifact());
@@ -221,6 +234,11 @@ public class ArtifactAnalysis {
         return artifactRepository.save(entity);
     }
 
+    /**
+     * Removes an artifact configuration from the database.
+     *
+     * @param id
+     */
     public void delete(Long id) {
         artifactRepository.deleteById(id);
     }

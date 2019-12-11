@@ -26,7 +26,7 @@ export class ArtifactService {
     return this.http.get<Artifact[]>(environment.serviceUrl + '/artifacts');
   }
 
-  getArtifactUI(artifact: string): Observable<ArtifactUIField[]> {
+  getArtifactFields(artifact: string): Observable<ArtifactUIField[]> {
     return this.http.get<ArtifactUIField[]>(environment.serviceUrl + '/artifacts/ui?artifact=' + artifact);
   }
 
@@ -38,7 +38,7 @@ export class ArtifactService {
     return this.http.get<ArtifactResult[]>(environment.serviceUrl + '/artifacts/evaluate?logName=' + logName);
   }
 
-  saveArtifactConfiguration(logName: string, configuration: ArtifactConfiguration) {
+  save(logName: string, configuration: ArtifactConfiguration) {
     return this.http.post(
       environment.serviceUrl + '/artifacts/configuration?logName=' + logName, {
         id: configuration.id,
@@ -48,6 +48,7 @@ export class ArtifactService {
       });
   }
 
+  // tslint:disable-next-line:ban-types
   delete(artifact: ArtifactConfiguration): Observable<Object> {
     return this.http.delete(environment.serviceUrl + '/artifacts/configuration?id=' + artifact.id);
   }

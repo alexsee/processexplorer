@@ -52,7 +52,7 @@ export class ArtifactSettingsComponent implements OnInit {
           for (const artifact of this.artifacts) {
             artifact.data = JSON.parse(artifact.configuration);
 
-            this.artifactService.getArtifactUI(artifact.type)
+            this.artifactService.getArtifactFields(artifact.type)
               .subscribe(fields => artifact.fields = fields);
           }
         });
@@ -68,7 +68,7 @@ export class ArtifactSettingsComponent implements OnInit {
 
     for (const artifact of this.artifacts) {
       artifact.configuration = JSON.stringify(artifact.data);
-      requests.push(this.artifactService.saveArtifactConfiguration(this.logName, artifact));
+      requests.push(this.artifactService.save(this.logName, artifact));
     }
 
     forkJoin(requests).subscribe(response => {
@@ -78,7 +78,7 @@ export class ArtifactSettingsComponent implements OnInit {
   }
 
   doAddArtifact(artifact: Artifact) {
-    this.artifactService.getArtifactUI(artifact.type)
+    this.artifactService.getArtifactFields(artifact.type)
       .subscribe(fields => {
         const item = {
           id: null,
@@ -102,10 +102,14 @@ export class ArtifactSettingsComponent implements OnInit {
   }
 
   doDeleteArtifact(artifact: ArtifactConfiguration) {
-    this.artifactService.delete(artifact).subscribe(x => {
-      this.nzMessageService.success('Artifact deleted successfully.');
+    if (artifact.id === null) {
       this.artifacts.splice(this.artifacts.indexOf(artifact), 1);
-    });
+    } else {
+      this.artifactService.delete(artifact).subscribe(x => {
+        this.nzMessageService.success('Artifact deleted successfully.');
+        this.artifacts.splice(this.artifacts.indexOf(artifact), 1);
+      });
+    }
   }
 
 }
