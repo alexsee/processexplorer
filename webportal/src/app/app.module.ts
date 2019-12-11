@@ -33,6 +33,8 @@ import { ChartComponent } from './analysis/chart/chart.component';
 import { RecommendationListComponent } from './analysis/recommendation-list/recommendation-list.component';
 import { ReworkConditionComponent } from './analysis/conditions/rework-condition/rework-condition.component';
 import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts.component';
+import { ArtifactSettingsComponent } from './modules/process-mining/artifact-settings/artifact-settings.component';
+import { ArtifactSettingsFieldComponent } from './modules/process-mining/artifact-settings/artifact-settings-field.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,10 @@ import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts
     LogAnnotationComponent,
     LogUploadComponent,
     RecommendationListComponent,
-    ArtifactsComponent
+    
+    ArtifactsComponent,
+    ArtifactSettingsComponent,
+    ArtifactSettingsFieldComponent
   ],
   imports: [
     BrowserModule,

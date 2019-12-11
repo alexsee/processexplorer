@@ -1,4 +1,4 @@
-import { Condition } from './condition.model';
+import { Condition } from '../condition.model';
 
 export class ArtifactResult {
     name: string;

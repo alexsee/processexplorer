@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { Insight } from '../models/insight.model';
 import { Condition } from '../models/condition.model';
 import { Recommendation } from '../models/recommendation';
-import { ArtifactResult } from '../models/artifactresult.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -48,10 +47,6 @@ export class AnalysisService {
       environment.serviceUrl + '/analysis/recommendations?logName=' + logName,
       conditions,
       httpOptions);
-  }
-
-  getArtifacts(logName: string): Observable<ArtifactResult[]> {
-    return this.http.get<ArtifactResult[]>(environment.serviceUrl + '/analysis/artifacts?logName=' + logName);
   }
 
 }

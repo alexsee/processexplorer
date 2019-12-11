@@ -1,0 +1,63 @@
+<div class="module">
+    <nz-breadcrumb>
+        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Artifacts</nz-breadcrumb-item>
+        <nz-breadcrumb-item>{{logName}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    
+    <div class="inner-content">
+        <nz-page-header>
+            <!--title-->
+            <nz-page-header-title>Artifacts Settings</nz-page-header-title>
+
+            <!--extra-->
+            <nz-page-header-extra>
+                <button nz-button (click)="doCancel()">Cancel</button>
+                <button nz-button nzType="primary" (click)="doSave()">Save</button>
+            </nz-page-header-extra>
+
+            <!--content-->
+            <nz-page-header-content>
+                <div class="wrap">
+                    <div class="content">
+                        <p nz-paragraph>
+                            Here you can add new artifacts and edit existing artifact settings.
+                        </p>
+
+                        <nz-collapse *ngIf="artifacts && artifactClasses">
+                            <nz-collapse-panel
+                                *ngFor="let artifact of artifacts"
+                                [nzHeader]="artifactClasses[artifact.type].name"
+                                [nzExtra]="extraTpl"
+                                [nzActive]="artifact.active">
+                                <p>{{artifactClasses[artifact.type].description}}</p>
+
+                                <form nz-form class="attribute-form">
+                                    <app-artifact-settings-field 
+                                        [field]="field" 
+                                        [data]="artifact.data[field.fieldName]" 
+                                        [context]="context"
+                                        *ngFor="let field of artifact.fields"></app-artifact-settings-field>
+                                </form>
+
+                                <ng-template #extraTpl>
+                                    <i nz-icon nzType="delete" nzTheme="outline" (click)="doDeleteArtifact(artifact)" style="margin-right: 15px;"></i>
+                                    <nz-switch [(ngModel)]="artifact.activated" (click)="$event.stopPropagation()"></nz-switch>
+                                </ng-template>
+                            </nz-collapse-panel>
+                        </nz-collapse>
+
+                        <br>
+
+                        <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="menu"><i nz-icon nzType="plus" nzTheme="outline"></i> Add Artifact</button>
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <ul nz-menu>
+                                <li nz-menu-item *ngFor="let artifact of artifactList" (click)="doAddArtifact(artifact)">{{artifact.name}}</li>
+                            </ul>
+                        </nz-dropdown-menu>
+                    </div>
+                </div>
+            </nz-page-header-content>
+        </nz-page-header>
+    </div>
+</div>

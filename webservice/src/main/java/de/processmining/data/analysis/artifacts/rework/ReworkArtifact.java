@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.processmining.data.analysis.artifacts;
+package de.processmining.data.analysis.artifacts.rework;
 
-import de.processmining.data.DatabaseModel;
+import de.processmining.data.analysis.artifacts.ArtifactBase;
+import de.processmining.data.analysis.artifacts.ArtifactDescription;
+import de.processmining.data.analysis.artifacts.ArtifactResult;
 import de.processmining.data.query.QueryService;
 import de.processmining.data.query.condition.Condition;
 import de.processmining.data.query.condition.ReworkCondition;
@@ -30,6 +32,10 @@ import java.util.List;
 /**
  * @author Alexander Seeliger on 10.12.2019.
  */
+@ArtifactDescription(
+        name = "Rework activities",
+        description = "Searches for cases that contain rework activities."
+)
 public class ReworkArtifact extends ArtifactBase<ReworkArtifactConfiguration> {
 
     public ReworkArtifact(QueryService queryService,
@@ -40,14 +46,14 @@ public class ReworkArtifact extends ArtifactBase<ReworkArtifactConfiguration> {
     public List<ArtifactResult> run(String logName) {
         var results = new ArrayList<ArtifactResult>();
 
-        for (var i = 0; i < configuration.getReworkActivities().length; i++) {
+        for (var rework : configuration.getReworkActivities()) {
             var conditions = new ArrayList<Condition>();
-            conditions.add(new ReworkCondition(configuration.getReworkActivities()[i], configuration.getMin()[i], configuration.getMax()[i]));
+            conditions.add(new ReworkCondition(rework.getActivity(), rework.getMin(), rework.getMax()));
 
             var log = queryService.getLogStatistics(logName, conditions);
-            if(log.getNumTraces() > 0) {
+            if (log.getNumTraces() > 0) {
                 var result = new ArtifactResult();
-                result.setName("Rework activity: " + configuration.getReworkActivities()[i]);
+                result.setName("Rework activity: " + rework.getActivity());
                 result.setType(ReworkArtifact.class.getCanonicalName());
                 result.setNumAffectedCases(log.getNumTraces());
                 result.setConditions(conditions);

@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AnalysisService } from 'src/app/analysis/shared/analysis.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 import { QueryService } from 'src/app/analysis/shared/query.service';
-import { ArtifactResult } from 'src/app/analysis/models/artifactresult.model';
+import { ArtifactResult } from 'src/app/analysis/models/results/artifact-result.model';
 import { InsightListComponent } from 'src/app/analysis/insight-list/insight-list.component';
 import { QueryConvertService } from 'src/app/analysis/shared/query-convert.service';
 import { Condition } from 'src/app/analysis/models/condition.model';
+import { ArtifactService } from 'src/app/analysis/shared/artifact.service';
 
 @Component({
   selector: 'app-artifacts',
@@ -29,7 +29,7 @@ export class ArtifactsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private queryService: QueryService,
-    private analysisService: AnalysisService,
+    private artifactService: ArtifactService,
     private queryConvert: QueryConvertService
   ) { }
 
@@ -43,7 +43,7 @@ export class ArtifactsComponent implements OnInit {
   }
 
   runArtifacts() {
-    this.analysisService.getArtifacts(this.logName)
+    this.artifactService.getArtifactResult(this.logName)
       .subscribe(results => {
         this.artifactResults = results;
         this.artifactTotal = results.map(x => x.numAffectedCases).reduce((acc, affected) => acc + affected);

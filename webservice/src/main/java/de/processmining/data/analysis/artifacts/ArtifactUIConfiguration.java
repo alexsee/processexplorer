@@ -19,37 +19,47 @@
 package de.processmining.data.analysis.artifacts;
 
 /**
- * @author Alexander Seeliger on 10.12.2019.
+ * @author Alexander Seeliger on 11.12.2019.
  */
-public class ReworkArtifactConfiguration extends ArtifactConfiguration {
+public class ArtifactUIConfiguration {
 
-    private String[] reworkActivities;
+    private long id;
 
-    private int[] min;
+    private String type;
 
-    private int[] max;
+    private String configuration;
 
-    public String[] getReworkActivities() {
-        return reworkActivities;
+    private boolean activated;
+
+    public long getId() {
+        return id;
     }
 
-    public void setReworkActivities(String[] reworkActivities) {
-        this.reworkActivities = reworkActivities;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public int[] getMin() {
-        return min;
+    public String getType() {
+        return type;
     }
 
-    public void setMin(int[] min) {
-        this.min = min;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public int[] getMax() {
-        return max;
+    public String getConfiguration() {
+        return configuration;
     }
 
-    public void setMax(int[] max) {
-        this.max = max;
+    public void setConfiguration(String configuration) {
+        this.configuration = configuration;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 }
