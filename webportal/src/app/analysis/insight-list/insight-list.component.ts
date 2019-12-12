@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 
-import * as moment from 'moment';
+import HumanizeDuration from 'humanize-duration';
 import { QueryConvertService } from 'src/app/analysis/shared/query-convert.service';
 import { AnalysisService } from 'src/app/analysis/shared/analysis.service';
 import { Insight } from '../models/insight.model';
@@ -50,6 +50,6 @@ export class InsightListComponent implements OnChanges {
   }
 
   humanizeDuration(duration: number) {
-    return moment.duration(duration, 'seconds').humanize();
+    return HumanizeDuration(duration * 1000, { largest: 1, round: true });
   }
 }

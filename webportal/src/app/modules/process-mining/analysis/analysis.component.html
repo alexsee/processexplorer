@@ -1,14 +1,14 @@
 <div class="module">
 <nz-breadcrumb>
     <nz-breadcrumb-item>Home</nz-breadcrumb-item>
-    <nz-breadcrumb-item>Analysis</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Explore</nz-breadcrumb-item>
     <nz-breadcrumb-item>{{logName}}</nz-breadcrumb-item>
 </nz-breadcrumb>
 
 <div class="inner-content">
   <div class="process-explorer-dashboard">
     <div class="process-explorer-conditions">
-      <div class="statistics">
+      <div class="statistics" *ngIf="context">
         <nz-row [nzGutter]="16">
           <nz-col [nzSpan]="12">
               <nz-statistic [nzTitle]="'# Traces'" [nzValue]="context.numTraces | number"></nz-statistic>

@@ -1,8 +1,6 @@
 import { Component, Input, OnChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
-import * as moment from 'moment';
-// import * as c3 from 'c3';
-
+import HumanizeDuration from 'humanize-duration';
 import * as Highcharts from 'highcharts';
 
 import { Insight } from '../models/insight.model';
@@ -130,6 +128,6 @@ export class InsightComponent implements OnChanges, AfterViewInit {
   }
 
   humanizeDuration(duration: number) {
-    return moment.duration(duration, 'seconds').humanize();
+    return HumanizeDuration(duration * 1000, { largest: 1, round: true });
   }
 }

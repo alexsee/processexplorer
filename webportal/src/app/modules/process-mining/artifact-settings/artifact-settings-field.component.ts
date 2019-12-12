@@ -8,11 +8,11 @@ import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model
     styleUrls: ['./artifact-settings-field.component.scss']
 })
 export class ArtifactSettingsFieldComponent {
-  @Input() private context: EventLogStatistics;
-  @Input() private field: ArtifactUIField;
-  @Input() private data: any;
+  @Input() context: EventLogStatistics;
+  @Input() field: ArtifactUIField;
+  @Input() data: any;
 
-  private newitem: any = {};
+  newitem: any = {};
 
   constructor() {
   }

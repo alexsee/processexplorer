@@ -1,0 +1,20 @@
+.module {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "breadcrumb"
+        "content";
+    height: 100%;
+}
+
+nz-breadcrumb {
+    grid-area: breadcrumb;
+    margin: 16px 0;
+}
+
+.inner-content {
+    background: #fff;
+    padding: 24px;
+    grid-area: content;
+    overflow: hidden;
+}

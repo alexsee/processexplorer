@@ -34,7 +34,7 @@
         </div>
 
         <div class="process-explorer-artifacts">
-            <nz-list [nzDataSource]="artifactResults" [nzRenderItem]="item" [nzItemLayout]="'horizontal'" [nzLoading]="loading">
+            <nz-list [nzDataSource]="artifactResults" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
                 <ng-template #item let-item>
                     <nz-list-item [nzActions]="[showCasesAction, showInsightsAction]" [ngClass]="{ 'artifact-selected': artifact === item }">
                         <ng-template #showCasesAction><a (click)="onShowCases(item)"><i nz-icon nzType="zoom-in" nzTheme="outline"></i> show cases</a></ng-template>

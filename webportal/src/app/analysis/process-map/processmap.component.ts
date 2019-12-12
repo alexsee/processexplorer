@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 
-import * as moment from 'moment';
+import HumanizeDuration from 'humanize-duration';
 import * as d3 from 'd3';
 import * as dagreD3 from 'dagre-d3';
 import { Condition } from '../models/condition.model';
@@ -8,8 +8,6 @@ import { ProcessMap, ProcessMapSettings } from '../models/processmap.model';
 import { QueryService } from '../shared/query.service';
 import { QueryConvertService } from '../shared/query-convert.service';
 import { LocalStorageService } from 'src/app/shared/storage.service';
-
-
 
 @Component({
   selector: 'app-processmap',
@@ -99,7 +97,8 @@ export class ProcessMapComponent implements OnChanges {
       // add edge
       this.graph.setEdge(this.getCleanName(edge.sourceEvent), this.getCleanName(edge.targetEvent),
         {
-          label: this.settings.mode === 'occurrence' ? edge.occurrence + '' : moment.duration(edge.avgDuration, 'seconds').humanize(),
+          label: this.settings.mode === 'occurrence'
+            ? edge.occurrence + '' : HumanizeDuration(edge.avgDuration * 1000, { largest: 2, round: true }),
           curve: d3.curveBasis,
           weight: edge.occurrence
         });
