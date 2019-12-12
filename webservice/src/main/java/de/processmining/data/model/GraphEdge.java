@@ -32,6 +32,8 @@ public class GraphEdge {
 
     private long occurrence;
 
+    private int[] variants;
+
     public String getSourceEvent() {
         return sourceEvent;
     }
@@ -78,5 +80,13 @@ public class GraphEdge {
 
     public void setOccurrence(long occurrence) {
         this.occurrence = occurrence;
+    }
+
+    public int[] getVariants() {
+        return variants;
+    }
+
+    public void setVariants(int[] variants) {
+        this.variants = variants;
     }
 }

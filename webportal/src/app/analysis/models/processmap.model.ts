@@ -11,6 +11,8 @@ export class GraphEdge {
     maxDuration: number;
 
     occurrence: number;
+
+    variants: number[];
 }
 
 export class ProcessMapSettings {

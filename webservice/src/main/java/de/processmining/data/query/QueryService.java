@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -186,6 +187,43 @@ public class QueryService {
     }
 
     /**
+     * Returns all existing paths of a loaded event log with corresponding occurrence and variant id.
+     *
+     * @param logName
+     * @param conditions
+     * @return
+     */
+    public List<Variant> getAllPathsSimple(String logName, List<de.processmining.data.query.condition.Condition> conditions) {
+        var logStats = getLogStatistics(logName);
+        var db = new DatabaseModel(logName);
+
+        var sql = new SelectQuery()
+                .addColumns(db.variantsIdCol)
+                .addAliasedColumn(FunctionCall.count().addColumnParams(db.caseVariantIdCol), "occurrence")
+                .addJoins(SelectQuery.JoinType.INNER, db.caseVariantJoin, db.caseCaseAttributeJoin)
+                .addGroupings(db.variantsIdCol)
+                .addCustomOrdering("occurrence", OrderObject.Dir.DESCENDING);
+
+        for (var rule : conditions) {
+            var condition = rule.getCondition(db);
+            if (condition != null) {
+                sql.addCondition(condition);
+            }
+        }
+
+        var rowMapper = new RowMapper<Variant>() {
+            public Variant mapRow(ResultSet rs, int rowNum) throws SQLException {
+                var result = new Variant();
+                result.setId(rs.getLong("id"));
+                result.setOccurrence(rs.getLong("occurrence"));
+                return result;
+            }
+        };
+
+        return jdbcTemplate.query(sql.validate().toString(), rowMapper);
+    }
+
+    /**
      * Returns the process map with edges and their duration, occurrence.
      *
      * @param query
@@ -199,7 +237,8 @@ public class QueryService {
                 .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addColumnParams(db.graphDurationCol)), "avg_duration")
                 .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addColumnParams(db.graphDurationCol)), "min_duration")
                 .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addColumnParams(db.graphDurationCol)), "max_duration")
-                .addAliasedColumn(FunctionCall.countAll(), "occurrence");
+                .addAliasedColumn(FunctionCall.countAll(), "occurrence")
+                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.graphVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
 
         for (var rule : query.getConditions()) {
             var condition = rule.getCondition(db);
@@ -222,6 +261,7 @@ public class QueryService {
                 result.setMinDuration(rs.getLong(4));
                 result.setMaxDuration(rs.getLong(5));
                 result.setOccurrence(rs.getLong(6));
+                result.setVariants(Arrays.stream(rs.getString(7).split(",")).mapToInt(Integer::parseInt).toArray());
 
                 return result;
             }
@@ -234,6 +274,8 @@ public class QueryService {
 
         var result = new ProcessMapResult();
         result.setProcessMap(graph);
+        result.setVariants(getAllPathsSimple(query.getLogName(), query.getConditions()));
+
         return result;
     }
 

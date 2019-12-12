@@ -10,5 +10,7 @@
             <nz-option nzValue="duration" nzLabel="Duration"></nz-option>
             <nz-option nzValue="occurrence" nzLabel="Occurrence"></nz-option>
         </nz-select>
+
+        <nz-slider [(ngModel)]="variant" [(nzMin)]="minVariant" [(nzMax)]="maxVariant" (nzOnAfterChange)="onSettingsChange()"></nz-slider>
     </div>
 </div>
