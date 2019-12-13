@@ -1,17 +1,17 @@
-<nz-card nzTitle="Variant Condition" 
+<nz-card nzTitle="Variant selection" 
     nzSize="small"
     [nzExtra]="moreTemplate">
     <span *ngIf="data.variantId">
         Variant: <b>{{data.clusterIndex}}</b>
     </span>
     <span *ngIf="!data.variantId">
-        Variant Condition
+        Variant selection
     </span>
 </nz-card>
 
 <ng-template #moreTemplate>
     <a nz-popover
-        nzPopoverTitle="Variant Condition"
+        nzPopoverTitle="Variant selection"
         nzPopoverTrigger="click"
         [nzPopoverContent]="contentTemplate">Edit</a>
         

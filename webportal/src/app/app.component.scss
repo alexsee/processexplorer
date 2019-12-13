@@ -28,3 +28,12 @@ nz-header {
     height: 45px;
     line-height: 45px;
 }
+
+.log-selection {
+    float: right;
+    height: 31px;
+}
+
+.log-selection nz-select {
+    width: 200px;
+}

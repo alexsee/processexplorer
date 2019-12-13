@@ -13,6 +13,7 @@ import { ClusterConditionComponent } from 'src/app/analysis/conditions/cluster-c
 import { Condition } from 'src/app/analysis/models/condition.model';
 import { Recommendation } from 'src/app/analysis/models/recommendation';
 import { ReworkConditionComponent } from 'src/app/analysis/conditions/rework-condition/rework-condition.component';
+import { DurationConditionComponent } from 'src/app/analysis/conditions/duration-condition/duration-condition.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -40,7 +41,7 @@ export class AnalysisComponent implements OnInit {
     this.logName = this.route.snapshot.paramMap.get('logName');
 
     // load queries from local storage
-    if (window.history.state !== undefined) {
+    if (window.history.state !== undefined && window.history.state.conditions !== undefined) {
       this.conditions = this.queryConvertService.convertFromQuery(window.history.state.conditions);
     } else {
       const query = this.storageService.readQueryConditions(this.logName);
@@ -83,6 +84,9 @@ export class AnalysisComponent implements OnInit {
         break;
       case 'rework':
         this.conditions.push(new Condition(ReworkConditionComponent, { }));
+        break;
+      case 'duration':
+        this.conditions.push(new Condition(DurationConditionComponent, { unit: 'days' }));
         break;
     }
   }

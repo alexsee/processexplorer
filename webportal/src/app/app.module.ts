@@ -33,8 +33,7 @@ import { ReworkConditionComponent } from './analysis/conditions/rework-condition
 import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts.component';
 import { ArtifactSettingsComponent } from './modules/process-mining/artifact-settings/artifact-settings.component';
 import { ArtifactSettingsFieldComponent } from './modules/process-mining/artifact-settings/artifact-settings-field.component';
-import { AnalysisListComponent } from './modules/process-mining/analysis-list/analysis-list.component';
-import { ArtifactListComponent } from './modules/process-mining/artifact-list/artifact-list.component';
+import { DurationConditionComponent } from './analysis/conditions/duration-condition/duration-condition.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +46,7 @@ import { ArtifactListComponent } from './modules/process-mining/artifact-list/ar
     VariantConditionComponent,
     ClusterConditionComponent,
     ReworkConditionComponent,
+    DurationConditionComponent,
 
     ConditionDirective,
     ConditionSingleComponent,
@@ -62,8 +62,6 @@ import { ArtifactListComponent } from './modules/process-mining/artifact-list/ar
     ArtifactsComponent,
     ArtifactSettingsComponent,
     ArtifactSettingsFieldComponent,
-    AnalysisListComponent,
-    ArtifactListComponent
   ],
   imports: [
     BrowserModule,
@@ -94,7 +92,8 @@ import { ArtifactListComponent } from './modules/process-mining/artifact-list/ar
     PathConditionComponent,
     VariantConditionComponent,
     ClusterConditionComponent,
-    ReworkConditionComponent
+    ReworkConditionComponent,
+    DurationConditionComponent
   ],
   bootstrap: [AppComponent]
 })

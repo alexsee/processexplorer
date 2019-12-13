@@ -95,6 +95,8 @@ public class DirectlyFollowsGraphMiner {
         sql.print("  COALESCE(a.case_id, b.case_id) AS case_id,");
         sql.print("  COALESCE(a.event_name, 'Startknoten') AS source_event,");
         sql.print("  COALESCE(b.event_name, 'Endknoten') AS target_event,");
+        sql.print("  COALESCE(a.timestamp, b.timestamp) AS source_timestamp,");
+        sql.print("  COALESCE(b.timestamp, a.timestamp) AS target_timestamp,");
         sql.print("  COALESCE(%s, interval '0') AS duration,", "age(b.timestamp, a.timestamp)");
         sql.print("  CAST(%s AS INT) AS variant_id", db.caseTable.getTableNameSQL() + ".variant_id");
         sql.print("INTO %s", db.graphTable.getTableNameSQL());

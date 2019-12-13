@@ -109,8 +109,6 @@ export class ProcessMapComponent implements OnChanges {
       return;
     }
 
-
-
     const selectedVariant = this.variants.slice(0, this.variant + 1);
 
     // generate graph

@@ -194,7 +194,6 @@ public class QueryService {
      * @return
      */
     public List<Variant> getAllPathsSimple(String logName, List<de.processmining.data.query.condition.Condition> conditions) {
-        var logStats = getLogStatistics(logName);
         var db = new DatabaseModel(logName);
 
         var sql = new SelectQuery()

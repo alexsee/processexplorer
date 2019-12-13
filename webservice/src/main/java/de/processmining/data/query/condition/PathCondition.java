@@ -27,7 +27,7 @@ import de.processmining.data.DatabaseModel;
 public class PathCondition extends Condition {
 
     public enum ConditionType {
-        RESPONSE, EXISTS, START_END, CUSTOM, CUSTOM_EXACT
+        RESPONSE, DIRECT_RESPONSE, NO_RESPONSE, NO_DIRECT_RESPONSE, EXISTS, START_END, NO_START_END, CUSTOM, CUSTOM_EXACT
     }
 
     private ConditionType conditionType;
@@ -41,20 +41,33 @@ public class PathCondition extends Condition {
 
     @Override
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
+        var path = "";
 
         switch (conditionType) {
             case RESPONSE:
                 return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%:" + end + ":%"));
+            case DIRECT_RESPONSE:
+                return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + "::" + end + ":%"));
+            case NO_RESPONSE:
+                return (BinaryCondition.notLike(db.variantsVariantCol, "%:" + start + ":%:" + end + ":%"));
+            case NO_DIRECT_RESPONSE:
+                return (BinaryCondition.notLike(db.variantsVariantCol, "%:" + start + "::" + end + ":%"));
             case EXISTS:
                 return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%"));
             case START_END:
-                var path = "";
                 if (start != null)
                     path += ":" + start + ":";
                 path += "%";
                 if (end != null)
                     path += ":" + end + ":";
                 return (BinaryCondition.like(db.variantsVariantCol, path));
+            case NO_START_END:
+                if (start != null)
+                    path += ":" + start + ":";
+                path += "%";
+                if (end != null)
+                    path += ":" + end + ":";
+                return (BinaryCondition.notLike(db.variantsVariantCol, path));
             case CUSTOM:
             case CUSTOM_EXACT:
                 return (BinaryCondition.like(db.variantsVariantCol, start));

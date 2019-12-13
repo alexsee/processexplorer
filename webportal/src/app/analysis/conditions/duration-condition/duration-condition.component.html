@@ -1,0 +1,71 @@
+<nz-card nzTitle="Duration selection" 
+    nzSize="small"
+    [nzExtra]="moreTemplate">
+    <div *ngIf="data.minDuration && data.maxDuration">
+        <b>&ge; {{data.minDuration}} {{data.unit}} and &le; {{data.maxDuration}} {{data.unit}}</b>
+    </div>
+    <div *ngIf="data.minDuration && !data.maxDuration">
+        <b>Longer or equal than {{data.minDuration}} {{data.unit}}</b>
+    </div>
+    <div *ngIf="!data.minDuration && data.maxDuration">
+        <b>Less or equal than {{data.maxDuration}} {{data.unit}}</b>
+    </div>
+    <div>
+        <span *ngIf="data.from">{{data.from}}</span><span *ngIf="!data.from">Process start</span>
+        -
+        <span *ngIf="data.to">{{data.to}}</span><span *ngIf="!data.to">Process end</span>
+    </div>
+</nz-card>
+
+<ng-template #moreTemplate>
+    <a nz-popover
+        nzPopoverTitle="Duration selection"
+        nzPopoverTrigger="click"
+        [nzPopoverContent]="contentTemplate">Edit</a>
+        
+    <nz-divider nzType="vertical"></nz-divider>
+
+    <a (click)="doDelete()">Delete</a>
+</ng-template>
+
+<ng-template #contentTemplate>
+    <form nz-form class="duration-form" >
+        <nz-form-item>
+            <nz-form-label [nzSm]="8" nzFor="from">From first occurrence</nz-form-label>
+            <nz-form-control [nzSm]="16">
+                <nz-select name="from" [(ngModel)]="data.from" nzPlaceHolder="Process start">
+                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label [nzSm]="8" nzFor="from">between</nz-form-label>
+            <nz-form-control [nzSm]="16">
+                <nz-input-number name="minDuration" [(ngModel)]="data.minDuration" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                and
+                <nz-input-number name="maxDuration" [(ngModel)]="data.maxDuration" [nzMin]="0" [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label [nzSm]="8" nzFor="unit">Unit</nz-form-label>
+            <nz-form-control [nzSm]="16">
+                <nz-radio-group name="unit" [(ngModel)]="data.unit" [nzSize]="'small'">
+                    <label nz-radio-button nzValue="days">Days</label>
+                    <label nz-radio-button nzValue="hours">Hours</label>
+                    <label nz-radio-button nzValue="minutes">Minutes</label>
+                </nz-radio-group>
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+            <nz-form-label [nzSm]="8" nzFor="to">To last occurrence</nz-form-label>
+            <nz-form-control [nzSm]="16">
+                <nz-select name="to" [(ngModel)]="data.to" nzPlaceHolder="Process end">
+                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</ng-template>

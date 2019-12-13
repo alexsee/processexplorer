@@ -24,4 +24,12 @@ export class LocalStorageService {
   public writeConfig<T>(logName: string, setting: string, value: T) {
     this.storage.set(logName + '.' + setting, value);
   }
+
+  public getCurrentLog(): string {
+    return this.storage.get('current-log');
+  }
+
+  public setCurrentLog(logName: string) {
+    this.storage.set('current-log', logName);
+  }
 }

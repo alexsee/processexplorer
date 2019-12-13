@@ -108,7 +108,7 @@ public class XLog2Database {
                     var value = XLogUtils.getAttributeValue(trace.getAttributes().get(traceAttributes.get(j).getKey()));
 
                     if (value instanceof Date) {
-                        prepInsertTrace.setObject(j + 3, new java.sql.Date(((Date) value).getTime()));
+                        prepInsertTrace.setObject(j + 3, new java.sql.Timestamp(((Date) value).getTime()));
                     } else {
                         prepInsertTrace.setObject(j + 3, value);
                     }
@@ -124,7 +124,7 @@ public class XLog2Database {
                     prepInsertEvent.setInt(3, logInfo.getEventClasses().getClassOf(event).getIndex());
                     prepInsertEvent.setString(4, classifier.getClassIdentity(event));
                     prepInsertEvent.setObject(5, XLogUtils.getAttributeValue(event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE)));
-                    prepInsertEvent.setDate(6, new java.sql.Date(timestamp.getTime()));
+                    prepInsertEvent.setTimestamp(6, new java.sql.Timestamp(timestamp.getTime()));
                     prepInsertEvent.setObject(7, XLogUtils.getAttributeValue(event.getAttributes().get(XLifecycleExtension.KEY_MODEL)));
 
                     // add additional attributes
