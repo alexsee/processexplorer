@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LogService } from './log/shared/log.service';
 import { EventLog } from './log/models/eventlog.model';
 
@@ -7,7 +7,7 @@ import { EventLog } from './log/models/eventlog.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'webportal';
 
   logs: EventLog[];
