@@ -30,4 +30,5 @@ public interface EventLogArtifactRepository extends CrudRepository<EventLogArtif
 
     List<EventLogArtifact> findByLogName(String logName);
 
+    void deleteAllByLogName(String logName);
 }

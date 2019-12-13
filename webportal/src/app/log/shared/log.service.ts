@@ -5,16 +5,39 @@ import { environment } from 'src/environments/environment';
 import { EventLog } from '../models/eventlog.model';
 import { EventLogStatistics } from '../models/eventlog-statistics.model';
 import { EventLogAnnotation } from '../models/eventlog-annotation.model';
+import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogService {
+  private currentLogSubject = new BehaviorSubject<EventLog>(null);
+  public currentLog = this.currentLogSubject.asObservable();
+
+  public currentEventLogs: Observable<EventLog[]>;
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+    this.currentEventLogs = this.list();
+    this.currentEventLogs.subscribe(log => {
+      // use current selected
+      if (localStorage.getItem('currentLog') !== undefined) {
+        this.currentLogSubject.next(log.filter(y => y.logName === localStorage.getItem('currentLog'))[0]);
+        }
+    });
+  }
+
+  public get currentLogValue(): EventLog {
+    return this.currentLogSubject.value;
+  }
+
+  setCurrentLog(eventLog: string) {
+    localStorage.setItem('currentLog', eventLog);
+    this.currentEventLogs.subscribe(x => this.currentLogSubject.next(x.filter(y => y.logName === eventLog)[0]));
+  }
 
   upload(logName: string, file: File) {
     const formData: FormData = new FormData();
