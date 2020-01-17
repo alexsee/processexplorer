@@ -68,6 +68,7 @@ public class DifferenceAnalysis {
         result.add(new TransitionOccurrenceMetric(logName));
         result.add(new TransitionDurationMetric(logName));
         result.add(new CaseDurationMetric(logName));
+        result.add(new CaseLengthMetric(logName));
         result.add(new CaseEventDurationMetric(logName));
         result.add(new ActivityMetric(logName));
 

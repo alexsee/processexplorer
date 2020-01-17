@@ -1,21 +1,35 @@
-<nz-card nzTitle="Path Condition" 
+<nz-card nzTitle="Path flow selection" 
     nzSize="small"
     [nzExtra]="moreTemplate">
     <span *ngIf="data.conditionType == 'START_END'">
         <span *ngIf="data.start">Starts with <b>{{context.activities[data.start]}}</b>&nbsp;</span>
         <span *ngIf="data.end">Ends with <b>{{context.activities[data.end]}}</b></span>
     </span>
-    <span *ngIf="data.conditionType == 'RESPONSE'">
-        Eventually followed by
+    <span *ngIf="data.conditionType == 'NO_START_END'">
+        <span *ngIf="data.start">Starts not with <b>{{context.activities[data.start]}}</b>&nbsp;</span>
+        <span *ngIf="data.end">Ends not with <b>{{context.activities[data.end]}}</b></span>
     </span>
     <span *ngIf="data.conditionType == 'RESPONSE'">
-        {{context.activities[data.start]}} -> {{context.activities[data.end]}}
+        <b>Eventually followed by</b><br>
+        {{context.activities[data.start]}} - {{context.activities[data.end]}}
+    </span>
+    <span *ngIf="data.conditionType == 'DIRECT_RESPONSE'">
+        <b>Directly followed by</b><br>
+        {{context.activities[data.start]}} - {{context.activities[data.end]}}
+    </span>
+    <span *ngIf="data.conditionType == 'NO_RESPONSE'">
+        <b>Never followed by</b><br>
+        {{context.activities[data.start]}} - {{context.activities[data.end]}}
+    </span>
+    <span *ngIf="data.conditionType == 'NO_DIRECT_RESPONSE'">
+        <b>Never directly followed by</b><br>
+        {{context.activities[data.start]}} - {{context.activities[data.end]}}
     </span>
 </nz-card>
 
 <ng-template #moreTemplate>
     <a nz-popover
-        nzPopoverTitle="Path Condition"
+        nzPopoverTitle="Path flow selection"
         nzPopoverTrigger="click"
         [nzPopoverContent]="contentTemplate">Edit</a>
         
@@ -30,8 +44,12 @@
             <nz-form-label [nzSm]="6" nzRequired nzFor="type">Path Type</nz-form-label>
             <nz-form-control [nzSm]="18">
                 <nz-select name="type" [(ngModel)]="data.conditionType" nzPlaceHolder="Choose">
-                    <nz-option nzValue="START_END" nzLabel="Start and End"></nz-option>
+                    <nz-option nzValue="START_END" nzLabel="Starts and ends with"></nz-option>
+                    <nz-option nzValue="NO_START_END" nzLabel="Starts and end not with"></nz-option>
                     <nz-option nzValue="RESPONSE" nzLabel="Eventually followed by"></nz-option>
+                    <nz-option nzValue="DIRECT_RESPONSE" nzLabel="Directly followed by"></nz-option>
+                    <nz-option nzValue="NO_RESPONSE" nzLabel="Never followed by"></nz-option>
+                    <nz-option nzValue="NO_DIRECT_RESPONSE" nzLabel="Never directly followed by"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>
@@ -44,7 +62,7 @@
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-            <nz-form-label [nzSm]="6" nzRequired nzFor="end">End Activity</nz-form-label>
+            <nz-form-label [nzSm]="6" nzFor="end">End Activity</nz-form-label>
             <nz-form-control [nzSm]="18">
                 <nz-select name="end" [(ngModel)]="data.end" nzPlaceHolder="Choose">
                     <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="i" [nzLabel]="activity"></nz-option>

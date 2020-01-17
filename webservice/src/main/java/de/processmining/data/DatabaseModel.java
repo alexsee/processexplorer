@@ -71,6 +71,8 @@ public class DatabaseModel {
     public DbColumn graphCaseIdCol;
     public DbColumn graphSourceEventCol;
     public DbColumn graphTargetEventCol;
+    public DbColumn graphSourceTimestampCol;
+    public DbColumn graphTargetTimestampCol;
     public DbColumn graphDurationCol;
     public DbColumn graphVariantIdCol;
 
@@ -125,6 +127,8 @@ public class DatabaseModel {
         graphCaseIdCol = graphTable.addColumn("case_id", "integer", null);
         graphSourceEventCol = graphTable.addColumn("source_event", "varchar", null);
         graphTargetEventCol = graphTable.addColumn("target_event", "varchar", null);
+        graphSourceTimestampCol = graphTable.addColumn("source_timestamp", "timestamp", null);
+        graphTargetTimestampCol = graphTable.addColumn("target_timestamp", "timestamp", null);
         graphDurationCol = graphTable.addColumn("duration", "interval", null);
         graphVariantIdCol = graphTable.addColumn("variant_id", "integer", null);
 

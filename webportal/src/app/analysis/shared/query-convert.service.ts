@@ -5,6 +5,7 @@ import { AttributeConditionComponent } from '../conditions/attribute-condition/a
 import { VariantConditionComponent } from '../conditions/variant-condition/variant-condition.component';
 import { ClusterConditionComponent } from '../conditions/cluster-condition/cluster-condition.component';
 import { ReworkConditionComponent } from '../conditions/rework-condition/rework-condition.component';
+import { DurationConditionComponent } from '../conditions/duration-condition/duration-condition.component';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,8 @@ export class QueryConvertService {
         conditions.push(new Condition(ClusterConditionComponent, qry));
       } else if (qry.type === 'rework') {
         conditions.push(new Condition(ReworkConditionComponent, qry));
+      } else if (qry.type === 'duration') {
+        conditions.push(new Condition(DurationConditionComponent, qry));
       }
     }
 

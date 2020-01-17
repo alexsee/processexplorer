@@ -18,6 +18,7 @@
 
 package de.processmining.webservice.controller;
 
+import de.processmining.data.analysis.artifacts.ArtifactAnalysis;
 import de.processmining.data.analysis.DifferenceAnalysis;
 import de.processmining.data.analysis.clustering.MultiPerspectiveTraceClustering;
 import de.processmining.data.analysis.clustering.SimpleTraceClustering;
@@ -48,7 +49,7 @@ public class AnalysisController {
     private RecommendationService recommendationService;
 
     @Autowired
-    public AnalysisController(SimpleTraceClustering traceClustering, MultiPerspectiveTraceClustering multiPerspectiveTraceClustering, DifferenceAnalysis differenceAnalysis, RecommendationService recommendationService) {
+    public AnalysisController(SimpleTraceClustering traceClustering, MultiPerspectiveTraceClustering multiPerspectiveTraceClustering, DifferenceAnalysis differenceAnalysis, RecommendationService recommendationService, ArtifactAnalysis artifactAnalysis) {
         this.traceClustering = traceClustering;
         this.multiPerspectiveTraceClustering = multiPerspectiveTraceClustering;
         this.differenceAnalysis = differenceAnalysis;
@@ -81,4 +82,5 @@ public class AnalysisController {
 
         return ResponseEntity.ok(recommendations);
     }
+
 }

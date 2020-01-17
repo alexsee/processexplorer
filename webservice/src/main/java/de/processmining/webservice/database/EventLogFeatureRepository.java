@@ -32,4 +32,5 @@ public interface EventLogFeatureRepository extends CrudRepository<EventLogFeatur
 
     EventLogFeature findByEventLogLogNameAndFeature(String logName, String feature);
 
+    void deleteAllByEventLogLogName(String logName);
 }

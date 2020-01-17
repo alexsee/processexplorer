@@ -1,0 +1,53 @@
+<nz-form-item *ngIf="field.type == 'STRING'">
+    <nz-form-label [nzSm]="6" nzRequired nzFor="attribute">{{field.name}}</nz-form-label>
+    <nz-form-control [nzSm]="18" >
+        <input nz-input name="clusterIndex" placeholder="Cluster" [(ngModel)]="data[field.fieldName]" />
+    </nz-form-control>
+</nz-form-item>
+
+<nz-form-item *ngIf="field.type == 'ACTIVITY'">
+    <nz-form-label [nzSm]="6" nzRequired nzFor="activity">{{field.name}}</nz-form-label>
+    <nz-form-control [nzSm]="18" >
+        <nz-select name="activity" [(ngModel)]="data[field.fieldName]" nzPlaceHolder="Choose">
+            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+        </nz-select>
+    </nz-form-control>
+</nz-form-item>
+
+<nz-form-item *ngIf="field.type == 'MULTI_COLUMN'">
+    <nz-form-label [nzSm]="6" nzRequired>{{field.name}}</nz-form-label>
+    <nz-form-control [nzSm]="18" >
+        <nz-table nzSize="small" [nzTemplateMode]="true">
+            <thead>
+                <tr>
+                    <th *ngFor="let subfield of field.childs">{{subfield.name}}</th>
+                    <th nzWidth="50px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let items of data">
+                    <td *ngFor="let subfield of field.childs">
+                        <nz-select name="activity" [(ngModel)]="items[subfield.fieldName]" nzPlaceHolder="Choose" *ngIf="subfield.type == 'ACTIVITY'">
+                            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                        </nz-select>
+
+                        <input nz-input [placeholder]="subfield.name" [(ngModel)]="items[subfield.fieldName]" *ngIf="subfield.type == 'STRING'" />
+                        <nz-input-number [(ngModel)]="items[subfield.fieldName]" *ngIf="subfield.type == 'NUMBER'"></nz-input-number>
+                    </td>
+                    <td><button nz-button nzType="danger" (click)="doRemoveColumn(items)"><i nz-icon nzType="delete"></i></button></td>
+                </tr>
+                <tr>
+                    <td *ngFor="let subfield of field.childs">
+                        <nz-select name="activity" [(ngModel)]="newitem[subfield.fieldName]" nzPlaceHolder="Choose" *ngIf="subfield.type == 'ACTIVITY'">
+                            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                        </nz-select>
+
+                        <input nz-input [placeholder]="subfield.name" [(ngModel)]="newitem[subfield.fieldName]" *ngIf="subfield.type == 'STRING'" />
+                        <nz-input-number [(ngModel)]="newitem[subfield.fieldName]" *ngIf="subfield.type == 'NUMBER'"></nz-input-number>
+                    </td>
+                    <td><button nz-button (click)="doAddColumn()">Add</button></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-form-control>
+</nz-form-item>

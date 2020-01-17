@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 
-import * as moment from 'moment';
+import HumanizeDuration from 'humanize-duration';
 import * as d3 from 'd3';
 import * as dagreD3 from 'dagre-d3';
 import { Condition } from '../models/condition.model';
@@ -8,8 +8,7 @@ import { ProcessMap, ProcessMapSettings } from '../models/processmap.model';
 import { QueryService } from '../shared/query.service';
 import { QueryConvertService } from '../shared/query-convert.service';
 import { LocalStorageService } from 'src/app/shared/storage.service';
-
-
+import { Variant } from '../models/variant.model';
 
 @Component({
   selector: 'app-processmap',
@@ -22,14 +21,19 @@ export class ProcessMapComponent implements OnChanges {
   @Input() private logName: string;
   @Input() private conditions: Condition[];
 
-  public data: ProcessMap;
-  public settings: ProcessMapSettings;
+  data: ProcessMap;
+  settings: ProcessMapSettings;
 
-  public zoom: any;
-  public svg: any;
-  public inner: any;
+  zoom: any;
+  svg: any;
+  inner: any;
 
-  public graph: any;
+  graph: any;
+
+  variant = 0;
+  variants: Variant[];
+  minVariant: number;
+  maxVariant: number;
 
   constructor(
     private queryService: QueryService,
@@ -50,6 +54,16 @@ export class ProcessMapComponent implements OnChanges {
     this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(response => {
         this.data = response.processMap;
+        this.variants = response.variants;
+
+        // set variants slider
+        this.minVariant = 0;
+        this.maxVariant = this.variants.length;
+
+        this.variants.sort(x => x.occurrence * -1);
+        this.setVariantSliderPareto();
+
+        // compute process map
         this.createProcessMap();
       });
 
@@ -73,11 +87,31 @@ export class ProcessMapComponent implements OnChanges {
     this.createProcessMap();
   }
 
+  setVariantSliderPareto() {
+    const total =  this.variants.reduce((s, current) => s + current.occurrence, 0) * .8;
+    let i = 0;
+    let sum = 0;
+
+    for (const variant of this.variants) {
+      sum += variant.occurrence;
+      if (sum > total) {
+        break;
+      }
+
+      i++;
+    }
+
+    this.variant = i;
+  }
+
   createProcessMap() {
     if (this.data.edges.length === 0) {
       return;
     }
 
+    const selectedVariant = this.variants.slice(0, this.variant + 1);
+
+    // generate graph
     this.graph = new dagreD3.graphlib.Graph({directed: true, multigraph: true, compound: true})
       .setGraph({
         acyclicer: 'greedy',
@@ -86,6 +120,19 @@ export class ProcessMapComponent implements OnChanges {
 
     const nodes = [];
     for (const edge of this.data.edges) {
+      // filter by variant
+      let select = false;
+      for (const variant of selectedVariant) {
+        if (edge.variants.indexOf(variant.id) > -1) {
+          select = true;
+          break;
+        }
+      }
+
+      if (!select) {
+        continue;
+      }
+
       // add as nodes
       if (nodes.indexOf(edge.sourceEvent) === -1) {
         nodes.push(edge.sourceEvent);
@@ -99,7 +146,8 @@ export class ProcessMapComponent implements OnChanges {
       // add edge
       this.graph.setEdge(this.getCleanName(edge.sourceEvent), this.getCleanName(edge.targetEvent),
         {
-          label: this.settings.mode === 'occurrence' ? edge.occurrence + '' : moment.duration(edge.avgDuration, 'seconds').humanize(),
+          label: this.settings.mode === 'occurrence'
+            ? edge.occurrence + '' : HumanizeDuration(edge.avgDuration * 1000, { largest: 2, round: true }),
           curve: d3.curveBasis,
           weight: edge.occurrence
         });

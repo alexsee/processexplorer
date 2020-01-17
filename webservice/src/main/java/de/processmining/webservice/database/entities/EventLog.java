@@ -153,4 +153,5 @@ public class EventLog implements Serializable {
     public void setFeatures(List<EventLogFeature> features) {
         this.features = features;
     }
+
 }

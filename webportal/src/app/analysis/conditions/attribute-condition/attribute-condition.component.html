@@ -1,17 +1,17 @@
-<nz-card nzTitle="Attribute Condition" 
+<nz-card nzTitle="Attribute selection" 
     nzSize="small"
     [nzExtra]="moreTemplate">
     <span *ngIf="data.attribute">
         <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.values}}</b>
     </span>
     <span *ngIf="!data.attribute">
-        Attribute Condition
+        Attribute selection
     </span>
 </nz-card>
 
 <ng-template #moreTemplate>
     <a nz-popover
-        nzPopoverTitle="Attribute Condition"
+        nzPopoverTitle="Attribute selection"
         nzPopoverTrigger="click"
         [nzPopoverContent]="contentTemplate">Edit</a>
         
@@ -51,15 +51,4 @@
         </nz-form-item>
 
     </form>
-
-<!-- 
-
-            <mat-form-field *ngIf="!options.categorical">
-                <mat-label>Start</mat-label>
-                <input matInput [(ngModel)]="data.rangeStart" />
-            </mat-form-field>
-            <mat-form-field *ngIf="!options.categorical">
-                <mat-label>End</mat-label>
-                <input matInput [(ngModel)]="data.rangeEnd" />
-            </mat-form-field> -->
 </ng-template>

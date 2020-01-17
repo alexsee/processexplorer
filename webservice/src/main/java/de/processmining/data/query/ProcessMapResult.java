@@ -19,10 +19,15 @@
 package de.processmining.data.query;
 
 import de.processmining.data.model.Graph;
+import de.processmining.data.model.Variant;
+
+import java.util.List;
 
 public class ProcessMapResult {
 
     private Graph processMap;
+
+    private List<Variant> variants;
 
     public Graph getProcessMap() {
         return processMap;
@@ -30,5 +35,13 @@ public class ProcessMapResult {
 
     public void setProcessMap(Graph processMap) {
         this.processMap = processMap;
+    }
+
+    public List<Variant> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(List<Variant> variants) {
+        this.variants = variants;
     }
 }

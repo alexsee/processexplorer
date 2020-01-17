@@ -11,10 +11,11 @@ import { AnalysisComponent } from './modules/process-mining/analysis/analysis.co
 
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 
+import { HighchartsChartModule } from 'highcharts-angular';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { LogComponent } from './modules/general/log/log.component';
-import { TestComponent } from './modules/process-mining/test/test.component';
 import { LogAnnotationComponent } from './modules/general/log-annotation/log-annotation.component';
 import { LogUploadComponent } from './modules/general/log-upload/log-upload.component';
 import { ProcessMapComponent } from './analysis/process-map/processmap.component';
@@ -27,9 +28,12 @@ import { ConditionSingleComponent } from './analysis/condition-single/condition-
 import { AttributeConditionComponent } from './analysis/conditions/attribute-condition/attribute-condition.component';
 import { InsightComponent } from './analysis/insight/insight.component';
 import { InsightListComponent } from './analysis/insight-list/insight-list.component';
-import { ChartComponent } from './analysis/chart/chart.component';
 import { RecommendationListComponent } from './analysis/recommendation-list/recommendation-list.component';
 import { ReworkConditionComponent } from './analysis/conditions/rework-condition/rework-condition.component';
+import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts.component';
+import { ArtifactSettingsComponent } from './modules/process-mining/artifact-settings/artifact-settings.component';
+import { ArtifactSettingsFieldComponent } from './modules/process-mining/artifact-settings/artifact-settings-field.component';
+import { DurationConditionComponent } from './analysis/conditions/duration-condition/duration-condition.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +46,7 @@ import { ReworkConditionComponent } from './analysis/conditions/rework-condition
     VariantConditionComponent,
     ClusterConditionComponent,
     ReworkConditionComponent,
+    DurationConditionComponent,
 
     ConditionDirective,
     ConditionSingleComponent,
@@ -50,11 +55,13 @@ import { ReworkConditionComponent } from './analysis/conditions/rework-condition
 
     InsightComponent,
     InsightListComponent,
-    ChartComponent,
-    TestComponent,
     LogAnnotationComponent,
     LogUploadComponent,
-    RecommendationListComponent
+    RecommendationListComponent,
+
+    ArtifactsComponent,
+    ArtifactSettingsComponent,
+    ArtifactSettingsFieldComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +70,7 @@ import { ReworkConditionComponent } from './analysis/conditions/rework-condition
     BrowserAnimationsModule,
 
     NgZorroAntdModule,
+    HighchartsChartModule,
 
     FormsModule
   ],
@@ -84,7 +92,8 @@ import { ReworkConditionComponent } from './analysis/conditions/rework-condition
     PathConditionComponent,
     VariantConditionComponent,
     ClusterConditionComponent,
-    ReworkConditionComponent
+    ReworkConditionComponent,
+    DurationConditionComponent
   ],
   bootstrap: [AppComponent]
 })

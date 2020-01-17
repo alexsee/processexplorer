@@ -73,7 +73,7 @@ nz-breadcrumb {
 .process-explorer-insights {
     grid-area: insights;
     padding: 20px !important;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 .process-explorer-recommendations {

@@ -1,17 +1,17 @@
-<nz-card nzTitle="Cluster Condition" 
+<nz-card nzTitle="Cluster selection" 
     nzSize="small"
     [nzExtra]="moreTemplate">
     <span *ngIf="data.clusterIndex">
         Cluster: <b>{{data.clusterIndex}}</b>
     </span>
     <span *ngIf="!data.clusterIndex">
-        Cluster Condition
+        Cluster selection
     </span>
 </nz-card>
 
 <ng-template #moreTemplate>
     <a nz-popover
-        nzPopoverTitle="Cluster Condition"
+        nzPopoverTitle="Cluster selection"
         nzPopoverTrigger="click"
         [nzPopoverContent]="contentTemplate">Edit</a>
         

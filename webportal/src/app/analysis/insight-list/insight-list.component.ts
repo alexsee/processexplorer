@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core';
 
-import * as moment from 'moment';
+import HumanizeDuration from 'humanize-duration';
 import { QueryConvertService } from 'src/app/analysis/shared/query-convert.service';
 import { AnalysisService } from 'src/app/analysis/shared/analysis.service';
 import { Insight } from '../models/insight.model';
@@ -15,9 +15,7 @@ export class InsightListComponent implements OnChanges {
   @Input() public logName: string;
   @Input() public conditions: Condition[];
 
-  public insights: Insight[];
-  public noData = false;
-  public progress = false;
+  public insights: Insight[] = [];
 
   constructor(
     private analysisService: AnalysisService,
@@ -33,16 +31,11 @@ export class InsightListComponent implements OnChanges {
       return;
     }
 
-    this.noData = true;
-    this.progress = true;
+    this.insights = undefined;
 
     this.analysisService.getInsights(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(insights => {
-        this.insights = insights;
-        this.insights.sort(this.sortByEffectSize);
-
-        this.noData = this.insights.length > 0;
-        this.progress = false;
+        this.insights = insights.sort(this.sortByEffectSize);
       });
   }
 
@@ -57,6 +50,6 @@ export class InsightListComponent implements OnChanges {
   }
 
   humanizeDuration(duration: number) {
-    return moment.duration(duration, 'seconds').humanize();
+    return HumanizeDuration(duration * 1000, { largest: 1, round: true });
   }
 }

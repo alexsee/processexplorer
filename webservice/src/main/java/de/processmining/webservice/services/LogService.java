@@ -25,6 +25,9 @@ import de.processmining.data.analysis.DirectlyFollowsGraphMiner;
 import de.processmining.data.model.Log;
 import de.processmining.data.query.QueryService;
 import de.processmining.data.storage.StorageService;
+import de.processmining.webservice.database.EventLogAnnotationRepository;
+import de.processmining.webservice.database.EventLogArtifactRepository;
+import de.processmining.webservice.database.EventLogFeatureRepository;
 import de.processmining.webservice.database.EventLogRepository;
 import de.processmining.webservice.database.entities.EventLog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -46,6 +50,10 @@ import java.util.concurrent.Future;
 public class LogService {
 
     private EventLogRepository eventLogRepository;
+    private EventLogFeatureRepository eventLogFeatureRepository;
+    private EventLogArtifactRepository eventLogArtifactRepository;
+    private EventLogAnnotationRepository eventLogAnnotationRepository;
+
     private SimpMessagingTemplate messagingTemplate;
     private StorageService storageService;
     private QueryService queryService;
@@ -53,11 +61,17 @@ public class LogService {
 
     @Autowired
     public LogService(EventLogRepository eventLogRepository,
+                      EventLogFeatureRepository eventLogFeatureRepository,
+                      EventLogArtifactRepository eventLogArtifactRepository,
+                      EventLogAnnotationRepository eventLogAnnotationRepository,
                       SimpMessagingTemplate messagingTemplate,
                       StorageService storageService,
                       QueryService queryService,
                       JdbcTemplate jdbcTemplate) {
         this.eventLogRepository = eventLogRepository;
+        this.eventLogFeatureRepository = eventLogFeatureRepository;
+        this.eventLogArtifactRepository = eventLogArtifactRepository;
+        this.eventLogAnnotationRepository = eventLogAnnotationRepository;
         this.messagingTemplate = messagingTemplate;
         this.storageService = storageService;
         this.queryService = queryService;
@@ -117,7 +131,7 @@ public class LogService {
             eventLog.setImported(true);
 
             // delete file
-//            storageService.delete(eventLog.getFileName());
+            //            storageService.delete(eventLog.getFileName());
         } else {
             eventLog.setImported(false);
             eventLog.setErrorMessage("Not supported");
@@ -188,6 +202,7 @@ public class LogService {
      *
      * @param logName
      */
+    @Transactional
     public void deleteLog(String logName) {
         var eventLog = eventLogRepository.findByLogName(logName);
 
@@ -196,6 +211,9 @@ public class LogService {
         }
 
         // remove metadata
+        eventLogAnnotationRepository.deleteAllByLogName(logName);
+        eventLogArtifactRepository.deleteAllByLogName(logName);
+        eventLogFeatureRepository.deleteAllByEventLogLogName(logName);
         eventLogRepository.delete(eventLog);
 
         // remove data tables

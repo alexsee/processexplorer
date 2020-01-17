@@ -1,17 +1,17 @@
-<nz-card nzTitle="Rework Condition" 
+<nz-card nzTitle="Rework selection" 
     nzSize="small"
     [nzExtra]="moreTemplate">
     <span *ngIf="data.activity">
         <b>{{data.activity}}</b> occurs between <b>{{data.min}}</b> and <b>{{data.max}}</b> times per case
     </span>
     <span *ngIf="!data.activity">
-        Rework Condition
+        Rework selection
     </span>
 </nz-card>
 
 <ng-template #moreTemplate>
     <a nz-popover
-        nzPopoverTitle="Rework Condition"
+        nzPopoverTitle="Rework selection"
         nzPopoverTrigger="click"
         [nzPopoverContent]="contentTemplate">Edit</a>
         

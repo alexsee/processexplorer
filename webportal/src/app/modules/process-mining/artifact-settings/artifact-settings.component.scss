@@ -1,0 +1,39 @@
+.module {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "breadcrumb"
+        "content";
+    height: 100%;
+}
+
+nz-breadcrumb {
+    grid-area: breadcrumb;
+    margin: 16px 0;
+}
+
+.inner-content {
+    background: #fff;
+    padding: 0;
+    grid-area: content;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "header"
+        "artifact-list";
+}
+
+nz-page-header {
+    grid-area: header;
+}
+
+.artifact-list {
+    padding: 0 30px 30px 30px;
+    grid-area: artifact-list;
+    overflow-y: scroll;
+}
+
+.artifact-list .buttons {
+    margin: 30px 0;
+}
