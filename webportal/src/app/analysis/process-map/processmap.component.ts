@@ -51,7 +51,7 @@ export class ProcessMapComponent implements OnChanges {
     }
 
     // query process map
-    this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions))
+    this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions), true)
       .subscribe(response => {
         this.data = response.processMap;
         this.variants = response.variants;
@@ -60,7 +60,7 @@ export class ProcessMapComponent implements OnChanges {
         this.minVariant = 0;
         this.maxVariant = this.variants.length;
 
-        this.variants.sort(x => x.occurrence * -1);
+        this.variants.sort(x => x.occurrence);
         this.setVariantSliderPareto();
 
         // compute process map

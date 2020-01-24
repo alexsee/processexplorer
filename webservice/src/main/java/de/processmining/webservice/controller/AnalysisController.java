@@ -18,8 +18,8 @@
 
 package de.processmining.webservice.controller;
 
-import de.processmining.data.analysis.artifacts.ArtifactAnalysis;
 import de.processmining.data.analysis.DifferenceAnalysis;
+import de.processmining.data.analysis.artifacts.ArtifactAnalysis;
 import de.processmining.data.analysis.clustering.MultiPerspectiveTraceClustering;
 import de.processmining.data.analysis.clustering.SimpleTraceClustering;
 import de.processmining.data.analysis.recommender.RecommendationService;
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,9 +79,12 @@ public class AnalysisController {
 
     @RequestMapping("/recommendations")
     public ResponseEntity recommendations(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
-        var recommendations = recommendationService.getRecommendations(logName);
-
-        return ResponseEntity.ok(recommendations);
+        try {
+            var recommendations = recommendationService.getRecommendations(logName);
+            return ResponseEntity.ok(recommendations);
+        } catch (Exception ex) {
+            return ResponseEntity.ok(new ArrayList<>());
+        }
     }
 
 }
