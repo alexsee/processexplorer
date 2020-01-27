@@ -254,8 +254,8 @@ public class QueryService {
         var rowMapper = new RowMapper<GraphEdge>() {
             public GraphEdge mapRow(ResultSet rs, int rowNum) throws SQLException {
                 var result = new GraphEdge();
-                result.setSourceEvent(rs.getString(1));
-                result.setTargetEvent(rs.getString(2));
+                result.setSourceEvent(rs.getLong(1));
+                result.setTargetEvent(rs.getLong(2));
                 result.setAvgDuration(rs.getLong(3));
                 result.setMinDuration(rs.getLong(4));
                 result.setMaxDuration(rs.getLong(5));

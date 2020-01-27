@@ -125,8 +125,8 @@ public class DatabaseModel {
         graphTable = schema.addTable(getGraphTableName(logName));
         graphEdgeIdCol = graphTable.addColumn("edge_id", "bigint", null);
         graphCaseIdCol = graphTable.addColumn("case_id", "integer", null);
-        graphSourceEventCol = graphTable.addColumn("source_event", "varchar", null);
-        graphTargetEventCol = graphTable.addColumn("target_event", "varchar", null);
+        graphSourceEventCol = graphTable.addColumn("source_event", "bigint", null);
+        graphTargetEventCol = graphTable.addColumn("target_event", "bigint", null);
         graphSourceTimestampCol = graphTable.addColumn("source_timestamp", "timestamp", null);
         graphTargetTimestampCol = graphTable.addColumn("target_timestamp", "timestamp", null);
         graphDurationCol = graphTable.addColumn("duration", "interval", null);

@@ -3,8 +3,8 @@ export class ProcessMap {
 }
 
 export class GraphEdge {
-    sourceEvent: string;
-    targetEvent: string;
+    sourceEvent: number;
+    targetEvent: number;
 
     avgDuration: number;
     minDuration: number;

@@ -23,8 +23,8 @@ package de.processmining.data.model;
  */
 public class GraphEdge {
 
-    private String sourceEvent;
-    private String targetEvent;
+    private long sourceEvent;
+    private long targetEvent;
 
     private long avgDuration;
     private long minDuration;
@@ -34,19 +34,19 @@ public class GraphEdge {
 
     private int[] variants;
 
-    public String getSourceEvent() {
+    public long getSourceEvent() {
         return sourceEvent;
     }
 
-    public void setSourceEvent(String sourceEvent) {
+    public void setSourceEvent(long sourceEvent) {
         this.sourceEvent = sourceEvent;
     }
 
-    public String getTargetEvent() {
+    public long getTargetEvent() {
         return targetEvent;
     }
 
-    public void setTargetEvent(String targetEvent) {
+    public void setTargetEvent(long targetEvent) {
         this.targetEvent = targetEvent;
     }
 

@@ -9,6 +9,7 @@ import { QueryService } from '../shared/query.service';
 import { QueryConvertService } from '../shared/query-convert.service';
 import { LocalStorageService } from 'src/app/shared/storage.service';
 import { Variant } from '../models/variant.model';
+import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 
 @Component({
   selector: 'app-processmap',
@@ -19,6 +20,7 @@ export class ProcessMapComponent implements OnChanges {
   @ViewChild('processmap', {static: true}) private processmapContainer: ElementRef;
 
   @Input() private logName: string;
+  @Input() private context: EventLogStatistics;
   @Input() private conditions: Condition[];
 
   data: ProcessMap;
@@ -50,6 +52,12 @@ export class ProcessMapComponent implements OnChanges {
       return;
     }
 
+    this.loadSettings();
+
+    if (!this.context) {
+      return;
+    }
+
     // query process map
     this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions), true)
       .subscribe(response => {
@@ -66,8 +74,6 @@ export class ProcessMapComponent implements OnChanges {
         // compute process map
         this.createProcessMap();
       });
-
-    this.loadSettings();
   }
 
   loadSettings() {
@@ -144,7 +150,7 @@ export class ProcessMapComponent implements OnChanges {
       }
 
       // add edge
-      this.graph.setEdge(this.getCleanName(edge.sourceEvent), this.getCleanName(edge.targetEvent),
+      this.graph.setEdge(edge.sourceEvent, edge.targetEvent,
         {
           label: this.settings.mode === 'occurrence'
             ? edge.occurrence + '' : HumanizeDuration(edge.avgDuration * 1000, { largest: 2, round: true }),
@@ -180,33 +186,25 @@ export class ProcessMapComponent implements OnChanges {
       .scale(minScale));
   }
 
-  addNode(node: string, graph: any) {
-    if (node === 'Startknoten') {
-      graph.setNode(this.getCleanName(node), {
-        label: node,
+  addNode(node: number, graph: any) {
+    if (node === -1) {
+      graph.setNode(node, {
+        label: 'Start',
         rx: 5,
         ry: 5,
         labelStyle: 'font-size: 0.75em; fill: white;',
         style: 'fill: #00cc66'
       });
-    } else if (node === 'Endknoten') {
-      graph.setNode(this.getCleanName(node), {
-        label: node,
+    } else if (node === -2) {
+      graph.setNode(node, {
+        label: 'End',
         rx: 5,
         ry: 5,
         labelStyle: 'font-size: 0.75em; fill: white;',
         style: 'fill: #ff3300'
       });
     } else {
-      graph.setNode(this.getCleanName(node), {label: node, rx: 5, ry: 5});
+      graph.setNode(node, {label: this.context.activities[node], rx: 5, ry: 5});
     }
-  }
-
-  getCleanName(text: string) {
-    return text.split(' ').join('')
-      .split(':').join('')
-      .split('.').join('')
-      .split('(').join('')
-      .split(')').join('');
   }
 }

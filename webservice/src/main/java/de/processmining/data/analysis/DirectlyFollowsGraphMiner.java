@@ -93,8 +93,8 @@ public class DirectlyFollowsGraphMiner {
         sql.print("SELECT");
         sql.print("  DENSE_RANK() OVER (ORDER BY COALESCE(a.event_name, 'Startknoten'), COALESCE(b.event_name, 'Endknoten')) AS edge_id,");
         sql.print("  COALESCE(a.case_id, b.case_id) AS case_id,");
-        sql.print("  COALESCE(a.event_name, 'Startknoten') AS source_event,");
-        sql.print("  COALESCE(b.event_name, 'Endknoten') AS target_event,");
+        sql.print("  COALESCE(a.event_id, -1) AS source_event,");
+        sql.print("  COALESCE(b.event_id, -2) AS target_event,");
         sql.print("  COALESCE(a.timestamp, b.timestamp) AS source_timestamp,");
         sql.print("  COALESCE(b.timestamp, a.timestamp) AS target_timestamp,");
         sql.print("  COALESCE(%s, interval '0') AS duration,", "age(b.timestamp, a.timestamp)");
