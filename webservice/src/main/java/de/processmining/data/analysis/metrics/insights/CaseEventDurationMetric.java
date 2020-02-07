@@ -66,20 +66,25 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
 
     @Override
     protected Map<String, CaseMetric.Measure> computeDifference(Object calculation, Condition conditions) {
+        var sourceActivityTable = db.activityTable.rejoin("source_activity");
+
         var inner_sql = new SelectQuery()
                 .addColumns(db.caseAttributeCaseIdCol)
-                .addAliasedColumn(db.graphSourceEventCol, "event_name")
+                .addAliasedColumn(db.graphSourceEventCol, "event_id")
+                .addAliasedColumn(sourceActivityTable.findColumnByName("name"), "event_name")
                 .addAliasedColumn(calculation, "expr")
                 .addCondition(conditions)
                 .addJoins(SelectQuery.JoinType.INNER, db.graphCaseAttributeJoin, db.graphVariantJoin)
-                .addGroupings(db.caseAttributeCaseIdCol, db.graphSourceEventCol);
+                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, sourceActivityTable, BinaryCondition.equalTo(db.graphSourceEventCol, sourceActivityTable.findColumnByName("id")))
+                .addGroupings(db.caseAttributeCaseIdCol, db.graphSourceEventCol, sourceActivityTable.findColumnByName("name"));
 
         var outer_sql = new SelectQuery()
+                .addAliasedColumn(new CustomExpression("a.event_id"), "event_id")
                 .addAliasedColumn(new CustomExpression("a.event_name"), "event_name")
                 .addAliasedColumn(FunctionCall.avg().addCustomParams(new CustomSql("a.expr")), "average")
                 .addAliasedColumn(new CustomExpression("stddev(a.expr)"), "standard_deviation")
                 .addCustomFromTable(AliasedObject.toAliasedObject(new CustomExpression(inner_sql.toString()), "a"))
-                .addCustomGroupings(new CustomExpression("a.event_name"))
+                .addCustomGroupings(new CustomExpression("a.event_id"), new CustomExpression("a.event_name"))
                 .addHaving(new CustomCondition("stddev(a.expr) > 0"));
 
         var result = jdbcTemplate.queryForList(outer_sql.validate().toString());

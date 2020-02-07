@@ -224,7 +224,7 @@ public class MultiPerspectiveTraceClustering {
 
             // query for cases
             var conditions = new ArrayList<Condition>();
-            conditions.add(new VariantCondition(variant.getId()));
+            conditions.add(new VariantCondition(new Long[] { variant.getId() }));
 
             var cases = queryService.getCases(new CasesQuery(logName, conditions, categoricalAttributes));
 
@@ -413,7 +413,7 @@ public class MultiPerspectiveTraceClustering {
         for (VariantCluster cluster : clusters.getClusters()) {
             // generate selection
             var conditions = new ArrayList<Condition>();
-            cluster.getVariants().forEach(x -> conditions.add(new VariantCondition(x.getId())));
+            cluster.getVariants().forEach(x -> conditions.add(new VariantCondition(new Long[] { x.getId() })));
 
             var comboCondition = new ArrayList<Condition>();
             comboCondition.add(new ComboCondition(ComboType.OR, conditions));

@@ -18,6 +18,8 @@
 
 package de.processmining.data.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * @author Alexander Seeliger on 23.09.2019.
  */
@@ -25,8 +27,10 @@ public class Variant {
 
     private long id;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String[] path;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private int[] pathIndex;
 
     private long occurrence;

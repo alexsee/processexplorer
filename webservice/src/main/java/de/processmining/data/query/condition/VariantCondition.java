@@ -19,6 +19,7 @@
 package de.processmining.data.query.condition;
 
 import com.healthmarketscience.sqlbuilder.BinaryCondition;
+import com.healthmarketscience.sqlbuilder.InCondition;
 import de.processmining.data.DatabaseModel;
 
 /**
@@ -26,28 +27,28 @@ import de.processmining.data.DatabaseModel;
  */
 public class VariantCondition extends Condition {
 
-    private Long variantId;
+    private Long[] variantIds;
 
     public VariantCondition() {
     }
 
-    public VariantCondition(Long variantId) {
-        this.variantId = variantId;
+    public VariantCondition(Long[] variantIds) {
+        this.variantIds = variantIds;
     }
 
     @Override
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
-        if (variantId != null) {
-            return BinaryCondition.equalTo(db.variantsIdCol, variantId);
+        if (variantIds != null) {
+            return new InCondition(db.variantsIdCol, variantIds);
         }
         return null;
     }
 
-    public Long getVariantId() {
-        return variantId;
+    public Long[] getVariantIds() {
+        return variantIds;
     }
 
-    public void setVariantId(Long variantId) {
-        this.variantId = variantId;
+    public void setVariantIds(Long[] variantIds) {
+        this.variantIds = variantIds;
     }
 }

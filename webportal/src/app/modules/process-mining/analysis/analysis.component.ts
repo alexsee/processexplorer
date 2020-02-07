@@ -62,10 +62,6 @@ export class AnalysisComponent implements OnInit {
     if (this.insightListComponent !== undefined) {
       this.insightListComponent.update();
     }
-
-    if (this.processMapComponent !== undefined) {
-      this.processMapComponent.update();
-    }
   }
 
   onAddCondition(conditionType: string) {

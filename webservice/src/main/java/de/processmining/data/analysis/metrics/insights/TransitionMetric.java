@@ -19,6 +19,7 @@
 package de.processmining.data.analysis.metrics.insights;
 
 import com.healthmarketscience.sqlbuilder.*;
+import com.healthmarketscience.sqlbuilder.dbspec.RejoinTable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,26 +35,33 @@ public abstract class TransitionMetric extends CaseMetric<CaseMetric.Measure, Tr
     }
 
     protected Map<Edge, CaseMetric.Measure> computeDifference(Object expr, Condition condition) {
+        var sourceActivityTable = db.activityTable.rejoin("source_activity");
+        var targetActivityTable = db.activityTable.rejoin("target_activity");
+
         var inner_sql = new SelectQuery()
                 .addColumns(db.graphSourceEventCol, db.graphTargetEventCol)
+                .addAliasedColumn(sourceActivityTable.findColumnByName("name"), "source_event_name")
+                .addAliasedColumn(targetActivityTable.findColumnByName("name"), "target_event_name")
                 .addAliasedColumn(expr, "expr")
                 .addCondition(condition)
                 .addJoins(SelectQuery.JoinType.INNER, db.graphVariantJoin, db.graphCaseAttributeJoin)
-                .addGroupings(db.graphCaseIdCol, db.graphSourceEventCol, db.graphTargetEventCol);
+                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, sourceActivityTable, BinaryCondition.equalTo(db.graphSourceEventCol, sourceActivityTable.findColumnByName("id")))
+                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, targetActivityTable, BinaryCondition.equalTo(db.graphTargetEventCol, targetActivityTable.findColumnByName("id")))
+                .addGroupings(db.graphCaseIdCol, db.graphSourceEventCol, db.graphTargetEventCol, sourceActivityTable.findColumnByName("name"), targetActivityTable.findColumnByName("name"));
 
         var outer_sql = new SelectQuery()
-                .addCustomColumns(new CustomSql("a.source_event"), new CustomSql("a.target_event"))
+                .addCustomColumns(new CustomSql("a.source_event"), new CustomSql("a.target_event"), new CustomSql("a.source_event_name"), new CustomSql("a.target_event_name"))
                 .addAliasedColumn(FunctionCall.avg().addCustomParams(new CustomSql("a.expr")), "average")
                 .addAliasedColumn(new CustomExpression("stddev(a.expr)"), "standard_deviation")
                 .addCustomFromTable(AliasedObject.toAliasedObject(new CustomExpression(inner_sql.toString()), "a"))
-                .addCustomGroupings("a.source_event", "a.target_event")
+                .addCustomGroupings("a.source_event", "a.target_event", "a.source_event_name", "a.target_event_name")
                 .addHaving(new CustomCondition("stddev(a.expr) > 0"));
 
         var result = jdbcTemplate.queryForList(outer_sql.validate().toString());
         var measures = new HashMap<Edge, CaseMetric.Measure>();
 
         for(var item : result) {
-            var edge = new Edge(item.get("source_event").toString(), item.get("target_event").toString());
+            var edge = new Edge(item.get("source_event_name").toString(), item.get("target_event_name").toString());
             var measure = new Measure(Double.parseDouble(item.get("average").toString()), Double.parseDouble(item.get("standard_deviation").toString()));
 
             measures.put(edge, measure);

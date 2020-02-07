@@ -18,6 +18,8 @@
 
 package de.processmining.data;
 
+import com.healthmarketscience.sqlbuilder.dbspec.RejoinTable;
+import com.healthmarketscience.sqlbuilder.dbspec.Table;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.*;
 
 import static de.processmining.data.DatabaseConstants.*;

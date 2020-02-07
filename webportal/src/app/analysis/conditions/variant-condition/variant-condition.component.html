@@ -1,10 +1,10 @@
 <nz-card nzTitle="Variant selection" 
     nzSize="small"
     [nzExtra]="moreTemplate">
-    <span *ngIf="data.variantId">
-        Variant: <b>{{data.clusterIndex}}</b>
+    <span *ngIf="data.variantIds">
+        Variant: <b>{{data.variantIds}}</b>
     </span>
-    <span *ngIf="!data.variantId">
+    <span *ngIf="!data.variantIds">
         Variant selection
     </span>
 </nz-card>
@@ -23,9 +23,11 @@
 <ng-template #contentTemplate>
     <form nz-form class="cluster-form">
         <nz-form-item>
-            <nz-form-label [nzSm]="6" nzRequired nzFor="variantId">Variant</nz-form-label>
+            <nz-form-label [nzSm]="6" nzRequired nzFor="variantIds">Variant</nz-form-label>
             <nz-form-control [nzSm]="18">
-                <input nz-input name="variantId" placeholder="Variant" [(ngModel)]="data.variantId" />
+                <nz-select name="variantsIds" nzMode="tags" nzPlaceHolder="Variants" [(ngModel)]="data.variantIds">
+                    
+                </nz-select>
             </nz-form-control>
         </nz-form-item>
     </form>

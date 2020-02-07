@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild, SimpleChanges} from '@angular/core';
 
 import HumanizeDuration from 'humanize-duration';
 import * as d3 from 'd3';
@@ -16,7 +16,7 @@ import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model
   templateUrl: './processmap.component.html',
   styleUrls: ['./processmap.component.scss']
 })
-export class ProcessMapComponent implements OnChanges {
+export class ProcessMapComponent implements OnInit, OnChanges {
   @ViewChild('processmap', {static: true}) private processmapContainer: ElementRef;
 
   @Input() private logName: string;
@@ -43,7 +43,11 @@ export class ProcessMapComponent implements OnChanges {
     private storageService: LocalStorageService) {
   }
 
-  ngOnChanges() {
+  ngOnInit() {
+    this.loadSettings();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
     this.update();
   }
 
@@ -66,7 +70,7 @@ export class ProcessMapComponent implements OnChanges {
 
         // set variants slider
         this.minVariant = 0;
-        this.maxVariant = this.variants.length;
+        this.maxVariant = this.variants.length - 1;
 
         this.variants.sort(x => x.occurrence);
         this.setVariantSliderPareto();
@@ -120,22 +124,16 @@ export class ProcessMapComponent implements OnChanges {
     // generate graph
     this.graph = new dagreD3.graphlib.Graph({directed: true, multigraph: true, compound: true})
       .setGraph({
+        align: 'DR',
         acyclicer: 'greedy',
-        align: 'DR'
+        ranker: 'longest-path'
       });
 
     const nodes = [];
     for (const edge of this.data.edges) {
       // filter by variant
-      let select = false;
-      for (const variant of selectedVariant) {
-        if (edge.variants.indexOf(variant.id) > -1) {
-          select = true;
-          break;
-        }
-      }
-
-      if (!select) {
+      const filteredVariants = selectedVariant.filter(x => edge.variants.includes(x.id));
+      if (filteredVariants.length === 0) {
         continue;
       }
 
