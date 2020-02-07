@@ -1,10 +1,10 @@
 # Webservice
 
-This projekt was generated with [Spring Boot](https://spring.io/projects/spring-boot) version 2.1.8.
+This project was generated with [Spring Boot](https://spring.io/projects/spring-boot) version 2.2.4.
 
 ## Configure development environment
 
-To build the webservice, you'll need [Java 12](https://openjdk.java.net/projects/jdk/12/) and [Maven 4](https://maven.apache.org/). This should be already included in Eclipse or IntelliJ.
+To build the webservice, you'll need [Java 13](https://openjdk.java.net/projects/jdk/13/) and [Maven 4](https://maven.apache.org/). This should be already included in Eclipse or IntelliJ.
 
 The backend service requires a [PostgreSQL](https://www.postgresql.org/) database for storing and analyzing event logs, and a storage path to temporarily store uploaded files. This can be configured in `src/main/resources/application.properties` configuration file.
 
