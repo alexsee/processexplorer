@@ -20,6 +20,7 @@ package de.processmining.data.analysis.recommender;
 
 import de.processmining.data.analysis.DifferenceAnalysis;
 import de.processmining.data.analysis.itemsets.FrequentItemsetMiner;
+import de.processmining.data.model.Insight;
 import de.processmining.data.model.Recommendation;
 import de.processmining.data.query.QueryService;
 import de.processmining.data.query.condition.ClusterCondition;
@@ -57,8 +58,10 @@ public class ClusterRecommender {
         for (var cluster : clusters) {
             var recommendation = new Recommendation(1.0, Arrays.asList(new Condition[]{new ClusterCondition(cluster)}));
             var logStatistics = queryService.getLogStatistics(logName, recommendation.getConditions());
-
             recommendation.setNumTraces(logStatistics.getNumTraces());
+
+            List<Insight> insights = differenceAnalysis.getInsights(differenceAnalysis.getDefaultMetrics(logName), recommendation.getConditions());
+            recommendation.setScore(insights.stream().mapToDouble(x -> Math.abs(x.getEffectSize())).sum() / insights.size());
 
             result.add(recommendation);
         }

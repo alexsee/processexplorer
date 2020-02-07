@@ -19,11 +19,10 @@
 package de.processmining.webservice.controller;
 
 import de.processmining.data.analysis.DifferenceAnalysis;
-import de.processmining.data.analysis.artifacts.ArtifactAnalysis;
 import de.processmining.data.analysis.clustering.MultiPerspectiveTraceClustering;
 import de.processmining.data.analysis.clustering.SimpleTraceClustering;
-import de.processmining.data.analysis.recommender.RecommendationService;
 import de.processmining.data.query.condition.Condition;
+import de.processmining.webservice.services.LogRecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,14 +46,14 @@ public class AnalysisController {
 
     private DifferenceAnalysis differenceAnalysis;
 
-    private RecommendationService recommendationService;
+    private LogRecommendationService logRecommendationService;
 
     @Autowired
-    public AnalysisController(SimpleTraceClustering traceClustering, MultiPerspectiveTraceClustering multiPerspectiveTraceClustering, DifferenceAnalysis differenceAnalysis, RecommendationService recommendationService, ArtifactAnalysis artifactAnalysis) {
+    public AnalysisController(SimpleTraceClustering traceClustering, MultiPerspectiveTraceClustering multiPerspectiveTraceClustering, DifferenceAnalysis differenceAnalysis, LogRecommendationService logRecommendationService) {
         this.traceClustering = traceClustering;
         this.multiPerspectiveTraceClustering = multiPerspectiveTraceClustering;
         this.differenceAnalysis = differenceAnalysis;
-        this.recommendationService = recommendationService;
+        this.logRecommendationService = logRecommendationService;
     }
 
     @RequestMapping("/simple_trace_clustering")
@@ -80,7 +79,7 @@ public class AnalysisController {
     @RequestMapping("/recommendations")
     public ResponseEntity recommendations(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
         try {
-            var recommendations = recommendationService.getRecommendations(logName);
+            var recommendations = logRecommendationService.getRecommendations(logName);
             return ResponseEntity.ok(recommendations);
         } catch (Exception ex) {
             return ResponseEntity.ok(new ArrayList<>());

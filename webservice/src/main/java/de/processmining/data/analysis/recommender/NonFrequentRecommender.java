@@ -19,6 +19,7 @@
 package de.processmining.data.analysis.recommender;
 
 import de.processmining.data.analysis.DifferenceAnalysis;
+import de.processmining.data.analysis.itemsets.FrequentItemset;
 import de.processmining.data.model.FieldValue;
 import de.processmining.data.analysis.itemsets.FrequentItemsetMiner;
 import de.processmining.data.model.Insight;
@@ -66,7 +67,7 @@ public class NonFrequentRecommender {
         itemsets.parallelStream().forEach(itemset -> {
             var conditions = new ArrayList<Condition>();
 
-            for (var fIndex : itemset.items) {
+            for (var fIndex : itemset) {
                 var field = fields.get(fIndex);
 
                 if (field.getValue() == null) {
@@ -94,12 +95,12 @@ public class NonFrequentRecommender {
         return result;
     }
 
-    private List<ItemSet> getFrequentItemSets(String logName, Map<FieldValue, Integer> itemsetValues) {
+    private Set<FrequentItemset> getFrequentItemSets(String logName, Map<FieldValue, Integer> itemsetValues) {
         var categoricalAttributes = queryService.getCategoricalCaseAttributes(logName);
         var cases = queryService.getCases(new CasesQuery(logName, new ArrayList<>(), categoricalAttributes));
 
-//        return frequentItemsetMiner.getClosedItemsets(cases, itemsetValues, MIN_SUPPORT);
-        return null;
+        return frequentItemsetMiner.getClosedItemsets(cases, itemsetValues, MIN_SUPPORT);
+//        return null;
     }
 
 }

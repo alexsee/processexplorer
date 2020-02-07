@@ -35,14 +35,16 @@ public class RecommendationService {
     private ClusterRecommender clusterRecommender;
 
     @Autowired
-    public RecommendationService(NonFrequentRecommender nonFrequentRecommender, ClusterRecommender clusterRecommender) {
+    public RecommendationService(
+            NonFrequentRecommender nonFrequentRecommender,
+            ClusterRecommender clusterRecommender) {
         this.nonFrequentRecommender = nonFrequentRecommender;
         this.clusterRecommender = clusterRecommender;
     }
 
     public List<Recommendation> getRecommendations(String logName) {
         var result = new ArrayList<Recommendation>();
-        //        result.addAll(nonFrequentRecommender.getRecommendations(logName));
+        result.addAll(nonFrequentRecommender.getRecommendations(logName));
         result.addAll(clusterRecommender.getRecommendations(logName));
         return result;
     }
