@@ -15,6 +15,7 @@ export class RecommendationListComponent implements OnChanges {
 
   @Output() public apply = new EventEmitter<Recommendation>();
 
+  private oldLogName: string;
   public recommendations: Recommendation[];
 
   constructor(
@@ -31,6 +32,11 @@ export class RecommendationListComponent implements OnChanges {
       return;
     }
 
+    if (this.oldLogName === this.logName) {
+      return;
+    }
+
+    this.oldLogName = this.logName;
     this.analysisService.getRecommendations(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(recommendations => {
         this.recommendations = recommendations;
