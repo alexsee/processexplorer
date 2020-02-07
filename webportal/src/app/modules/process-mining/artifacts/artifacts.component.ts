@@ -14,7 +14,7 @@ import { ArtifactService } from 'src/app/analysis/shared/artifact.service';
   styleUrls: ['./artifacts.component.scss']
 })
 export class ArtifactsComponent implements OnInit {
-  @ViewChild(InsightListComponent, {static: false}) private insightListComponent: InsightListComponent;
+  @ViewChild(InsightListComponent) private insightListComponent: InsightListComponent;
 
   logName: string;
   context: EventLogStatistics;

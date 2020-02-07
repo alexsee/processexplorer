@@ -87,14 +87,6 @@ import { DurationConditionComponent } from './analysis/conditions/duration-condi
       deps: [InjectableRxStompConfig]
     }
   ],
-  entryComponents: [
-    AttributeConditionComponent,
-    PathConditionComponent,
-    VariantConditionComponent,
-    ClusterConditionComponent,
-    ReworkConditionComponent,
-    DurationConditionComponent
-  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

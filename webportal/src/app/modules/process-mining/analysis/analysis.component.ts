@@ -21,8 +21,8 @@ import { DurationConditionComponent } from 'src/app/analysis/conditions/duration
   styleUrls: ['./analysis.component.scss']
 })
 export class AnalysisComponent implements OnInit {
-  @ViewChild(InsightListComponent, {static: false}) private insightListComponent: InsightListComponent;
-  @ViewChild(ProcessMapComponent, {static: false}) private processMapComponent: ProcessMapComponent;
+  @ViewChild(InsightListComponent) private insightListComponent: InsightListComponent;
+  @ViewChild(ProcessMapComponent) private processMapComponent: ProcessMapComponent;
 
   logName: string;
   context: EventLogStatistics;
