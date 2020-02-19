@@ -47,7 +47,7 @@ public class XLogUtils {
         } else if (attribute instanceof XAttributeTimestamp) {
             return ((XAttributeTimestamp) attribute).getValue();
         } else if (attribute instanceof XAttributeID) {
-            return ((XAttributeID) attribute).getValue();
+            return ((XAttributeID) attribute).getValue().toString();
         } else {
             if (attribute == null) return null;
             throw new IllegalArgumentException("Unexpected attribute type!");
