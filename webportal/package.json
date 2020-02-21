@@ -8,12 +8,12 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
+    "__postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "~9.0.0",
-    "@angular/cdk": "~8.2.3",
+    "@angular/cdk": "~9.0.1",
     "@angular/common": "~9.0.0",
     "@angular/compiler": "~9.0.0",
     "@angular/core": "~9.0.0",
