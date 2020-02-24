@@ -92,7 +92,7 @@ public class SimpleTraceClustering {
                 var variant_a = variants.get(i).getPathIndex();
                 var variant_b = variants.get(j).getPathIndex();
 
-                var distance = 1 - SequenceMetrics.getLevenshteinDistance(variant_a, variant_b);
+                var distance = SequenceMetrics.getLevenshteinDistance(variant_a, variant_b);
 
                 distanceMatrix[i][j] = distance;
                 distanceMatrix[j][i] = distance;

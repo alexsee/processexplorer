@@ -25,10 +25,7 @@ import de.processmining.data.analysis.DirectlyFollowsGraphMiner;
 import de.processmining.data.model.Log;
 import de.processmining.data.query.QueryService;
 import de.processmining.data.storage.StorageService;
-import de.processmining.webservice.database.EventLogAnnotationRepository;
-import de.processmining.webservice.database.EventLogArtifactRepository;
-import de.processmining.webservice.database.EventLogFeatureRepository;
-import de.processmining.webservice.database.EventLogRepository;
+import de.processmining.webservice.database.*;
 import de.processmining.webservice.database.entities.EventLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -53,6 +50,7 @@ public class LogService {
     private EventLogFeatureRepository eventLogFeatureRepository;
     private EventLogArtifactRepository eventLogArtifactRepository;
     private EventLogAnnotationRepository eventLogAnnotationRepository;
+    private EventLogRecommendationRepository eventLogRecommendationRepository;
 
     private SimpMessagingTemplate messagingTemplate;
     private StorageService storageService;
@@ -64,6 +62,7 @@ public class LogService {
                       EventLogFeatureRepository eventLogFeatureRepository,
                       EventLogArtifactRepository eventLogArtifactRepository,
                       EventLogAnnotationRepository eventLogAnnotationRepository,
+                      EventLogRecommendationRepository eventLogRecommendationRepository,
                       SimpMessagingTemplate messagingTemplate,
                       StorageService storageService,
                       QueryService queryService,
@@ -72,6 +71,7 @@ public class LogService {
         this.eventLogFeatureRepository = eventLogFeatureRepository;
         this.eventLogArtifactRepository = eventLogArtifactRepository;
         this.eventLogAnnotationRepository = eventLogAnnotationRepository;
+        this.eventLogRecommendationRepository = eventLogRecommendationRepository;
         this.messagingTemplate = messagingTemplate;
         this.storageService = storageService;
         this.queryService = queryService;
@@ -214,6 +214,7 @@ public class LogService {
         eventLogAnnotationRepository.deleteAllByLogName(logName);
         eventLogArtifactRepository.deleteAllByLogName(logName);
         eventLogFeatureRepository.deleteAllByEventLogLogName(logName);
+        eventLogRecommendationRepository.deleteAllByEventLogLogName(logName);
         eventLogRepository.delete(eventLog);
 
         // remove data tables

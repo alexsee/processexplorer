@@ -92,6 +92,7 @@ public class DatabaseModel {
         activityTable = schema.addTable(getActivityTableName(logName));
         activityIdCol = activityTable.addColumn("id", "integer", null);
         activityNameCol = activityTable.addColumn("name", "varchar", 250);
+        activityTable.primaryKey(getActivityTableName(logName) + "_pk", "id");
 
         // variants table
         variantsTable = schema.addTable(getVariantsTableName(logName));

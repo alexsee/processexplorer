@@ -37,7 +37,6 @@ import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -185,6 +184,9 @@ public class XLog2Database {
                 .validate().toString();
 
         jdbcTemplate.execute(sql);
+
+        // create index
+        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.eventTable.getTableNameSQL() + " ON " + db.eventTable.getTableNameSQL() + " (case_id)");
     }
 
     /**
@@ -236,6 +238,9 @@ public class XLog2Database {
         sql.append(")");
 
         jdbcTemplate.execute(sql.toString());
+
+        // create index
+        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.caseAttributeTable.getTableNameSQL() + " ON " + db.caseAttributeTable.getTableNameSQL() + " (case_id)");
     }
 
     /**

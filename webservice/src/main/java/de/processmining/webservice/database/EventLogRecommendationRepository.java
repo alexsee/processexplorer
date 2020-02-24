@@ -30,4 +30,5 @@ public interface EventLogRecommendationRepository extends CrudRepository<EventLo
 
     List<EventLogRecommendation> findByEventLogLogName(String logName);
 
+    void deleteAllByEventLogLogName(String logName);
 }
