@@ -5,6 +5,7 @@ import { QueryConvertService } from 'src/app/analysis/shared/query-convert.servi
 import { AnalysisService } from 'src/app/analysis/shared/analysis.service';
 import { Insight } from '../models/insight.model';
 import { Condition } from '../models/condition.model';
+import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 
 @Component({
   selector: 'app-insight-list',
@@ -12,6 +13,7 @@ import { Condition } from '../models/condition.model';
   styleUrls: ['./insight-list.component.scss']
 })
 export class InsightListComponent implements OnChanges {
+  @Input() public context: EventLogStatistics;
   @Input() public logName: string;
   @Input() public conditions: Condition[];
 
@@ -27,7 +29,7 @@ export class InsightListComponent implements OnChanges {
   }
 
   update() {
-    if (!this.conditions || this.conditions.length === 0) {
+    if (!this.conditions || this.conditions.length === 0 || !this.context) {
       return;
     }
 
@@ -35,7 +37,8 @@ export class InsightListComponent implements OnChanges {
 
     this.analysisService.getInsights(this.logName, this.queryConvertService.convertToQuery(this.conditions))
       .subscribe(insights => {
-        this.insights = insights.sort(this.sortByEffectSize);
+        this.insights = insights.filter(x => x.casesWithin / this.context.numTraces > 0.25 || x.casesWithin === 0);
+        this.insights = this.insights.sort(this.sortByEffectSize);
       });
   }
 
