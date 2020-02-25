@@ -87,6 +87,7 @@ public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements Ins
     protected class Measure {
         private double average;
         private double stddev;
+        private long numberOfCases;
 
         public Measure(double average, double stddev) {
             this.average = average;
@@ -107,6 +108,14 @@ public abstract class CaseMetric<X extends CaseMetric.Measure, Y> implements Ins
 
         public void setStddev(double stddev) {
             this.stddev = stddev;
+        }
+
+        public long getNumberOfCases() {
+            return numberOfCases;
+        }
+
+        public void setNumberOfCases(long numberOfCases) {
+            this.numberOfCases = numberOfCases;
         }
     }
 

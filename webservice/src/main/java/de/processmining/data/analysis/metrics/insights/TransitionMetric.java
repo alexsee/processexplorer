@@ -53,6 +53,7 @@ public abstract class TransitionMetric extends CaseMetric<CaseMetric.Measure, Tr
                 .addCustomColumns(new CustomSql("a.source_event"), new CustomSql("a.target_event"), new CustomSql("a.source_event_name"), new CustomSql("a.target_event_name"))
                 .addAliasedColumn(FunctionCall.avg().addCustomParams(new CustomSql("a.expr")), "average")
                 .addAliasedColumn(new CustomExpression("stddev(a.expr)"), "standard_deviation")
+                .addAliasedColumn(FunctionCall.countAll(), "num_cases")
                 .addCustomFromTable(AliasedObject.toAliasedObject(new CustomExpression(inner_sql.toString()), "a"))
                 .addCustomGroupings("a.source_event", "a.target_event", "a.source_event_name", "a.target_event_name")
                 .addHaving(new CustomCondition("stddev(a.expr) > 0"));
@@ -63,6 +64,7 @@ public abstract class TransitionMetric extends CaseMetric<CaseMetric.Measure, Tr
         for(var item : result) {
             var edge = new Edge(item.get("source_event_name").toString(), item.get("target_event_name").toString());
             var measure = new Measure(Double.parseDouble(item.get("average").toString()), Double.parseDouble(item.get("standard_deviation").toString()));
+            measure.setNumberOfCases(Long.parseLong(item.get("num_cases").toString()));
 
             measures.put(edge, measure);
         }

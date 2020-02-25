@@ -49,6 +49,8 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
     protected Insight generateInsight(double effectSize, CaseMetric.Measure measure1, CaseMetric.Measure measure2, String activityName) {
         var insight = new Insight();
         insight.setEffectSize(effectSize);
+        insight.setCasesWithin(measure1.getNumberOfCases());
+        insight.setCasesWithout(measure2.getNumberOfCases());
         insight.setAverageWithin(measure1.getAverage());
         insight.setAverageWithout(measure2.getAverage());
         insight.setStddevWithin(measure1.getStddev());
@@ -71,20 +73,21 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
         var inner_sql = new SelectQuery()
                 .addColumns(db.caseAttributeCaseIdCol)
                 .addAliasedColumn(db.graphSourceEventCol, "event_id")
-                .addAliasedColumn(sourceActivityTable.findColumnByName("name"), "event_name")
+                .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.graphCaseIdCol), "num_cases")
                 .addAliasedColumn(calculation, "expr")
                 .addCondition(conditions)
                 .addJoins(SelectQuery.JoinType.INNER, db.graphCaseAttributeJoin, db.graphVariantJoin)
-                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, sourceActivityTable, BinaryCondition.equalTo(db.graphSourceEventCol, sourceActivityTable.findColumnByName("id")))
-                .addGroupings(db.caseAttributeCaseIdCol, db.graphSourceEventCol, sourceActivityTable.findColumnByName("name"));
+                .addGroupings(db.caseAttributeCaseIdCol, db.graphSourceEventCol);
 
         var outer_sql = new SelectQuery()
                 .addAliasedColumn(new CustomExpression("a.event_id"), "event_id")
-                .addAliasedColumn(new CustomExpression("a.event_name"), "event_name")
+                .addAliasedColumn(sourceActivityTable.findColumnByName("name"), "event_name")
                 .addAliasedColumn(FunctionCall.avg().addCustomParams(new CustomSql("a.expr")), "average")
                 .addAliasedColumn(new CustomExpression("stddev(a.expr)"), "standard_deviation")
+                .addAliasedColumn(FunctionCall.sum().addCustomParams(new CustomSql("a.num_cases")), "num_cases")
                 .addCustomFromTable(AliasedObject.toAliasedObject(new CustomExpression(inner_sql.toString()), "a"))
-                .addCustomGroupings(new CustomExpression("a.event_id"), new CustomExpression("a.event_name"))
+                .addCustomJoin(SelectQuery.JoinType.INNER, "a", sourceActivityTable, BinaryCondition.equalTo(sourceActivityTable.findColumnByName("id"), new CustomSql("a.event_id")))
+                .addCustomGroupings(new CustomExpression("a.event_id"), sourceActivityTable.findColumnByName("name"))
                 .addHaving(new CustomCondition("stddev(a.expr) > 0"));
 
         var result = jdbcTemplate.queryForList(outer_sql.validate().toString());
@@ -95,6 +98,8 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
                 continue;
 
             var measure = new CaseMetric.Measure(Double.parseDouble(item.get("average").toString()), Double.parseDouble(item.get("standard_deviation").toString()));
+            measure.setNumberOfCases(Long.parseLong(item.get("num_cases").toString()));
+
             measures.put(item.get("event_name").toString(), measure);
         }
 

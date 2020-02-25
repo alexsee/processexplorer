@@ -47,6 +47,8 @@ public class TransitionDurationMetric extends TransitionMetric {
     protected Insight generateInsight(double effectSize, CaseMetric.Measure measure1, CaseMetric.Measure measure2, Edge edge) {
         var insight = new Insight();
         insight.setEffectSize(effectSize);
+        insight.setCasesWithin(measure1.getNumberOfCases());
+        insight.setCasesWithout(measure2.getNumberOfCases());
         insight.setAverageWithin(measure1.getAverage());
         insight.setAverageWithout(measure2.getAverage());
         insight.setStddevWithin(measure1.getStddev());

@@ -3,6 +3,8 @@ export class Insight {
     subTitle: string;
 
     effectSize: number;
+    casesWithin: number;
+    casesWithout: number;
     averageWithin: number;
     averageWithout: number;
     stddevWithin: number;

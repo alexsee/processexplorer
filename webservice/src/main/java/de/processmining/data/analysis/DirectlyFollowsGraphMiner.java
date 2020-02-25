@@ -112,6 +112,7 @@ public class DirectlyFollowsGraphMiner {
 
         // create index
         jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.graphTable.getTableNameSQL() + " ON " + logName + "_graph (case_id)");
+        jdbcTemplate.execute("CREATE INDEX p_variant_id_index_" + db.graphTable.getTableNameSQL() + " ON " + logName + "_graph (variant_id)");
 
         logger.info("Finished generating directly-follows graph for \"{}\"", logName);
     }

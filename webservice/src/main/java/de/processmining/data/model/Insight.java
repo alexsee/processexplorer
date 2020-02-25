@@ -44,6 +44,10 @@ public class Insight {
 
     private double stddevWithout;
 
+    private long casesWithin;
+
+    private long casesWithout;
+
     private InsightValueFormat format;
 
     private List<String> labels;
@@ -178,5 +182,21 @@ public class Insight {
 
     public void setVisualizationCodes(List<VisualizationCodes> visualizationCodes) {
         this.visualizationCodes = visualizationCodes;
+    }
+
+    public long getCasesWithin() {
+        return casesWithin;
+    }
+
+    public void setCasesWithin(long casesWithin) {
+        this.casesWithin = casesWithin;
+    }
+
+    public long getCasesWithout() {
+        return casesWithout;
+    }
+
+    public void setCasesWithout(long casesWithout) {
+        this.casesWithout = casesWithout;
     }
 }
