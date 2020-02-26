@@ -18,10 +18,10 @@
 
 package de.processmining.data;
 
+import org.deckfour.xes.factory.XFactoryBufferedImpl;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.*;
-import org.processmining.xeslite.external.XFactoryExternalStore;
 
 import java.io.File;
 import java.util.List;
@@ -64,9 +64,9 @@ public class XLogUtils {
         XesXmlParser parser = null;
 
         if (file.endsWith(".xes.gz")) {
-            parser = new XesXmlGZIPParser(new XFactoryExternalStore.MapDBDiskWithoutCacheImpl());
+            parser = new XesXmlGZIPParser(new XFactoryBufferedImpl());
         } else {
-            parser = new XesXmlParser(new XFactoryExternalStore.MapDBDiskWithoutCacheImpl());
+            parser = new XesXmlParser(new XFactoryBufferedImpl());
         }
 
         List<XLog> logs = parser.parse(new File(file));

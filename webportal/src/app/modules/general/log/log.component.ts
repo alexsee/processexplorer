@@ -59,7 +59,7 @@ export class LogComponent implements OnInit, OnDestroy {
   loadList() {
     this.logService.list().subscribe(x => {
       this.logs = x;
-      this.logs.sort((one, two) => (one > two ? 1 : -1));
+      this.logs.sort((one, two) => (one.fileName > two.fileName ? 1 : -1));
     });
   }
 
