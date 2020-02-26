@@ -111,6 +111,7 @@ public class LogService {
         // get event log
         var eventLog = eventLogRepository.findByLogName(logName);
         eventLog.setProcessing(true);
+        eventLog.setErrorMessage(null);
         eventLog = eventLogRepository.save(eventLog);
 
         // report processing
@@ -121,17 +122,22 @@ public class LogService {
 
         // read log
         if (eventLog.getType().equals("xes")) {
-            var log = XLogUtils.readLog(fileName);
+            try {
+                var log = XLogUtils.readLog(fileName);
 
-            // import log to database
-            var log2db = new XLog2Database(jdbcTemplate, logName);
-            log2db.importLog(log);
+                // import log to database
+                var log2db = new XLog2Database(jdbcTemplate, logName);
+                log2db.importLog(log);
 
-            // update database
-            eventLog.setImported(true);
+                // update database
+                eventLog.setImported(true);
 
-            // delete file
-            //            storageService.delete(eventLog.getFileName());
+                // delete file
+                //            storageService.delete(eventLog.getFileName());
+            } catch (Exception ex) {
+                eventLog.setImported(false);
+                eventLog.setErrorMessage(ex.getMessage());
+            }
         } else {
             eventLog.setImported(false);
             eventLog.setErrorMessage("Not supported");

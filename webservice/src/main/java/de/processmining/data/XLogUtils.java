@@ -60,22 +60,17 @@ public class XLogUtils {
      * @param file
      * @return
      */
-    public static XLog readLog(String file) {
+    public static XLog readLog(String file) throws Exception {
         XesXmlParser parser = null;
 
         if (file.endsWith(".xes.gz")) {
-            parser = new XesXmlGZIPParser(new XFactoryExternalStore.MapDBDiskImpl());
+            parser = new XesXmlGZIPParser(new XFactoryExternalStore.MapDBDiskWithoutCacheImpl());
         } else {
-            parser = new XesXmlParser(new XFactoryExternalStore.MapDBDiskImpl());
+            parser = new XesXmlParser(new XFactoryExternalStore.MapDBDiskWithoutCacheImpl());
         }
 
-        try {
-            List<XLog> logs = parser.parse(new File(file));
-            return logs.get(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        List<XLog> logs = parser.parse(new File(file));
+        return logs.get(0);
     }
 
 }

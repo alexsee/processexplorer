@@ -43,7 +43,11 @@ export class LogComponent implements OnInit, OnDestroy {
       this.nzMessageService.success('Event log <b>' + log.logName + '</b> analysis completed successfully.');
     } else if ((message.headers as any).destination === '/notifications/logs/import_finished') {
       const log = JSON.parse(message.body);
-      this.nzMessageService.success('Event log <b>' + log.logName + '</b> imported successfully.');
+      if (log.errorMessage) {
+        this.nzMessageService.error('Event log <b>' + log.logName + '</b> could not be imported.');
+      } else {
+        this.nzMessageService.success('Event log <b>' + log.logName + '</b> imported successfully.');
+      }
     } else if ((message.headers as any).destination === '/notifications/logs/processing_finished') {
       const log = JSON.parse(message.body);
       this.nzMessageService.success('Event log <b>' + log.logName + '</b> processed successfully.');
@@ -53,7 +57,10 @@ export class LogComponent implements OnInit, OnDestroy {
   }
 
   loadList() {
-    this.logService.list().subscribe(x => this.logs = x);
+    this.logService.list().subscribe(x => {
+      this.logs = x;
+      this.logs.sort((one, two) => (one > two ? 1 : -1));
+    });
   }
 
   doProcess(log: EventLog) {

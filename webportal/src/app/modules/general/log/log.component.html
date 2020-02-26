@@ -38,9 +38,10 @@
                         <nz-spin nzSimple></nz-spin>
                     </span>
                     <span *ngIf="!log.processing">
-                        <span *ngIf="log.imported && log.processed"><i nz-icon nzType="check-circle" nzTheme="outline"></i> Imported & Processed</span>
-                        <span *ngIf="log.imported && !log.processed">Imported</span>
-                        <span *ngIf="!log.imported && !log.processed">Uploaded</span>
+                        <span *ngIf="!log.errorMessage && log.imported && log.processed"><i nz-icon nzType="check-circle" nzTheme="outline"></i> Imported & Processed</span>
+                        <span *ngIf="!log.errorMessage && log.imported && !log.processed">Imported</span>
+                        <span *ngIf="!log.errorMessage && !log.imported && !log.processed">Uploaded</span>
+                        <span *ngIf="log.errorMessage" class="error"><i nz-icon nzType="close-circle" nzTheme="outline"></i> {{log.errorMessage}}</span>
                     </span>
                 </td>
                 <td>
@@ -62,6 +63,8 @@
                         </nz-dropdown-menu>
                         <nz-divider nzType="vertical"></nz-divider>
                         <a [routerLink]="['/logs/annotations/', log.logName]">Annotate</a>
+                    </span>
+                    <span *ngIf="!log.processing">
                         <nz-divider nzType="vertical"></nz-divider>
                         <a nz-popconfirm
                             nzPopconfirmTitle="Are you sure delete this event log?"
