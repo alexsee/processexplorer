@@ -20,7 +20,6 @@ package de.processmining.data;
 
 import com.healthmarketscience.sqlbuilder.CreateTableQuery;
 import com.healthmarketscience.sqlbuilder.InsertQuery;
-import de.processmining.webservice.ApplicationContextProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -37,7 +36,7 @@ import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import javax.sql.DataSource;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,11 +85,9 @@ public class XLog2Database {
                 .validate().toString();
         String insertTraceSql = "INSERT INTO " + getCaseAttributeTableName(this.logName) + " VALUES (" + StringUtils.repeat("?", ",", traceAttributes.size() + 2) + ");";
 
-        var dataSource = ApplicationContextProvider.getApplicationContext().getBean(DataSource.class);
-
         try {
-            var prepInsertEvent = dataSource.getConnection().prepareStatement(insertEventSql);
-            var prepInsertTrace = dataSource.getConnection().prepareStatement(insertTraceSql);
+            var prepInsertEvent = new ArrayList<Object[]>();
+            var prepInsertTrace = new ArrayList<Object[]>();
 
             // import events and cases
             int buffer = 0;
@@ -100,62 +97,67 @@ public class XLog2Database {
                 var caseId = XLogUtils.getAttributeValue(trace.getAttributes().get(XConceptExtension.KEY_NAME)).toString();
 
                 // obtain trace attributes
-                prepInsertTrace.setInt(1, i);
-                prepInsertTrace.setString(2, caseId);
+                var tracePrep = new Object[2 + traceAttributes.size()];
+                tracePrep[0] = i;
+                tracePrep[1] = caseId;
 
                 for (int j = 0; j < traceAttributes.size(); j++) {
                     var value = XLogUtils.getAttributeValue(trace.getAttributes().get(traceAttributes.get(j).getKey()));
 
                     if (value instanceof Date) {
-                        prepInsertTrace.setObject(j + 3, new java.sql.Timestamp(((Date) value).getTime()));
+                        tracePrep[2 + j] = new java.sql.Timestamp(((Date) value).getTime());
                     } else {
-                        prepInsertTrace.setObject(j + 3, value);
+                        tracePrep[2 + j] = value;
                     }
                 }
-                prepInsertTrace.addBatch();
+                prepInsertTrace.add(tracePrep);
 
                 // obtain events for trace
                 for (var event : trace) {
                     var timestamp = (Date) XLogUtils.getAttributeValue(event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
 
-                    prepInsertEvent.setInt(1, i);
-                    prepInsertEvent.setString(2, caseId);
-                    prepInsertEvent.setInt(3, logInfo.getEventClasses().getClassOf(event).getIndex());
-                    prepInsertEvent.setString(4, classifier.getClassIdentity(event));
-                    prepInsertEvent.setObject(5, XLogUtils.getAttributeValue(event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE)));
-                    prepInsertEvent.setTimestamp(6, new java.sql.Timestamp(timestamp.getTime()));
-                    prepInsertEvent.setObject(7, XLogUtils.getAttributeValue(event.getAttributes().get(XLifecycleExtension.KEY_MODEL)));
+                    var eventPrep = new Object[7 + eventAttributes.size()];
+
+                    eventPrep[0] = i;
+                    eventPrep[1] = caseId;
+                    eventPrep[2] = logInfo.getEventClasses().getClassOf(event).getIndex();
+                    eventPrep[3] = classifier.getClassIdentity(event);
+                    eventPrep[4] = XLogUtils.getAttributeValue(event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
+                    eventPrep[5] = new java.sql.Timestamp(timestamp.getTime());
+                    eventPrep[6] = XLogUtils.getAttributeValue(event.getAttributes().get(XLifecycleExtension.KEY_MODEL));
 
                     // add additional attributes
-                    int j = 8;
+                    int j = 7; //8;
                     for (var attr : eventAttributes) {
                         var value = XLogUtils.getAttributeValue(event.getAttributes().get(attr.getKey()));
-                        prepInsertEvent.setObject(j, value);
-
+                        eventPrep[j] = value;
                         j++;
                     }
 
-                    prepInsertEvent.addBatch();
+                    prepInsertEvent.add(eventPrep);
                 }
 
                 // execute buffer?
                 buffer++;
                 if (buffer >= bufferSize) {
-                    prepInsertEvent.executeBatch();
-                    prepInsertTrace.executeBatch();
+                    jdbcTemplate.batchUpdate(insertEventSql, prepInsertEvent);
+                    jdbcTemplate.batchUpdate(insertTraceSql, prepInsertTrace);
+
+                    prepInsertEvent.clear();
+                    prepInsertTrace.clear();
 
                     buffer = 0;
                 }
             }
 
-            prepInsertEvent.executeBatch();
-            prepInsertTrace.executeBatch();
+            jdbcTemplate.batchUpdate(insertEventSql, prepInsertEvent);
+            jdbcTemplate.batchUpdate(insertTraceSql, prepInsertTrace);
 
-            prepInsertEvent.close();
-            prepInsertTrace.close();
+            prepInsertEvent.clear();
+            prepInsertTrace.clear();
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
-            return false;
+            throw ex;
         }
 
         logger.info("Finished importing event log \"{}\"", this.logName);

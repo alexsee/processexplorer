@@ -23,6 +23,8 @@ To get started locally, follow these instructions:
 To configure the webservice using the database, you'll have to modify the ``webservice\src\main\resources\application.properties`` file.
 Adjust ``spring.datasource.username``, ``spring.datasource.password`` and ``spring.datasource.url`` accordingly to your PostgreSQL installation.
 
+The database must be created beforehand.
+
 **Build**
 
 You can build the **webservice** using your favorite development tool or via command line with ``mvn clean package``.
