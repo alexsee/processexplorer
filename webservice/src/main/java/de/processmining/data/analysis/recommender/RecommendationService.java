@@ -44,7 +44,7 @@ public class RecommendationService {
 
     public List<Recommendation> getRecommendations(String logName) {
         var result = new ArrayList<Recommendation>();
-        result.addAll(nonFrequentRecommender.getRecommendations(logName));
+        // result.addAll(nonFrequentRecommender.getRecommendations(logName));
         result.addAll(clusterRecommender.getRecommendations(logName));
         return result;
     }

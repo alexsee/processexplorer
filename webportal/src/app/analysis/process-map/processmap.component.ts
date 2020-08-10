@@ -111,7 +111,7 @@ export class ProcessMapComponent implements OnInit, OnChanges {
       i++;
     }
 
-    this.variant = i;
+    this.variant = Math.min(250, i);
   }
 
   createProcessMap() {

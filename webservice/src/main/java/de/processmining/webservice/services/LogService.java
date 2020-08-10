@@ -27,6 +27,7 @@ import de.processmining.data.query.QueryService;
 import de.processmining.data.storage.StorageService;
 import de.processmining.webservice.database.*;
 import de.processmining.webservice.database.entities.EventLog;
+import org.deckfour.xes.nikefs2.NikeFS2VirtualFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
