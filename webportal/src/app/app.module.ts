@@ -34,6 +34,8 @@ import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts
 import { ArtifactSettingsComponent } from './modules/process-mining/artifact-settings/artifact-settings.component';
 import { ArtifactSettingsFieldComponent } from './modules/process-mining/artifact-settings/artifact-settings-field.component';
 import { DurationConditionComponent } from './analysis/conditions/duration-condition/duration-condition.component';
+import { PredictionModelListComponent } from './modules/predictions/model-list/model-list.component';
+import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +64,8 @@ import { DurationConditionComponent } from './analysis/conditions/duration-condi
     ArtifactsComponent,
     ArtifactSettingsComponent,
     ArtifactSettingsFieldComponent,
+    PredictionModelListComponent,
+    TrainModelComponent,
   ],
   imports: [
     BrowserModule,

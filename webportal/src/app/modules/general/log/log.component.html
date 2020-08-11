@@ -62,7 +62,17 @@
                             </ul>
                         </nz-dropdown-menu>
                         <nz-divider nzType="vertical"></nz-divider>
-                        <a [routerLink]="['/logs/annotations/', log.logName]">Annotate</a>
+                        <a nz-dropdown [nzDropdownMenu]="menu2">
+                            Options
+                            <i nz-icon nzType="down"></i>
+                        </a>
+                        <nz-dropdown-menu #menu2="nzDropdownMenu">
+                            <ul nz-menu nzSelectable>
+                                <li nz-menu-item><a [routerLink]="['/logs/annotations/', log.logName]">Annotate Event Log</a></li>
+                                <li nz-menu-item><a [routerLink]="['/models/', log.logName, 'train']">Train Predictive Model</a></li>
+                                <li nz-menu-item><a [routerLink]="['/models/', log.logName]">View Predictive Models</a></li>
+                            </ul>
+                        </nz-dropdown-menu>
                     </span>
                     <span *ngIf="!log.processing">
                         <nz-divider nzType="vertical"></nz-divider>

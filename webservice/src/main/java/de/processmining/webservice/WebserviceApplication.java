@@ -19,6 +19,7 @@
 package de.processmining.webservice;
 
 import de.processmining.data.storage.StorageProperties;
+import de.processmining.webservice.properties.ApplicationProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,7 +29,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@EnableConfigurationProperties(StorageProperties.class)
+@EnableConfigurationProperties({StorageProperties.class, ApplicationProperties.class})
 @ComponentScan("de.processmining")
 public class WebserviceApplication {
 

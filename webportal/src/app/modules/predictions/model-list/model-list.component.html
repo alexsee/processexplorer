@@ -1,0 +1,53 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Robotic Process Automation</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Prediction Models</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<nz-layout class="inner-layout">
+    <nz-sider nzWidth="200px" nzTheme="light">
+        <ul nz-menu nzMode="inline" class="sider-menu">
+            <li nz-menu-item [routerLink]="['/logs']" nzSelected>
+                <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                <span>Trained Models</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-content class="inner-content">
+        <h2>Trained Predictive Models</h2>
+
+        <nz-table #basicTable [nzData]="models">
+            <thead>
+                <tr>
+                    <th>Log Name</th>
+                    <th>Model Name</th>
+                    <th>Status</th>
+                    <th>Creation Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let model of basicTable.data">
+                <td>
+                    <a [routerLink]="['/analysis', model.logName]">{{model.logName}}</a>
+                </td>
+                <td>
+                    <a>{{model.modelName}}</a>
+                </td>
+                <td>
+                    <span *ngIf="model.state == 'PROCESSING'">
+                        <nz-spin nzSimple></nz-spin>
+                    </span>
+                    <span *ngIf="model.state != 'PROCESSING'">
+                    {{model.state}}
+                    </span>
+                </td>
+                <td>{{model.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
+                <td>
+                    
+                </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-content>
+</nz-layout>

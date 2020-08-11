@@ -10,6 +10,7 @@
             <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'analysis', selectedEventLog.logName]" nzMatchRouter>Explore</li>
             <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'artifacts', selectedEventLog.logName]" nzMatchRouter>Artifacts</li>
             <li nz-menu-item [routerLink]="['/', 'logs']" nzMatchRouter>Log Management</li>
+            <li nz-menu-item [routerLink]="['/', 'models']" nzMatchRouter>Robotic Process Automation</li>
         </ul>
     </nz-header>
     <nz-content>
