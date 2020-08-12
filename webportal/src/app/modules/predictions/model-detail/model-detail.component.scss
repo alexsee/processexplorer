@@ -1,0 +1,138 @@
+.case-viewer {
+
+}
+
+.case-viewer .process-case .case-events .case-event {
+  display: inline-block;
+  padding: 5px 0px;
+}
+
+.case-viewer .process-case .case-events .case-event-label {
+  padding: 2px 7px;
+}
+
+.case-viewer .process-case .case-events .case-event .name,
+.case-viewer .process-case .case-events .case-event .attr {
+  font-size: 10pt;
+  font-weight: 600;
+}
+
+.attr .value, .attr .score {
+  display: inline-block;
+  padding: 2px 7px;
+}
+
+.attr .score {
+  background-color: black;
+  color: white;
+  margin-right: 5px;
+}
+
+
+
+
+.dropdown-menu,
+.event {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+#refresh-button {
+  width: 82px;
+}
+
+#evaluate-button {
+  width: 88px;
+}
+
+.form-inline {
+  .btn {
+    z-index: 0 !important;
+  }
+}
+
+.card-header,
+.dropdown-item {
+  cursor: pointer;
+}
+
+.case {
+  &:last-child {
+    margin-bottom: 160px !important;
+  }
+
+  .event {
+    width: auto;
+
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+
+    th, td {
+      padding: 5px;
+    }
+
+    td {
+      cursor: pointer;
+    }
+
+    tr {
+      //border: 3px solid #F5F5F5;
+      font-size: 10pt;
+      font-weight: 600;
+
+      &:hover {
+        background: #000000;
+
+        td {
+          //background: rgba(33, 33, 33, 0.95) !important;
+          opacity: 0.8 !important;
+        }
+      }
+    }
+  }
+}
+
+.dropdown-menu {
+  cursor: pointer;
+
+  .dropdown-item:active, .dropdown-item.active {
+    color: white !important;
+  }
+}
+
+.tip {
+  z-index: 10;
+  color: #FFFFFF;
+  background-color: rgba(33, 33, 33, 0.95);
+
+  table {
+    td, th {
+      font-size: 10pt;
+      padding: 2px;
+    }
+
+    td {
+      font-weight: 600;
+    }
+
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 0;
+    height: 0;
+    border-bottom: solid 5px rgba(33, 33, 33, 0.95);
+    border-left: solid 5px transparent;
+    border-right: solid 5px transparent;
+  }
+
+}
+
+
