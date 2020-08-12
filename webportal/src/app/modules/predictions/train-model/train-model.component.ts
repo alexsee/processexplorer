@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PredictionService } from '../prediction.service';
 import { NzMessageService } from 'ng-zorro-antd';
-import { TrainingConfiguration } from '../models/training-configuration.model';
+import { TrainingConfiguration } from '../shared/training-configuration.model';
 
 @Component({
   selector: 'app-train-model',

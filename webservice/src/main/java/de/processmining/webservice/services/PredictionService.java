@@ -19,6 +19,7 @@
 package de.processmining.webservice.services;
 
 import de.processmining.data.prediction.TrainingConfiguration;
+import de.processmining.data.prediction.TrainingResult;
 import de.processmining.webservice.database.EventLogModelRepository;
 import de.processmining.webservice.database.EventLogRepository;
 import de.processmining.webservice.database.entities.EventLogModel;
@@ -71,6 +72,7 @@ public class PredictionService {
 
         var eventLogModel = new EventLogModel();
         eventLogModel.setEventLog(eventLog);
+        eventLogModel.setModelName(configuration.getModelName());
         eventLogModel.setCreationDate(new Timestamp(System.currentTimeMillis()));
         eventLogModel.setState(EventLogModelState.PROCESSING);
         eventLogModelRepository.save(eventLogModel);
@@ -84,15 +86,17 @@ public class PredictionService {
                     .baseUrl(properties.getAprilBaseUri())
                     .build();
 
-            var modelId = client.post().uri("/train")
+            var result = client.post().uri("/train")
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(configuration))
                     .retrieve()
-                    .bodyToMono(Long.class)
+                    .bodyToMono(TrainingResult.class)
                     .block();
 
-            eventLogModel.setModelId(modelId);
+            eventLogModel.setModelId(result.getId());
+            eventLogModel.setState(EventLogModelState.TRAINED);
+            eventLogModel.setTrainingDuration(result.getTrainingDuration());
             eventLogModel = eventLogModelRepository.save(eventLogModel);
         } catch (Exception ex) {
             eventLogModel.setState(EventLogModelState.ERROR);
@@ -106,5 +110,26 @@ public class PredictionService {
 
     public Iterable<EventLogModel> getAll() {
         return eventLogModelRepository.findAll();
+    }
+
+    public void delete(long id) {
+        var model = eventLogModelRepository.findById(id);
+        if (model.isEmpty()) {
+            return;
+        }
+
+        if (model.get().getModelId() != 0) {
+            var client = WebClient.builder()
+                    .baseUrl(properties.getAprilBaseUri())
+                    .build();
+
+            client.delete().uri("/models/" + model.get().getModelId())
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(Long.class)
+                    .block();
+        }
+
+        eventLogModelRepository.delete(model.get());
     }
 }

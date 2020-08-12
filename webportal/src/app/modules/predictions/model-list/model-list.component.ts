@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventLogModel } from 'src/app/log/models/eventlog-model.model';
 import { PredictionService } from '../prediction.service';
 import { ActivatedRoute } from '@angular/router';
@@ -12,11 +12,11 @@ import { NzMessageService } from 'ng-zorro-antd';
   templateUrl: './model-list.component.html',
   styleUrls: ['./model-list.component.scss']
 })
-export class PredictionModelListComponent implements OnInit {
+export class PredictionModelListComponent implements OnInit, OnDestroy {
   private logName: string;
   private subscription: Subscription;
 
-  public models: EventLogModel[];
+  public models: EventLogModel[] = [];
 
   constructor(private predicationService: PredictionService,
               private route: ActivatedRoute,
@@ -29,6 +29,10 @@ export class PredictionModelListComponent implements OnInit {
 
     this.subscription = this.rxStompService.watch('/notifications/predictions/**')
       .subscribe((message) => this.handleNotifications(message));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   loadList(logName: string): void {
@@ -47,6 +51,13 @@ export class PredictionModelListComponent implements OnInit {
 
       this.loadList(this.logName);
     }
+  }
+
+  doDelete(model: EventLogModel): void {
+    this.predicationService.delete(model.id).subscribe(x => {
+      this.nzMessageService.success('Model <b>' + model.modelName + '</b> deleted successfully.');
+      this.loadList(this.logName);
+    });
   }
 
 }

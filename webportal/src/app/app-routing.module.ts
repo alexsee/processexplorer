@@ -8,6 +8,7 @@ import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts
 import { ArtifactSettingsComponent } from './modules/process-mining/artifact-settings/artifact-settings.component';
 import { PredictionModelListComponent as PredictionModelListComponent } from './modules/predictions/model-list/model-list.component';
 import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
+import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
 
 const routes: Routes = [
   { path: '', component: LogComponent },
@@ -22,8 +23,9 @@ const routes: Routes = [
   { path: 'logs/annotations/:logName', component: LogAnnotationComponent },
 
   { path: 'models', component: PredictionModelListComponent },
-  { path: 'models/:logName', component: PredictionModelListComponent },
-  { path: 'models/:logName/train', component: TrainModelComponent }
+  { path: 'logs/:logName/models', component: PredictionModelListComponent },
+  { path: 'logs/:logName/train', component: TrainModelComponent },
+  { path: 'models/:id', component: ModelDetailComponent }
 ];
 
 @NgModule({

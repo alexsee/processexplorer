@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { EventLogModel } from 'src/app/log/models/eventlog-model.model';
 import { environment } from 'src/environments/environment';
-import { TrainingConfiguration } from './models/training-configuration.model';
+import { TrainingConfiguration } from './shared/training-configuration.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +22,9 @@ export class PredictionService {
 
   train(trainingConfiguration: TrainingConfiguration): Observable<void> {
     return this.http.post<void>(environment.serviceUrl + '/prediction/train', trainingConfiguration);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(environment.serviceUrl + '/prediction?id=' + id);
   }
 }

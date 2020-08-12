@@ -40,32 +40,32 @@ public class QueryController {
         this.queryService = queryService;
     }
 
-    @RequestMapping(value = "/query/statistics", method = RequestMethod.GET)
+    @GetMapping("/query/statistics")
     public Log getStatistics(String logName) {
         return queryService.getLogStatistics(logName);
     }
 
-    @RequestMapping(value = "/query/statistics", method = RequestMethod.POST)
+    @PostMapping("/query/statistics")
     public Log getStatistics(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
         return queryService.getLogStatistics(logName, conditions);
     }
 
-    @RequestMapping("/query/get_all_paths")
+    @GetMapping("/query/get_all_paths")
     public List<Variant> getAllPaths(String logName, @RequestBody List<Condition> conditions) {
         return queryService.getAllPaths(logName, conditions);
     }
 
-    @RequestMapping(value = "/query/process_map", method = RequestMethod.POST)
+    @PostMapping("/query/process_map")
     public ProcessMapResult getProcessMap(@RequestBody ProcessMapQuery query) {
         return queryService.getProcessMap(query);
     }
 
-    @RequestMapping(value = "/query/case_attribute_values", method = RequestMethod.POST)
+    @PostMapping("/query/case_attribute_values")
     public CaseAttributeValueResult getCaseAttributeValues(@RequestBody CaseAttributeValueQuery query) {
         return queryService.getCaseAttributeValues(query);
     }
 
-    @RequestMapping(value = "/query/drill_down", method = RequestMethod.POST)
+    @PostMapping("/query/drill_down")
     public DrillDownResult getDrillDown(@RequestBody DrillDownQuery query) {
         return queryService.getDrillDown(query);
     }

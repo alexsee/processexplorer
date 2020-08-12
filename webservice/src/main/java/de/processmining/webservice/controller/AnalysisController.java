@@ -21,14 +21,13 @@ package de.processmining.webservice.controller;
 import de.processmining.data.analysis.DifferenceAnalysis;
 import de.processmining.data.analysis.clustering.MultiPerspectiveTraceClustering;
 import de.processmining.data.analysis.clustering.SimpleTraceClustering;
+import de.processmining.data.model.Insight;
+import de.processmining.data.model.Recommendation;
 import de.processmining.data.query.condition.Condition;
 import de.processmining.webservice.services.LogRecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,28 +55,28 @@ public class AnalysisController {
         this.logRecommendationService = logRecommendationService;
     }
 
-    @RequestMapping("/simple_trace_clustering")
+    @GetMapping("/simple_trace_clustering")
     public ResponseEntity simpleTraceClustering(@RequestParam("logName") String logName) {
         traceClustering.cluster(logName);
 
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping("/insights")
-    public ResponseEntity insights(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
+    @PostMapping("/insights")
+    public ResponseEntity<List<Insight>> insights(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
         var diffAnalysis = differenceAnalysis.getInsights(differenceAnalysis.getDefaultMetrics(logName), conditions);
         return ResponseEntity.ok(diffAnalysis);
     }
 
-    @RequestMapping("/multi_trace_clustering")
+    @GetMapping("/multi_trace_clustering")
     public ResponseEntity multiTraceClustering(@RequestParam("logName") String logName) {
         multiPerspectiveTraceClustering.cluster(logName);
 
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping("/recommendations")
-    public ResponseEntity recommendations(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
+    @PostMapping("/recommendations")
+    public ResponseEntity<List<Recommendation>> recommendations(@RequestParam("logName") String logName, @RequestBody List<Condition> conditions) {
         try {
             var recommendations = logRecommendationService.getRecommendations(logName);
             return ResponseEntity.ok(recommendations);

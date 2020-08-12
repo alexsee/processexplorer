@@ -23,10 +23,7 @@ import de.processmining.webservice.database.entities.EventLogModel;
 import de.processmining.webservice.services.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Alexander Seeliger on 10.08.2020.
@@ -35,14 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/prediction")
 public class PredictionController {
 
-    private PredictionService predictionService;
+    private final PredictionService predictionService;
 
     @Autowired
     public PredictionController(PredictionService predictionService) {
         this.predictionService = predictionService;
     }
 
-    @RequestMapping("/models")
+    @GetMapping("/models")
     public ResponseEntity<Iterable<EventLogModel>> getByEventLog(@RequestParam(name = "logName", required = false) String logName) {
         if (logName == null) {
             return ResponseEntity.ok(predictionService.getAll());
@@ -51,9 +48,15 @@ public class PredictionController {
         }
     }
 
-    @RequestMapping("/train")
+    @PostMapping("/train")
     public ResponseEntity trainModel(@RequestBody TrainingConfiguration configuration) {
         predictionService.train(configuration);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping()
+    public ResponseEntity delete(@RequestParam("id") long id) {
+        predictionService.delete(id);
         return ResponseEntity.ok().build();
     }
 

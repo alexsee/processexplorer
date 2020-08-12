@@ -19,47 +19,27 @@
 package de.processmining.data.prediction;
 
 /**
- * @author Alexander Seeliger on 10.08.2020.
+ * @author Alexander Seeliger on 11.08.2020.
  */
-public class TrainingConfiguration {
+public class TrainingResult {
 
-    private String logName;
+    private long id;
 
-    private String modelName;
+    private long trainingDuration;
 
-    private int batchSize;
-
-    private int epochs;
-
-    public String getLogName() {
-        return logName;
+    public long getId() {
+        return id;
     }
 
-    public void setLogName(String logName) {
-        this.logName = logName;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public int getBatchSize() {
-        return batchSize;
+    public long getTrainingDuration() {
+        return trainingDuration;
     }
 
-    public void setBatchSize(int batchSize) {
-        this.batchSize = batchSize;
-    }
-
-    public int getEpochs() {
-        return epochs;
-    }
-
-    public void setEpochs(int epochs) {
-        this.epochs = epochs;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
+    public void setTrainingDuration(long trainingDuration) {
+        this.trainingDuration = trainingDuration;
     }
 }

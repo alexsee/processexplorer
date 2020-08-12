@@ -32,7 +32,7 @@
                     <a [routerLink]="['/analysis', model.logName]">{{model.logName}}</a>
                 </td>
                 <td>
-                    <a>{{model.modelName}}</a>
+                    <a [routerLink]="['/models', model.modelId]">{{model.modelName}}</a>
                 </td>
                 <td>
                     <span *ngIf="model.state == 'PROCESSING'">
@@ -44,7 +44,12 @@
                 </td>
                 <td>{{model.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
                 <td>
-                    
+                    <span *ngIf="model.state != 'PROCESSING'">
+                        <a nz-popconfirm
+                            nzPopconfirmTitle="Are you sure delete this model?"
+                            nzPopconfirmPlacement="bottom"
+                            (nzOnConfirm)="doDelete(model)">Delete</a>
+                    </span>
                 </td>
                 </tr>
             </tbody>

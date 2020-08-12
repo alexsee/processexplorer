@@ -69,8 +69,8 @@
                         <nz-dropdown-menu #menu2="nzDropdownMenu">
                             <ul nz-menu nzSelectable>
                                 <li nz-menu-item><a [routerLink]="['/logs/annotations/', log.logName]">Annotate Event Log</a></li>
-                                <li nz-menu-item><a [routerLink]="['/models/', log.logName, 'train']">Train Predictive Model</a></li>
-                                <li nz-menu-item><a [routerLink]="['/models/', log.logName]">View Predictive Models</a></li>
+                                <li nz-menu-item><a [routerLink]="['/logs/', log.logName, 'train']">Train Predictive Model</a></li>
+                                <li nz-menu-item><a [routerLink]="['/logs/', log.logName, 'models']">View Predictive Models</a></li>
                             </ul>
                         </nz-dropdown-menu>
                     </span>
