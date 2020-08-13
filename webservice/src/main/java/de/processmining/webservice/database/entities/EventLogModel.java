@@ -18,7 +18,7 @@
 
 package de.processmining.webservice.database.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,7 +38,9 @@ public class EventLogModel  implements Serializable {
 
     @ManyToOne()
     @JoinColumn(name = "log_name", referencedColumnName = "log_name")
-    @JsonBackReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "logName")
+    @JsonIdentityReference(alwaysAsId = true)
+    @JsonProperty("logName")
     private EventLog eventLog;
 
     @Column(name = "model_id")

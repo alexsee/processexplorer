@@ -97,6 +97,8 @@ public class PredictionService {
             eventLogModel.setModelId(result.getId());
             eventLogModel.setState(EventLogModelState.TRAINED);
             eventLogModel.setTrainingDuration(result.getTrainingDuration());
+            eventLogModel.setAlgorithm(result.getAlgorithm());
+            eventLogModel.setHyperparameters(result.getHyperparameters());
             eventLogModel = eventLogModelRepository.save(eventLogModel);
         } catch (Exception ex) {
             eventLogModel.setState(EventLogModelState.ERROR);

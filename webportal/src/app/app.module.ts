@@ -37,8 +37,6 @@ import { DurationConditionComponent } from './analysis/conditions/duration-condi
 import { PredictionModelListComponent } from './modules/predictions/model-list/model-list.component';
 import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
 import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
-import { ConfusionMatrixComponent } from './modules/predictions/model-detail/confusion-matrix.component';
-import { EvaluationTableComponent } from './modules/predictions/model-detail/evaluation-table.component';
 
 @NgModule({
   declarations: [
@@ -70,8 +68,6 @@ import { EvaluationTableComponent } from './modules/predictions/model-detail/eva
     PredictionModelListComponent,
     TrainModelComponent,
     ModelDetailComponent,
-    ConfusionMatrixComponent,
-    EvaluationTableComponent
   ],
   imports: [
     BrowserModule,

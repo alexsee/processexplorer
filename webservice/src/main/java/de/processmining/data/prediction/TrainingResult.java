@@ -27,6 +27,10 @@ public class TrainingResult {
 
     private long trainingDuration;
 
+    private String algorithm;
+
+    private String hyperparameters;
+
     public long getId() {
         return id;
     }
@@ -41,5 +45,21 @@ public class TrainingResult {
 
     public void setTrainingDuration(long trainingDuration) {
         this.trainingDuration = trainingDuration;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public String getHyperparameters() {
+        return hyperparameters;
+    }
+
+    public void setHyperparameters(String hyperparameters) {
+        this.hyperparameters = hyperparameters;
     }
 }

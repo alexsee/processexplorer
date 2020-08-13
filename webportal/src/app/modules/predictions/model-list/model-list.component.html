@@ -32,14 +32,22 @@
                     <a [routerLink]="['/analysis', model.logName]">{{model.logName}}</a>
                 </td>
                 <td>
-                    <a [routerLink]="['/models', model.modelId]">{{model.modelName}}</a>
+                    <span *ngIf="model.state == 'TRAINED'">
+                        <a [routerLink]="['/models', model.modelId]">{{model.modelName}}</a>
+                    </span>
+                    <span *ngIf="model.state != 'TRAINED'">
+                        {{model.modelName}}
+                    </span>
                 </td>
                 <td>
                     <span *ngIf="model.state == 'PROCESSING'">
                         <nz-spin nzSimple></nz-spin>
                     </span>
-                    <span *ngIf="model.state != 'PROCESSING'">
-                    {{model.state}}
+                    <span *ngIf="model.state == 'TRAINED'">
+                        <i nz-icon nzType="check-circle" nzTheme="outline"></i> Trained
+                    </span>
+                    <span *ngIf="model.state == 'ERROR'">
+                        <i nz-icon nzType="close-circle" nzTheme="outline"></i> Error during training
                     </span>
                 </td>
                 <td>{{model.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
