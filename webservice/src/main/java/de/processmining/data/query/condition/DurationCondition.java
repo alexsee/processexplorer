@@ -27,9 +27,9 @@ import de.processmining.data.DatabaseModel;
  */
 public class DurationCondition extends Condition {
 
-    private String from;
+    private Integer from;
 
-    private String to;
+    private Integer to;
 
     private String unit;
 
@@ -53,13 +53,13 @@ public class DurationCondition extends Condition {
 
     @Override
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
-        var activityFrom = from == null ? "Startknoten" : from;
-        var activityTo = to == null ? "Endknoten" : to;
+        var activityFrom = from == null ? -1 : from;
+        var activityTo = to == null ? -2 : to;
 
-        var innerSQL = "(select a.case_id from " + db.graphTable.getTableNameSQL() + " as a, " + db.graphTable.getTableNameSQL() + " as b " +
+        var innerSQL = "(select a.case_id from " + db.eventTable.getTableNameSQL() + " as a, " + db.eventTable.getTableNameSQL() + " as b " +
                 "where a.case_id = b.case_id " +
-                "and a.source_event = '" + activityFrom + "' " +
-                "and b.target_event = '" + activityTo + "' ";
+                "and a.source_event = " + activityFrom + " " +
+                "and b.target_event = " + activityTo + " ";
         innerSQL += "group by a.case_id ";
         innerSQL += "having ";
 
@@ -75,7 +75,7 @@ public class DurationCondition extends Condition {
         return new InCondition(db.caseAttributeCaseIdCol, new CustomSql(innerSQL));
     }
 
-    public String getTo() {
+    public Integer getTo() {
         return to;
     }
 
@@ -87,11 +87,11 @@ public class DurationCondition extends Condition {
         return minDuration;
     }
 
-    public String getFrom() {
+    public Integer getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(Integer from) {
         this.from = from;
     }
 
@@ -103,7 +103,7 @@ public class DurationCondition extends Condition {
         this.minDuration = minDuration;
     }
 
-    public void setTo(String to) {
+    public void setTo(Integer to) {
         this.to = to;
     }
 

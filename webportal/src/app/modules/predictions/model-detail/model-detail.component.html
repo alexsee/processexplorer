@@ -1,139 +1,158 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Robotic Process Automation</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Train Model</nz-breadcrumb-item>
+</nz-breadcrumb>
 
-<!-- Error message if parameters raise backend error -->
-<div *ngIf="error" class="alert alert-danger" role="alert">
-    <strong>An error has occurred.</strong> Try refreshing the page. You might want to check the logs for further
-    information.
-</div>
+<nz-layout>
+    <nz-sider nzWidth="200px" nzTheme="light">
+        <ul nz-menu nzMode="inline" class="sider-menu">
+            <li nz-menu-item [routerLink]="['/models']">
+                <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                <span>Trained Models</span>
+            </li>
+            <li nz-menu-item nzSelected>
+                <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                <span>Model Details</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-content>
+        <nz-page-header [nzGhost]="false" *ngIf="model && !error">
+            <nz-page-header-title (click)="console.log(model)">{{model.algorithm}} on {{model.trainingEventLog}}</nz-page-header-title>
+            <nz-page-header-extra>
+                <button nz-button routerLink="." [queryParams]="params"
+                    [disabled]="!checkParameters() || refreshing || init"
+                    nzType="primary"
+                    [nzLoading]="refreshing">Refresh
+                </button>
+                <button nz-button (click)="resetParameters()"
+                    [disabled]="!checkParameters() || refreshing || evaluating || init">Cancel
+                </button>
+            </nz-page-header-extra>
+        </nz-page-header>
+        
+        <div class="inner-content">
 
-<div *ngIf="model && !error">
+            <!-- Error message if parameters raise backend error -->
+            <div *ngIf="error" class="alert alert-danger" role="alert">
+                <strong>An error has occurred.</strong> Try refreshing the page. You might want to check the logs for further
+                information.
+            </div>
 
-    <h4 class="card-header bg-secondary text-white" *ngIf="model"
-        (click)="console.log(model)">
-        {{model.algorithm}} on {{model.trainingEventLog}}
-    </h4>
-
-    <div nz-form [nzLayout]="'inline'">
-        <nz-form-item>
-            <nz-form-label [nzFor]="start">Start</nz-form-label>
-            <input nz-input [disabled]="reduction !== null || init || refreshing || evaluating" [(ngModel)]="start" />
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzFor]="numCases">Num. Cases</nz-form-label>
-            <input nz-input [disabled]="init || refreshing || evaluating" [(ngModel)]="numCases" />
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzFor]="seed">Seed</nz-form-label>
-            <input nz-input [disabled]="reduction === null || init || refreshing || evaluating" [(ngModel)]="seed" />
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzFor]="reduction">Reduction</nz-form-label>
-            <nz-form-control>
-                <nz-radio-group [(ngModel)]="reduction" [disabled]="init || refreshing || evaluating">
-                    <label nz-radio-button nzValue="null" ><span>Top-n</span></label>
-                    <label nz-radio-button [nzValue]="r" *ngFor="let r of model.supportedParameters.reductions"><span>{{r | titlecase}}</span></label>
-                </nz-radio-group>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzFor]="reduction">Filter</nz-form-label>
-            <nz-form-control>
-                <nz-select [(ngModel)]="anomalyType" [nzDisabled]="model.supportedParameters.anomalyTypes.length == 0 || reduction === 'uniform' || init || refreshing || evaluating">
-                    <nz-option nzValue="" nzLabel="Show All"></nz-option>
-                    <nz-option [nzValue]="t" [nzLabel]="t" *ngFor="let t of model.supportedParameters.anomalyTypes"></nz-option>
-                    </nz-select>
-            </nz-form-control>
-        </nz-form-item>
-    </div>
-
-    <div nz-form [nzLayout]="'inline'">
-        <nz-form-item>
-            <nz-form-label [nzFor]="mode">Mode</nz-form-label>
-            <nz-form-control>
-                <nz-radio-group [(ngModel)]="mode" [disabled]="init || refreshing || evaluating">
-                    <label nz-radio-button [nzValue]="null" ><span>None</span></label>
-                    <label nz-radio-button [nzValue]="m" *ngFor="let m of model.supportedParameters.modes"><span>{{m | titlecase}}</span></label>
-                </nz-radio-group>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzFor]="base">Base</nz-form-label>
-            <nz-form-control>
-                <nz-radio-group [(ngModel)]="base" [disabled]="init || refreshing || evaluating">
-                    <label nz-radio-button [nzDisabled]="mode === null || init || refreshing || evaluating" [nzValue]="b" *ngFor="let b of model.supportedParameters.bases"><span>{{b | titlecase}}</span></label>
-                </nz-radio-group>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzFor]="heuristic">Heuristic</nz-form-label>
-            <nz-form-control>
-                <nz-select [(ngModel)]="heuristic" [nzDisabled]="model.supportedParameters.heuristics.length <= 1 || mode === null || init || refreshing || evaluating">
-                    <nz-option [nzValue]="null" [hidden]="mode !== null" nzLabel="None"></nz-option>
-                    <nz-option [nzValue]="h" [hidden]="base !== 'scores' && h === 'average'" *ngFor="let h of model.supportedParameters.heuristics">{{h.split('_').join(' ') | titlecase}}</nz-option>
-                </nz-select>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-            <nz-form-label [nzFor]="strategy">Strategy</nz-form-label>
-            <nz-form-control>
-                <nz-select [(ngModel)]="strategy" [nzDisabled]="model.supportedParameters.strategies.length <= 1 || mode === null || init || refreshing || evaluating">
-                    <nz-option [nzValue]="null" [hidden]="mode !== null" nzLabel="None"></nz-option>
-                    <nz-option [nzValue]="s" *ngFor="let s of model.supportedParameters.strategies">{{s.split('_').join(' ') | titlecase}}</nz-option>
-                </nz-select>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item *ngIf="model.supportedParameters.attention">
-            <nz-form-label [nzFor]="strategy">Strategy</nz-form-label>
-            <nz-form-control>
-                <label nz-checkbox [(ngModel)]="showAttention" [disabled]="init || refreshing || evaluating">Attention</label>
-            </nz-form-control>
-        </nz-form-item>
-    </div>
-
-    <!-- Apply and cancel button -->
-    <div nz-form [nzLayout]="'inline'">
-        <nz-form-control>
-            <button nz-button routerLink="." [queryParams]="params"
-                [disabled]="!checkParameters() || refreshing || init"
-                [nzLoading]="refreshing">Refresh
-            </button>
-            <button nz-button (click)="resetParameters()"
-                [disabled]="!checkParameters() || refreshing || evaluating || init">Cancel
-            </button>
-        </nz-form-control>
-    </div>
-
-</div>
-
-<div *ngIf="init" class="text-center">
-    <span class="spinner-border text-primary" role="status"></span>
-</div>
-
-<div class="case-viewer" *ngIf="log">
-    <div class="process-case" *ngFor="let case of log.cases">
-        <nz-card nzTitle="Case {{case.id}}">
-            <div class="case-events">
-                <div class="case-event">
-                    <div class="case-event-label" *ngFor="let attr of case.events[0].attributes.detection">
-                        {{attr.name}}
-                    </div>
+            <div *ngIf="model && !error">
+                <div nz-form [nzLayout]="'inline'">
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="start">Start</nz-form-label>
+                        <input nz-input [disabled]="reduction !== null || init || refreshing || evaluating" [(ngModel)]="start" />
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="numCases">Num. Cases</nz-form-label>
+                        <input nz-input [disabled]="init || refreshing || evaluating" [(ngModel)]="numCases" />
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="seed">Seed</nz-form-label>
+                        <input nz-input [disabled]="reduction === null || init || refreshing || evaluating" [(ngModel)]="seed" />
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="reduction">Reduction</nz-form-label>
+                        <nz-form-control>
+                            <nz-radio-group [(ngModel)]="reduction" [nzDisabled]="init || refreshing || evaluating">
+                                <label nz-radio-button [nzValue]="null" ><span>Top-n</span></label>
+                                <label nz-radio-button [nzValue]="r" *ngFor="let r of model.supportedParameters.reductions"><span>{{r | titlecase}}</span></label>
+                            </nz-radio-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="reduction">Filter</nz-form-label>
+                        <nz-form-control>
+                            <nz-select [(ngModel)]="anomalyType" [nzDisabled]="model.supportedParameters.anomalyTypes.length == 0 || reduction === 'uniform' || init || refreshing || evaluating">
+                                <nz-option nzValue="" nzLabel="Show All"></nz-option>
+                                <nz-option [nzValue]="t" [nzLabel]="t" *ngFor="let t of model.supportedParameters.anomalyTypes"></nz-option>
+                                </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
                 </div>
-                <div class="case-event" *ngFor="let event of case.events">                   
-                    <div class="attr" [ngStyle]="{'background-color': eventColor(attr.score)}" *ngFor="let attr of event.attributes.detection" nz-popover 
-                        [nzPopoverTitle]="titleTemplate" [nzPopoverContent]="contentTemplate">
-                        <span class="score">{{attr.score | number : '1.2-2'}}</span>
-                        <span class="value">{{attr.value}}</span>
 
-                        <ng-template #titleTemplate>Title</ng-template>
-                        <ng-template #contentTemplate>
-                            <div class="attr" [ngStyle]="{'background-color': probabilityColor(props.probability)}" *ngFor="let props of getAttributeProbabilities(attr)">
-                                <span class="score">{{props.probability | number : '1.2-2'}}</span>
-                                <span class="value">{{props.value}}</span>
-                            </div>
-                        </ng-template>
-                    </div>
-                    
+                <div nz-form [nzLayout]="'inline'">
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="mode">Mode</nz-form-label>
+                        <nz-form-control>
+                            <nz-radio-group [(ngModel)]="mode" [nzDisabled]="init || refreshing || evaluating">
+                                <label nz-radio-button [nzValue]="null" ><span>None</span></label>
+                                <label nz-radio-button [nzValue]="m" *ngFor="let m of model.supportedParameters.modes"><span>{{m | titlecase}}</span></label>
+                            </nz-radio-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="base">Base</nz-form-label>
+                        <nz-form-control>
+                            <nz-radio-group [(ngModel)]="base" [nzDisabled]="init || refreshing || evaluating">
+                                <label nz-radio-button [nzDisabled]="mode === null || init || refreshing || evaluating" [nzValue]="b" *ngFor="let b of model.supportedParameters.bases"><span>{{b | titlecase}}</span></label>
+                            </nz-radio-group>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="heuristic">Heuristic</nz-form-label>
+                        <nz-form-control>
+                            <nz-select [(ngModel)]="heuristic" [nzDisabled]="model.supportedParameters.heuristics.length <= 1 || mode === null || init || refreshing || evaluating">
+                                <nz-option [nzValue]="null" [hidden]="mode !== null" nzLabel="None"></nz-option>
+                                <nz-option [nzValue]="h" [hidden]="base !== 'scores' && h === 'average'" *ngFor="let h of model.supportedParameters.heuristics">{{h.split('_').join(' ') | titlecase}}</nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzFor]="strategy">Strategy</nz-form-label>
+                        <nz-form-control>
+                            <nz-select [(ngModel)]="strategy" [nzDisabled]="model.supportedParameters.strategies.length <= 1 || mode === null || init || refreshing || evaluating">
+                                <nz-option [nzValue]="null" [hidden]="mode !== null" nzLabel="None"></nz-option>
+                                <nz-option [nzValue]="s" *ngFor="let s of model.supportedParameters.strategies">{{s.split('_').join(' ') | titlecase}}</nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item *ngIf="model.supportedParameters.attention">
+                        <nz-form-label [nzFor]="strategy">Strategy</nz-form-label>
+                        <nz-form-control>
+                            <label nz-checkbox [(ngModel)]="showAttention" [disabled]="init || refreshing || evaluating">Attention</label>
+                        </nz-form-control>
+                    </nz-form-item>
                 </div>
             </div>
-        </nz-card>
-    </div>
-</div>
+
+            <div *ngIf="init" class="text-center">
+                <span class="spinner-border text-primary" role="status"></span>
+            </div>
+
+            <div class="case-viewer" *ngIf="log">
+                <div class="process-case" *ngFor="let case of log.cases">
+                    <nz-card nzTitle="Case {{case.id}}">
+                        <div class="case-events">
+                            <div class="case-event">
+                                <div class="case-event-label" *ngFor="let attr of case.events[0].attributes.detection">
+                                    {{attr.name}}
+                                </div>
+                            </div>
+                            <div class="case-event" *ngFor="let event of case.events">                   
+                                <div class="attr" [ngStyle]="{'background-color': eventColor(attr.score)}" *ngFor="let attr of event.attributes.detection" nz-popover 
+                                    [nzPopoverTitle]="titleTemplate" [nzPopoverContent]="contentTemplate">
+                                    <span class="score">{{attr.score | number : '1.2-2'}}</span>
+                                    <span class="value">{{attr.value}}</span>
+
+                                    <ng-template #titleTemplate>Title</ng-template>
+                                    <ng-template #contentTemplate>
+                                        <div class="attr" [ngStyle]="{'background-color': probabilityColor(props.probability)}" *ngFor="let props of getAttributeProbabilities(attr)">
+                                            <span class="score">{{props.probability | number : '1.2-2'}}</span>
+                                            <span class="value">{{props.value}}</span>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </nz-card>
+                </div>
+            </div>
+        </div>
+    </nz-content>
+</nz-layout>
+

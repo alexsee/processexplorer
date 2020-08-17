@@ -48,6 +48,12 @@
                 </nz-form-control>
             </nz-form-item>
             <nz-form-item>
+                <nz-form-label [nzSpan]="6">Where Conditions</nz-form-label>
+                <nz-form-control [nzSpan]="14">
+                    <input nz-input name="whereCondition" placeholder="Where Condition" [(ngModel)]="trainingConfiguration.whereCondition" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
                 <nz-form-control [nzSpan]="14" [nzOffset]="6">
                     <button nz-button nzType="primary" (click)="doTrain()">Train</button>
                 </nz-form-control>

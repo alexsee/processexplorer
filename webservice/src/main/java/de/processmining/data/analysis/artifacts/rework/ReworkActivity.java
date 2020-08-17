@@ -31,7 +31,7 @@ public class ReworkActivity {
             description = "Specify the rework activities.",
             type = ArtifactFieldType.ACTIVITY
     )
-    private String activity;
+    private Integer activity;
 
     @ArtifactFieldDescription(
             name = "Minimum occurrence",
@@ -48,11 +48,11 @@ public class ReworkActivity {
     private int max;
 
 
-    public String getActivity() {
+    public Integer getActivity() {
         return activity;
     }
 
-    public void setActivity(String activity) {
+    public void setActivity(Integer activity) {
         this.activity = activity;
     }
 

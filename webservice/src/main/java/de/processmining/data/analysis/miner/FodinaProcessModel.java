@@ -65,7 +65,7 @@ public class FodinaProcessModel implements IProcessModel {
 
                 for (var evt : variant.getPathIndex()) {
                     var event = factory.createEvent();
-                    setName(factory, event, logStat.getActivities().get(evt));
+                    setName(factory, event, logStat.getActivities().get(evt).getName());
 
                     trace.add(event);
                 }

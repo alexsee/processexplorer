@@ -2,7 +2,7 @@
     nzSize="small"
     [nzExtra]="moreTemplate">
     <span *ngIf="data.activity">
-        <b>{{data.activity}}</b> occurs between <b>{{data.min}}</b> and <b>{{data.max}}</b> times per case
+        <b>{{context.activities[data.activity].name}}</b> occurs between <b>{{data.min}}</b> and <b>{{data.max}}</b> times per case
     </span>
     <span *ngIf="!data.activity">
         Rework selection
@@ -26,7 +26,7 @@
             <nz-form-label [nzSm]="6" nzRequired nzFor="activity">Activity</nz-form-label>
             <nz-form-control [nzSm]="18" >
                 <nz-select name="activity" [(ngModel)]="data.activity" nzPlaceHolder="Choose">
-                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                    <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>

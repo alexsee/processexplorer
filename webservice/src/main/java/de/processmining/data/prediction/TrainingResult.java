@@ -18,6 +18,8 @@
 
 package de.processmining.data.prediction;
 
+import java.util.Map;
+
 /**
  * @author Alexander Seeliger on 11.08.2020.
  */
@@ -29,7 +31,7 @@ public class TrainingResult {
 
     private String algorithm;
 
-    private String hyperparameters;
+    private Map<String, Object> hyperparameters;
 
     public long getId() {
         return id;
@@ -55,11 +57,11 @@ public class TrainingResult {
         this.algorithm = algorithm;
     }
 
-    public String getHyperparameters() {
+    public Map<String, Object> getHyperparameters() {
         return hyperparameters;
     }
 
-    public void setHyperparameters(String hyperparameters) {
+    public void setHyperparameters(Map<String, Object> hyperparameters) {
         this.hyperparameters = hyperparameters;
     }
 }

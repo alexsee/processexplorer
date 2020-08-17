@@ -3,4 +3,5 @@ export class TrainingConfiguration {
     modelName: string;
     batchSize: number;
     epochs: number;
+    whereCondition: string;
 }

@@ -202,7 +202,7 @@ export class ProcessMapComponent implements OnInit, OnChanges {
         style: 'fill: #ff3300'
       });
     } else {
-      graph.setNode(node, {label: this.context.activities[node], rx: 5, ry: 5});
+      graph.setNode(node, {label: this.context.activities[node].name, rx: 5, ry: 5});
     }
   }
 }

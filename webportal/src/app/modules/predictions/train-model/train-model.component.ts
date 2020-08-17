@@ -14,7 +14,8 @@ export class TrainModelComponent implements OnInit {
     logName: null,
     modelName: null,
     epochs: 10,
-    batchSize: 500
+    batchSize: 500,
+    whereCondition: ''
   };
 
   constructor(private route: ActivatedRoute,

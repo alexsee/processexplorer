@@ -18,6 +18,7 @@
 
 package de.processmining.webservice.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.processmining.data.prediction.TrainingConfiguration;
 import de.processmining.data.prediction.TrainingResult;
 import de.processmining.webservice.database.EventLogModelRepository;
@@ -94,11 +95,13 @@ public class PredictionService {
                     .bodyToMono(TrainingResult.class)
                     .block();
 
+            var objectMapper = new ObjectMapper();
+
             eventLogModel.setModelId(result.getId());
             eventLogModel.setState(EventLogModelState.TRAINED);
             eventLogModel.setTrainingDuration(result.getTrainingDuration());
             eventLogModel.setAlgorithm(result.getAlgorithm());
-            eventLogModel.setHyperparameters(result.getHyperparameters());
+            eventLogModel.setHyperparameters(objectMapper.writeValueAsString(result.getHyperparameters()));
             eventLogModel = eventLogModelRepository.save(eventLogModel);
         } catch (Exception ex) {
             eventLogModel.setState(EventLogModelState.ERROR);

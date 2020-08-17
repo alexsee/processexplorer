@@ -66,7 +66,7 @@ public class QueryService {
     public Log getLogStatistics(String logName) {
         var db = new DatabaseModel(logName);
 
-        var activities = jdbcTemplate.queryForList(new SelectQuery().addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), String.class);
+        var activities = jdbcTemplate.query(new SelectQuery().addColumns(db.activityIdCol).addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), new ActivityRowMapper());
         var numEvents = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events").toString(), Long.class);
         var numTraces = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.caseAttributeCaseIdCol), "num_traces").toString(), Long.class);
 
@@ -97,10 +97,11 @@ public class QueryService {
 
         // get activities
         var sql_activities = new SelectQuery()
+                .addColumns(db.activityIdCol)
                 .addColumns(db.activityNameCol)
                 .addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING);
 
-        var activities = jdbcTemplate.queryForList(sql_activities.toString(), String.class);
+        var activities = jdbcTemplate.query(sql_activities.toString(), new ActivityRowMapper());
 
         // get number of events
         var sql_num_events = new SelectQuery()
@@ -173,7 +174,7 @@ public class QueryService {
                 for (int i = 0; i < path.length; i++) {
                     var index = Integer.parseInt(path[i].replace(":", ""));
 
-                    path[i] = logStats.getActivities().get(index);
+                    path[i] = logStats.getActivities().get(index).getName();
                     path_index[i] = index;
                 }
 
@@ -232,12 +233,12 @@ public class QueryService {
         var db = new DatabaseModel(query.getLogName());
 
         var sql = new SelectQuery()
-                .addColumns(db.graphSourceEventCol, db.graphTargetEventCol)
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addColumnParams(db.graphDurationCol)), "avg_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addColumnParams(db.graphDurationCol)), "min_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addColumnParams(db.graphDurationCol)), "max_duration")
+                .addColumns(db.eventSourceEventCol, db.eventTargetEventCol)
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addColumnParams(db.eventDurationCol)), "avg_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addColumnParams(db.eventDurationCol)), "min_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addColumnParams(db.eventDurationCol)), "max_duration")
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence")
-                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.graphVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
+                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.caseVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
 
         for (var rule : query.getConditions()) {
             var condition = rule.getCondition(db);
@@ -246,8 +247,8 @@ public class QueryService {
             }
         }
 
-        var sqlT = sql.addGroupings(db.graphSourceEventCol, db.graphTargetEventCol)
-                .addJoins(SelectQuery.JoinType.INNER, db.graphVariantJoin, db.graphCaseAttributeJoin)
+        var sqlT = sql.addGroupings(db.eventSourceEventCol, db.eventTargetEventCol)
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin, db.caseVariantJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
@@ -530,6 +531,11 @@ public class QueryService {
         }
 
         return result;
+    }
+
+    public List<Activity> getActivities(String logName) {
+        var db = new DatabaseModel(logName);
+        return jdbcTemplate.query(new SelectQuery().addColumns(db.activityIdCol).addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), new ActivityRowMapper());
     }
 
     private void addConditionsToSql(SelectQuery sql, DatabaseModel db, List<Condition> conditions) {

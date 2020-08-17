@@ -4,7 +4,7 @@
     <nz-breadcrumb-item>Prediction Models</nz-breadcrumb-item>
 </nz-breadcrumb>
 
-<nz-layout class="inner-layout">
+<nz-layout>
     <nz-sider nzWidth="200px" nzTheme="light">
         <ul nz-menu nzMode="inline" class="sider-menu">
             <li nz-menu-item [routerLink]="['/logs']" nzSelected>
@@ -13,54 +13,58 @@
             </li>
         </ul>
     </nz-sider>
-    <nz-content class="inner-content">
-        <h2>Trained Predictive Models</h2>
+    <nz-content>
+        <nz-page-header [nzGhost]="false">
+            <nz-page-header-title>Trained Predictive Models</nz-page-header-title>
+        </nz-page-header>
 
-        <nz-table #basicTable [nzData]="models">
-            <thead>
-                <tr>
-                    <th>Log Name</th>
-                    <th>Model Name</th>
-                    <th>Status</th>
-                    <th>Creation Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let model of basicTable.data">
-                <td>
-                    <a [routerLink]="['/analysis', model.logName]">{{model.logName}}</a>
-                </td>
-                <td>
-                    <span *ngIf="model.state == 'TRAINED'">
-                        <a [routerLink]="['/models', model.modelId]">{{model.modelName}}</a>
-                    </span>
-                    <span *ngIf="model.state != 'TRAINED'">
-                        {{model.modelName}}
-                    </span>
-                </td>
-                <td>
-                    <span *ngIf="model.state == 'PROCESSING'">
-                        <nz-spin nzSimple></nz-spin>
-                    </span>
-                    <span *ngIf="model.state == 'TRAINED'">
-                        <i nz-icon nzType="check-circle" nzTheme="outline"></i> Trained
-                    </span>
-                    <span *ngIf="model.state == 'ERROR'">
-                        <i nz-icon nzType="close-circle" nzTheme="outline"></i> Error during training
-                    </span>
-                </td>
-                <td>{{model.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
-                <td>
-                    <span *ngIf="model.state != 'PROCESSING'">
-                        <a nz-popconfirm
-                            nzPopconfirmTitle="Are you sure delete this model?"
-                            nzPopconfirmPlacement="bottom"
-                            (nzOnConfirm)="doDelete(model)">Delete</a>
-                    </span>
-                </td>
-                </tr>
-            </tbody>
-        </nz-table>
+        <div class="inner-content">
+            <nz-table #basicTable [nzData]="models">
+                <thead>
+                    <tr>
+                        <th>Log Name</th>
+                        <th>Model Name</th>
+                        <th>Status</th>
+                        <th>Creation Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let model of basicTable.data">
+                    <td>
+                        <a [routerLink]="['/analysis', model.logName]">{{model.logName}}</a>
+                    </td>
+                    <td>
+                        <span *ngIf="model.state == 'TRAINED'">
+                            <a [routerLink]="['/models', model.modelId]">{{model.modelName}}</a>
+                        </span>
+                        <span *ngIf="model.state != 'TRAINED'">
+                            {{model.modelName}}
+                        </span>
+                    </td>
+                    <td>
+                        <span *ngIf="model.state == 'PROCESSING'">
+                            <nz-spin nzSimple></nz-spin>
+                        </span>
+                        <span *ngIf="model.state == 'TRAINED'">
+                            <i nz-icon nzType="check-circle" nzTheme="outline"></i> Trained
+                        </span>
+                        <span *ngIf="model.state == 'ERROR'">
+                            <i nz-icon nzType="close-circle" nzTheme="outline"></i> Error during training
+                        </span>
+                    </td>
+                    <td>{{model.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
+                    <td>
+                        <span *ngIf="model.state != 'PROCESSING'">
+                            <a nz-popconfirm
+                                nzPopconfirmTitle="Are you sure delete this model?"
+                                nzPopconfirmPlacement="bottom"
+                                (nzOnConfirm)="doDelete(model)">Delete</a>
+                        </span>
+                    </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
     </nz-content>
 </nz-layout>

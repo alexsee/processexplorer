@@ -132,15 +132,18 @@ public class LogService {
 
                 // update database
                 eventLog.setImported(true);
+                eventLog.setProcessed(true);
 
                 // delete file
                 //            storageService.delete(eventLog.getFileName());
             } catch (Exception ex) {
                 eventLog.setImported(false);
+                eventLog.setProcessed(false);
                 eventLog.setErrorMessage(ex.getMessage());
             }
         } else {
             eventLog.setImported(false);
+            eventLog.setProcessed(false);
             eventLog.setErrorMessage("Not supported");
         }
 
@@ -229,7 +232,7 @@ public class LogService {
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.variantsTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseAttributeTable.getTableNameSQL());
-        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.graphTable.getTableNameSQL());
+//        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.graphTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.activityTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.eventTable.getTableNameSQL());
 

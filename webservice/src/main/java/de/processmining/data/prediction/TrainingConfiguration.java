@@ -31,6 +31,8 @@ public class TrainingConfiguration {
 
     private int epochs;
 
+    private String whereCondition;
+
     public String getLogName() {
         return logName;
     }
@@ -61,5 +63,13 @@ public class TrainingConfiguration {
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
+    }
+
+    public String getWhereCondition() {
+        return whereCondition;
+    }
+
+    public void setWhereCondition(String whereCondition) {
+        this.whereCondition = whereCondition;
     }
 }
