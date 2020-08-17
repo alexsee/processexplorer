@@ -9,6 +9,7 @@ import { Condition } from '../models/condition.model';
 import { CaseAttributeValueResult } from '../models/results/case-attribute-value-result.model';
 import { DrillDownResult } from '../models/results/drill-down-result.model';
 import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
+import { SocialNetworkResult } from '../models/results/social-network-result.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -25,10 +26,18 @@ export class QueryService {
     private http: HttpClient
   ) { }
 
-  getProcessMap(logName: string, conditions: Condition[], socialNetwork: boolean = false): Observable<ProcessMapResult> {
+  getProcessMap(logName: string, conditions: Condition[]): Observable<ProcessMapResult> {
     return this.http.post<ProcessMapResult>(
       environment.serviceUrl + '/query/process_map',
-      { logName, conditions, socialNetwork },
+      { logName, conditions },
+      httpOptions
+    );
+  }
+
+  getSocialNetworkGraph(logName: string, conditions: Condition[]): Observable<SocialNetworkResult> {
+    return this.http.post<SocialNetworkResult>(
+      environment.serviceUrl + '/query/social_network',
+      { logName, conditions },
       httpOptions
     );
   }

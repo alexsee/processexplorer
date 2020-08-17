@@ -31,12 +31,10 @@ import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.*;
-import org.postgresql.util.PGInterval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,14 +111,14 @@ public class XLog2Database {
                 prepInsertTrace.add(tracePrep);
 
                 // obtain events for trace
-                XEvent previousEvent =  null;
+                XEvent previousEvent = null;
                 int e = 0;
 
                 for (var event : trace) {
                     var timestamp = (Date) XLogUtils.getAttributeValue(event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
                     var timestampPrevious = previousEvent == null ? null : (Date) XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
 
-                    var eventPrep = new Object[10 + eventAttributes.size()];
+                    var eventPrep = new Object[11 + eventAttributes.size()];
 
                     eventPrep[0] = i;
                     eventPrep[1] = caseId;
@@ -128,13 +126,14 @@ public class XLog2Database {
                     eventPrep[3] = logInfo.getEventClasses().getClassOf(event).getIndex();
                     eventPrep[4] = previousEvent == null ? null : new java.sql.Timestamp(timestampPrevious.getTime());
                     eventPrep[5] = new java.sql.Timestamp(timestamp.getTime());
-                    eventPrep[6] = null;
-                    eventPrep[7] = e;
-                    eventPrep[8] = XLogUtils.getAttributeValue(event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
-                    eventPrep[9] = XLogUtils.getAttributeValue(event.getAttributes().get(XLifecycleExtension.KEY_MODEL));
+                    eventPrep[6] = previousEvent == null ? null : XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
+                    eventPrep[7] = XLogUtils.getAttributeValue(event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
+                    eventPrep[8] = null;
+                    eventPrep[9] = e;
+                    eventPrep[10] = XLogUtils.getAttributeValue(event.getAttributes().get(XLifecycleExtension.KEY_MODEL));
 
                     // add additional attributes
-                    int j = 10;
+                    int j = 11;
                     for (var attr : eventAttributes) {
                         var value = XLogUtils.getAttributeValue(event.getAttributes().get(attr.getKey()));
                         eventPrep[j] = value;
@@ -147,16 +146,17 @@ public class XLog2Database {
                 }
 
                 // insert end event
-                prepInsertEvent.add(new Object[] {
+                prepInsertEvent.add(new Object[]{
                         i,
                         caseId,
                         logInfo.getEventClasses().getClassOf(previousEvent).getIndex(),
                         -2,
                         new java.sql.Timestamp(((Date) XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP))).getTime()),
                         null,
+                        XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE)),
+                        null,
                         null,
                         e,
-                        null,
                         null
                 });
 
@@ -197,7 +197,7 @@ public class XLog2Database {
         sql.print("    MIN(source_timestamp) AS start_time,");
         sql.print("    MAX(source_timestamp) AS end_time,");
         sql.print("    COUNT(%s) AS %s,", "source_event", "num_events");
-        sql.print("    COUNT(DISTINCT %s) AS %s,", "resource", "num_users");
+        sql.print("    COUNT(DISTINCT %s) AS %s,", "source_resource", "num_users");
         sql.print("    CAST(%s AS interval) AS %s,", "age(MAX(source_timestamp), MIN(source_timestamp))", "total_duration");
         sql.print("    CONCAT(':', STRING_AGG(CAST(source_event AS VARCHAR(5)), '::' ORDER BY source_timestamp, lifecycle, source_event), ':') AS variant");
         sql.print("  FROM %s AS log", db.eventTable.getTableNameSQL());
@@ -222,7 +222,7 @@ public class XLog2Database {
 
         // create index for cases table
         jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.caseTable.getTableNameSQL() + " ON " + db.caseTable.getTableNameSQL() + " (case_id)");
-        jdbcTemplate.execute("UPDATE " + db.eventTable.getTableNameSQL() + " SET " +db.eventDurationCol.getColumnNameSQL() + " = age(" + db.eventTargetTimestampCol.getColumnNameSQL() + "," + db.eventSourceTimestampCol.getColumnNameSQL() + ") WHERE " + db.eventDurationCol.getColumnNameSQL() + " IS NULL");
+        jdbcTemplate.execute("UPDATE " + db.eventTable.getTableNameSQL() + " SET " + db.eventDurationCol.getColumnNameSQL() + " = age(" + db.eventTargetTimestampCol.getColumnNameSQL() + "," + db.eventSourceTimestampCol.getColumnNameSQL() + ") WHERE " + db.eventDurationCol.getColumnNameSQL() + " IS NULL");
 
         logger.info("Finished importing event log \"{}\"", this.logName);
         return true;

@@ -59,9 +59,10 @@ public class DatabaseModel {
     public DbColumn eventTargetEventCol;
     public DbColumn eventSourceTimestampCol;
     public DbColumn eventTargetTimestampCol;
+    public DbColumn eventSourceResourceCol;
+    public DbColumn eventTargetResourceCol;
     public DbColumn eventDurationCol;
     public DbColumn eventNumberCol;
-    public DbColumn eventResourceCol;
     public DbColumn eventLifecycleCol;
 
     // case attribute table
@@ -106,9 +107,10 @@ public class DatabaseModel {
         eventTargetEventCol = eventTable.addColumn("target_event", "bigint", null);
         eventSourceTimestampCol = eventTable.addColumn("source_timestamp", "timestamp", null);
         eventTargetTimestampCol = eventTable.addColumn("target_timestamp", "timestamp", null);
+        eventSourceResourceCol = eventTable.addColumn("source_resource", "varchar", 1024);
+        eventTargetResourceCol = eventTable.addColumn("target_resource", "varchar", 1024);
         eventDurationCol = eventTable.addColumn("duration", "interval", null);
         eventNumberCol = eventTable.addColumn("event_number", "integer", null);
-        eventResourceCol = eventTable.addColumn("resource", "varchar", 1024);
         eventLifecycleCol = eventTable.addColumn("lifecycle", "varchar", 1024);
 
         // case attribute table

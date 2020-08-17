@@ -60,6 +60,11 @@ public class QueryController {
         return queryService.getProcessMap(query);
     }
 
+    @PostMapping("/query/social_network")
+    public SocialNetworkResult getSocialNetworkGraph(@RequestBody ProcessMapQuery query) {
+        return queryService.getSocialNetworkGraph(query);
+    }
+
     @PostMapping("/query/case_attribute_values")
     public CaseAttributeValueResult getCaseAttributeValues(@RequestBody CaseAttributeValueQuery query) {
         return queryService.getCaseAttributeValues(query);

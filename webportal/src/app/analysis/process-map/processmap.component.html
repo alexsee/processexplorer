@@ -12,5 +12,7 @@
         </nz-select>
 
         <nz-slider class="variant-slider" [(ngModel)]="variant" [(nzMin)]="minVariant" [(nzMax)]="maxVariant" (nzOnAfterChange)="onSettingsChange()"></nz-slider>
+
+        <button class="social-network" nz-button (click)="toggleGraph()" [nzType]="toggleSocialNetwork ? 'primary' : ''"><i nz-icon nzType="team"></i>Toogle Social Network</button>
     </div>
 </div>

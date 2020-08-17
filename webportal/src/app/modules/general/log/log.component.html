@@ -39,7 +39,6 @@
                     </span>
                     <span *ngIf="!log.processing">
                         <span *ngIf="!log.errorMessage && log.imported && log.processed"><i nz-icon nzType="check-circle" nzTheme="outline"></i> Imported & Processed</span>
-                        <span *ngIf="!log.errorMessage && log.imported && !log.processed">Imported</span>
                         <span *ngIf="!log.errorMessage && !log.imported && !log.processed">Uploaded</span>
                         <span *ngIf="log.errorMessage" class="error"><i nz-icon nzType="close-circle" nzTheme="outline"></i> {{log.errorMessage}}</span>
                     </span>
@@ -48,7 +47,6 @@
                     <span *ngFor="let feature of log.features">{{feature.feature}}</span>
                 </td>
                 <td>
-                    <span *ngIf="log.imported && !log.processed && !log.processing"><a (click)="doProcess(log)">Process</a></span>
                     <span *ngIf="!log.imported && !log.processed && !log.processing"><a (click)="doImport(log)">Import Event Log</a></span>
                     <span *ngIf="log.imported && log.processed">
                         <a nz-dropdown [nzDropdownMenu]="menu">

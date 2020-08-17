@@ -66,13 +66,6 @@ public class LogController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/process")
-    public ResponseEntity processLog(@RequestParam("logName") String logName) {
-        // generate directly follows graph
-        logService.processLog(logName);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping()
     public ResponseEntity deleteLog(@RequestParam("logName") String logName) {
         logService.deleteLog(logName);

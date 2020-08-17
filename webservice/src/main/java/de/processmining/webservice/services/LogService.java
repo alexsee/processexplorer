@@ -21,7 +21,6 @@ package de.processmining.webservice.services;
 import de.processmining.data.DatabaseModel;
 import de.processmining.data.XLog2Database;
 import de.processmining.data.XLogUtils;
-import de.processmining.data.analysis.DirectlyFollowsGraphMiner;
 import de.processmining.data.model.Log;
 import de.processmining.data.query.QueryService;
 import de.processmining.data.storage.StorageService;
@@ -152,36 +151,6 @@ public class LogService {
 
         // report finished process
         messagingTemplate.convertAndSend("/notifications/logs/import_finished", eventLog);
-        return new AsyncResult<>(eventLog);
-    }
-
-    /**
-     * Computes a directly follows graph for the given event log.
-     *
-     * @param logName
-     * @return
-     */
-    @Async
-    public Future<EventLog> processLog(String logName) {
-        // get event log
-        var eventLog = eventLogRepository.findByLogName(logName);
-        eventLog.setProcessing(true);
-        eventLog = eventLogRepository.save(eventLog);
-
-        // report processing
-        messagingTemplate.convertAndSend("/notifications/logs/processing_started", eventLog);
-
-        // perform dfg miner
-        var dfgMiner = new DirectlyFollowsGraphMiner(jdbcTemplate);
-        dfgMiner.mine(logName);
-
-        // finalize result
-        eventLog.setProcessed(true);
-        eventLog.setProcessing(false);
-        eventLog = eventLogRepository.save(eventLog);
-
-        // report finished process
-        messagingTemplate.convertAndSend("/notifications/logs/processing_finished", eventLog);
         return new AsyncResult<>(eventLog);
     }
 
