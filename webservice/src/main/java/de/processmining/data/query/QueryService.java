@@ -533,6 +533,12 @@ public class QueryService {
         return result;
     }
 
+    /**
+     * Returns a list of all activities within the event log.
+     *
+     * @param logName
+     * @return
+     */
     public List<Activity> getActivities(String logName) {
         var db = new DatabaseModel(logName);
         return jdbcTemplate.query(new SelectQuery().addColumns(db.activityIdCol).addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), new ActivityRowMapper());
