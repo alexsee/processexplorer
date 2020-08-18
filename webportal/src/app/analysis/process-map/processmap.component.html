@@ -6,11 +6,13 @@
     </div>
 
     <div class="navigation">
-        <nz-select [(ngModel)]="settings.mode" nzPlaceHolder="Choose" (ngModelChange)="onSettingsChange()">
+        <nz-select class="options" [(ngModel)]="settings.mode" nzPlaceHolder="Choose" (ngModelChange)="onSettingsChange()">
             <nz-option nzValue="duration" nzLabel="Duration"></nz-option>
             <nz-option nzValue="occurrence" nzLabel="Occurrence"></nz-option>
         </nz-select>
 
-        <nz-slider [(ngModel)]="variant" [(nzMin)]="minVariant" [(nzMax)]="maxVariant" (nzOnAfterChange)="onSettingsChange()"></nz-slider>
+        <nz-slider class="variant-slider" [(ngModel)]="variant" [(nzMin)]="minVariant" [(nzMax)]="maxVariant" (nzOnAfterChange)="onSettingsChange()"></nz-slider>
+
+        <button class="social-network" nz-button (click)="toggleGraph()" [nzType]="toggleSocialNetwork ? 'primary' : ''"><i nz-icon nzType="team"></i>Toogle Social Network</button>
     </div>
 </div>

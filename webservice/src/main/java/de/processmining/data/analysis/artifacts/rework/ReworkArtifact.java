@@ -45,6 +45,7 @@ public class ReworkArtifact extends ArtifactBase<ReworkArtifactConfiguration> {
 
     public List<ArtifactResult> run(String logName) {
         var results = new ArrayList<ArtifactResult>();
+        var activities = queryService.getActivities(logName);
 
         for (var rework : configuration.getReworkActivities()) {
             var conditions = new ArrayList<Condition>();
@@ -53,7 +54,7 @@ public class ReworkArtifact extends ArtifactBase<ReworkArtifactConfiguration> {
             var log = queryService.getLogStatistics(logName, conditions);
             if (log.getNumTraces() > 0) {
                 var result = new ArtifactResult();
-                result.setName("Rework activity: " + rework.getActivity());
+                result.setName("Rework activity: " + activities.get(rework.getActivity()).getName());
                 result.setType(ReworkArtifact.class.getCanonicalName());
                 result.setNumAffectedCases(log.getNumTraces());
                 result.setConditions(conditions);

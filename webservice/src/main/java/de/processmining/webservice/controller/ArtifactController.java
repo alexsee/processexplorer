@@ -18,12 +18,13 @@
 
 package de.processmining.webservice.controller;
 
-import de.processmining.data.analysis.artifacts.ArtifactAnalysis;
-import de.processmining.data.analysis.artifacts.ArtifactBase;
-import de.processmining.data.analysis.artifacts.ArtifactUIConfiguration;
+import de.processmining.data.analysis.artifacts.*;
+import de.processmining.webservice.database.entities.EventLogArtifact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Alexander Seeliger on 11.12.2019.
@@ -39,36 +40,36 @@ public class ArtifactController {
         this.artifactAnalysis = artifactAnalysis;
     }
 
-    @RequestMapping("/evaluate")
-    public ResponseEntity evaluate(@RequestParam("logName") String logName) {
+    @GetMapping("/evaluate")
+    public ResponseEntity<List<ArtifactResult>> evaluate(@RequestParam("logName") String logName) {
         return ResponseEntity.ok(artifactAnalysis.run(logName));
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity list() {
+    @GetMapping()
+    public ResponseEntity<List<ArtifactUI>> list() {
         var result = artifactAnalysis.getArtifactClasses();
         return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(value = "/configuration", method = RequestMethod.GET)
-    public ResponseEntity list(@RequestParam("logName") String logName) {
+    @GetMapping("/configuration")
+    public ResponseEntity<List<ArtifactUIConfiguration>> list(@RequestParam("logName") String logName) {
         var result = artifactAnalysis.getArtifactConfigurations(logName);
         return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(value = "/configuration", method = RequestMethod.POST)
-    public ResponseEntity save(@RequestParam("logName") String logName, @RequestBody ArtifactUIConfiguration configuration) {
+    @PostMapping("/configuration")
+    public ResponseEntity<EventLogArtifact> save(@RequestParam("logName") String logName, @RequestBody ArtifactUIConfiguration configuration) {
         return ResponseEntity.ok(artifactAnalysis.save(logName, configuration));
     }
 
-    @RequestMapping(value = "/configuration", method = RequestMethod.DELETE)
+    @DeleteMapping("/configuration")
     public ResponseEntity delete(@RequestParam("id") Long id) {
         artifactAnalysis.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping("/ui")
-    public ResponseEntity artifacts(@RequestParam("artifact") String artifact) {
+    @GetMapping("/ui")
+    public ResponseEntity<List<ArtifactUIField>> artifacts(@RequestParam("artifact") String artifact) {
         try {
             var uiFields = artifactAnalysis.getConfigurationDescription((Class<? extends ArtifactBase>) Class.forName(artifact));
 

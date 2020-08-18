@@ -39,15 +39,15 @@ public abstract class TransitionMetric extends CaseMetric<CaseMetric.Measure, Tr
         var targetActivityTable = db.activityTable.rejoin("target_activity");
 
         var inner_sql = new SelectQuery()
-                .addColumns(db.graphSourceEventCol, db.graphTargetEventCol)
+                .addColumns(db.eventSourceEventCol, db.eventTargetEventCol)
                 .addAliasedColumn(sourceActivityTable.findColumnByName("name"), "source_event_name")
                 .addAliasedColumn(targetActivityTable.findColumnByName("name"), "target_event_name")
                 .addAliasedColumn(expr, "expr")
                 .addCondition(condition)
-                .addJoins(SelectQuery.JoinType.INNER, db.graphVariantJoin, db.graphCaseAttributeJoin)
-                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, sourceActivityTable, BinaryCondition.equalTo(db.graphSourceEventCol, sourceActivityTable.findColumnByName("id")))
-                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, targetActivityTable, BinaryCondition.equalTo(db.graphTargetEventCol, targetActivityTable.findColumnByName("id")))
-                .addGroupings(db.graphCaseIdCol, db.graphSourceEventCol, db.graphTargetEventCol, sourceActivityTable.findColumnByName("name"), targetActivityTable.findColumnByName("name"));
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin, db.caseVariantJoin)
+                .addCustomJoin(SelectQuery.JoinType.INNER, db.eventTable, sourceActivityTable, BinaryCondition.equalTo(db.eventSourceEventCol, sourceActivityTable.findColumnByName("id")))
+                .addCustomJoin(SelectQuery.JoinType.INNER, db.eventTable, targetActivityTable, BinaryCondition.equalTo(db.eventTargetEventCol, targetActivityTable.findColumnByName("id")))
+                .addGroupings(db.eventCaseIdCol, db.eventSourceEventCol, db.eventTargetEventCol, sourceActivityTable.findColumnByName("name"), targetActivityTable.findColumnByName("name"));
 
         var outer_sql = new SelectQuery()
                 .addCustomColumns(new CustomSql("a.source_event"), new CustomSql("a.target_event"), new CustomSql("a.source_event_name"), new CustomSql("a.target_event_name"))

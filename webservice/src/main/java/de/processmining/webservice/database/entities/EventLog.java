@@ -19,6 +19,7 @@
 package de.processmining.webservice.database.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -60,6 +61,8 @@ public class EventLog implements Serializable {
     private boolean processing;
 
     @Column(name = "error_message")
+    @Lob()
+    @Type(type = "org.hibernate.type.TextType")
     private String errorMessage;
 
     @OneToMany(mappedBy = "eventLog", targetEntity = EventLogFeature.class, fetch = FetchType.EAGER)

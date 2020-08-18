@@ -32,9 +32,9 @@ public class PathCondition extends Condition {
 
     private ConditionType conditionType;
 
-    private String start;
+    private Integer start;
 
-    private String end;
+    private Integer end;
 
     public PathCondition() {
     }
@@ -85,19 +85,19 @@ public class PathCondition extends Condition {
         this.conditionType = conditionType;
     }
 
-    public String getStart() {
+    public Integer getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public void setStart(Integer start) {
         this.start = start;
     }
 
-    public String getEnd() {
+    public Integer getEnd() {
         return end;
     }
 
-    public void setEnd(String end) {
+    public void setEnd(Integer end) {
         this.end = end;
     }
 }

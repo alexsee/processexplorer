@@ -43,55 +43,48 @@ public class LogController {
         this.logAnnotationService = logAnnotationService;
     }
 
-    @RequestMapping("/all_statistics")
+    @GetMapping("/all_statistics")
     public List<Log> getAll() {
         return logService.getAllLogs();
     }
 
-    @RequestMapping()
+    @GetMapping()
     public Iterable<EventLog> listLogs() {
         return logService.getAll();
     }
 
-    @RequestMapping("/upload")
+    @PostMapping("/upload")
     public EventLog uploadLog(@RequestParam("file") MultipartFile file,
                               @RequestParam("logName") String logName) {
         // store and import log
         return logService.storeLog(file, logName);
     }
 
-    @RequestMapping("/import")
+    @GetMapping("/import")
     public ResponseEntity importLog(@RequestParam("logName") String logName) {
-        var result = logService.importLog(logName);
+        logService.importLog(logName);
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping("/process")
-    public ResponseEntity processLog(@RequestParam("logName") String logName) {
-        // generate directly follows graph
-        var result = logService.processLog(logName);
-        return ResponseEntity.ok().build();
-    }
-
-    @RequestMapping(method = RequestMethod.DELETE)
+    @DeleteMapping()
     public ResponseEntity deleteLog(@RequestParam("logName") String logName) {
         logService.deleteLog(logName);
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/annotations", method = RequestMethod.GET)
+    @GetMapping("/annotations")
     public ResponseEntity<Iterable<EventLogAnnotation>> getAnnotations(@RequestParam("logName") String logName) {
         var result = logAnnotationService.findByLogName(logName);
         return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(value = "/annotation", method = RequestMethod.POST)
+    @PostMapping("/annotation")
     public ResponseEntity<EventLogAnnotation> saveAnnotation(@RequestBody EventLogAnnotation annotation) {
         var result = logAnnotationService.save(annotation);
         return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(value = "/annotation", method = RequestMethod.DELETE)
+    @DeleteMapping("/annotation")
     public ResponseEntity deleteAnnotation(@RequestParam("id") Long id) {
         logAnnotationService.deleteById(id);
         return ResponseEntity.ok().build();

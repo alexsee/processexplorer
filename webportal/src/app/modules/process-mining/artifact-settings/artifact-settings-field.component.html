@@ -9,7 +9,7 @@
     <nz-form-label [nzSm]="6" nzRequired nzFor="activity">{{field.name}}</nz-form-label>
     <nz-form-control [nzSm]="18" >
         <nz-select name="activity" [(ngModel)]="data[field.fieldName]" nzPlaceHolder="Choose">
-            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
         </nz-select>
     </nz-form-control>
 </nz-form-item>
@@ -28,7 +28,7 @@
                 <tr *ngFor="let items of data">
                     <td *ngFor="let subfield of field.childs">
                         <nz-select name="activity" [(ngModel)]="items[subfield.fieldName]" nzPlaceHolder="Choose" *ngIf="subfield.type == 'ACTIVITY'">
-                            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
                         </nz-select>
 
                         <input nz-input [placeholder]="subfield.name" [(ngModel)]="items[subfield.fieldName]" *ngIf="subfield.type == 'STRING'" />
@@ -39,7 +39,7 @@
                 <tr>
                     <td *ngFor="let subfield of field.childs">
                         <nz-select name="activity" [(ngModel)]="newitem[subfield.fieldName]" nzPlaceHolder="Choose" *ngIf="subfield.type == 'ACTIVITY'">
-                            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                            <nz-option *ngFor="let activity of context.activities" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
                         </nz-select>
 
                         <input nz-input [placeholder]="subfield.name" [(ngModel)]="newitem[subfield.fieldName]" *ngIf="subfield.type == 'STRING'" />

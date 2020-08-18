@@ -61,7 +61,7 @@ public class ClusterRecommender {
             recommendation.setNumTraces(logStatistics.getNumTraces());
 
             List<Insight> insights = differenceAnalysis.getInsights(differenceAnalysis.getDefaultMetrics(logName), recommendation.getConditions());
-            recommendation.setScore(insights.stream().mapToDouble(x -> Math.abs(x.getEffectSize())).sum() / insights.size());
+            recommendation.setScore(insights.stream().mapToDouble(x -> Math.abs(x.getEffectSize())).sum() / (insights.size() + 1));
 
             result.add(recommendation);
         }
