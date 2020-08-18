@@ -201,7 +201,7 @@ public class XLog2Database {
         sql.print("    CAST(%s AS interval) AS %s,", "age(MAX(source_timestamp), MIN(source_timestamp))", "total_duration");
         sql.print("    CONCAT(':', STRING_AGG(CAST(source_event AS VARCHAR(5)), '::' ORDER BY source_timestamp, lifecycle, source_event), ':') AS variant");
         sql.print("  FROM %s AS log", db.eventTable.getTableNameSQL());
-        sql.print("  WHERE source_event IS NOT NULL");
+        sql.print("  WHERE source_event <> -1");
         sql.print("  GROUP BY case_id),");
 
         sql.print("  ins AS (");

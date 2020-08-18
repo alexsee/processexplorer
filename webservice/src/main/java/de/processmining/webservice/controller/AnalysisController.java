@@ -55,7 +55,7 @@ public class AnalysisController {
         this.logRecommendationService = logRecommendationService;
     }
 
-    @GetMapping("/simple_trace_clustering")
+    @PostMapping("/simple_trace_clustering")
     public ResponseEntity simpleTraceClustering(@RequestParam("logName") String logName) {
         traceClustering.cluster(logName);
 
@@ -68,7 +68,7 @@ public class AnalysisController {
         return ResponseEntity.ok(diffAnalysis);
     }
 
-    @GetMapping("/multi_trace_clustering")
+    @PostMapping("/multi_trace_clustering")
     public ResponseEntity multiTraceClustering(@RequestParam("logName") String logName) {
         multiPerspectiveTraceClustering.cluster(logName);
 
