@@ -21,5 +21,7 @@ jobs:
         node-version: 12.8
     - name: Install dependencies
       run: npm install
+      working-directory: webportal
     - name: Build
       run: npm run build -- --prod
+      working-directory: webportal
