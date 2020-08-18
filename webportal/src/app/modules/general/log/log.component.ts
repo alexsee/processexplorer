@@ -63,10 +63,6 @@ export class LogComponent implements OnInit, OnDestroy {
     });
   }
 
-  doProcess(log: EventLog) {
-    this.logService.process(log.logName).subscribe();
-  }
-
   doImport(log: EventLog) {
     this.logService.import(log.logName).subscribe();
   }

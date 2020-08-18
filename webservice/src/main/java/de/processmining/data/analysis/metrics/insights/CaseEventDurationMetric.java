@@ -72,12 +72,12 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
 
         var inner_sql = new SelectQuery()
                 .addColumns(db.caseAttributeCaseIdCol)
-                .addAliasedColumn(db.graphSourceEventCol, "event_id")
-                .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.graphCaseIdCol), "num_cases")
+                .addAliasedColumn(db.eventSourceEventCol, "event_id")
+                .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.eventCaseIdCol), "num_cases")
                 .addAliasedColumn(calculation, "expr")
                 .addCondition(conditions)
-                .addJoins(SelectQuery.JoinType.INNER, db.graphCaseAttributeJoin, db.graphVariantJoin)
-                .addGroupings(db.caseAttributeCaseIdCol, db.graphSourceEventCol);
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin, db.caseVariantJoin)
+                .addGroupings(db.caseAttributeCaseIdCol, db.eventSourceEventCol);
 
         var outer_sql = new SelectQuery()
                 .addAliasedColumn(new CustomExpression("a.event_id"), "event_id")
@@ -108,6 +108,6 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
 
     @Override
     protected Object getExpression() {
-        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, db.graphDurationCol));
+        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, db.eventDurationCol));
     }
 }

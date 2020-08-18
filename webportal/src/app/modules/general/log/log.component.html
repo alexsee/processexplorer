@@ -48,7 +48,6 @@
                     <span *ngFor="let feature of log.features">{{feature.feature}}</span>
                 </td>
                 <td>
-                    <span *ngIf="log.imported && !log.processed && !log.processing"><a (click)="doProcess(log)">Process</a></span>
                     <span *ngIf="!log.imported && !log.processed && !log.processing"><a (click)="doImport(log)">Import Event Log</a></span>
                     <span *ngIf="log.imported && log.processed">
                         <a nz-dropdown [nzDropdownMenu]="menu">

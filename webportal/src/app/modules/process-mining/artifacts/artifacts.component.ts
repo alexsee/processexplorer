@@ -54,9 +54,13 @@ export class ArtifactsComponent implements OnInit {
     this.artifact = artifact;
     this.conditions = this.queryConvert.convertFromQuery(artifact.conditions);
 
-    if (this.insightListComponent !== undefined && this.conditions !== undefined) {
-      this.insightListComponent.update();
-    }
+    this.queryService.getStatistics(this.logName, artifact.conditions).subscribe(x => {
+      this.context = x;
+
+      if (this.insightListComponent !== undefined && this.conditions !== undefined) {
+        this.insightListComponent.update();
+      }
+    });
   }
 
   onShowCases(artifact: ArtifactResult) {

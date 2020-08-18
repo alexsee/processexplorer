@@ -33,7 +33,7 @@ public class Log {
 
     private long numActivities;
 
-    private List<String> activities;
+    private List<Activity> activities;
 
     private List<ColumnMetaData> caseAttributes;
 
@@ -71,11 +71,11 @@ public class Log {
         this.numActivities = numActivities;
     }
 
-    public List<String> getActivities() {
+    public List<Activity> getActivities() {
         return activities;
     }
 
-    public void setActivities(List<String> activities) {
+    public void setActivities(List<Activity> activities) {
         this.activities = activities;
     }
 

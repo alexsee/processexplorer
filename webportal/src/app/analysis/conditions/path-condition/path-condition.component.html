@@ -2,28 +2,28 @@
     nzSize="small"
     [nzExtra]="moreTemplate">
     <span *ngIf="data.conditionType == 'START_END'">
-        <span *ngIf="data.start">Starts with <b>{{context.activities[data.start]}}</b>&nbsp;</span>
-        <span *ngIf="data.end">Ends with <b>{{context.activities[data.end]}}</b></span>
+        <span *ngIf="data.start">Starts with <b>{{context.activities[data.start].name}}</b>&nbsp;</span>
+        <span *ngIf="data.end">Ends with <b>{{context.activities[data.end].name}}</b></span>
     </span>
     <span *ngIf="data.conditionType == 'NO_START_END'">
-        <span *ngIf="data.start">Starts not with <b>{{context.activities[data.start]}}</b>&nbsp;</span>
-        <span *ngIf="data.end">Ends not with <b>{{context.activities[data.end]}}</b></span>
+        <span *ngIf="data.start">Starts not with <b>{{context.activities[data.start].name}}</b>&nbsp;</span>
+        <span *ngIf="data.end">Ends not with <b>{{context.activities[data.end].name}}</b></span>
     </span>
     <span *ngIf="data.conditionType == 'RESPONSE'">
         <b>Eventually followed by</b><br>
-        {{context.activities[data.start]}} - {{context.activities[data.end]}}
+        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
     </span>
     <span *ngIf="data.conditionType == 'DIRECT_RESPONSE'">
         <b>Directly followed by</b><br>
-        {{context.activities[data.start]}} - {{context.activities[data.end]}}
+        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
     </span>
     <span *ngIf="data.conditionType == 'NO_RESPONSE'">
         <b>Never followed by</b><br>
-        {{context.activities[data.start]}} - {{context.activities[data.end]}}
+        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
     </span>
     <span *ngIf="data.conditionType == 'NO_DIRECT_RESPONSE'">
         <b>Never directly followed by</b><br>
-        {{context.activities[data.start]}} - {{context.activities[data.end]}}
+        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
     </span>
 </nz-card>
 
@@ -57,7 +57,7 @@
             <nz-form-label [nzSm]="6" nzRequired nzFor="start">Start Activity</nz-form-label>
             <nz-form-control [nzSm]="18">
                 <nz-select name="start" [(ngModel)]="data.start" nzPlaceHolder="Choose">
-                    <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="i" [nzLabel]="activity"></nz-option>
+                    <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>
@@ -65,7 +65,7 @@
             <nz-form-label [nzSm]="6" nzFor="end">End Activity</nz-form-label>
             <nz-form-control [nzSm]="18">
                 <nz-select name="end" [(ngModel)]="data.end" nzPlaceHolder="Choose">
-                    <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="i" [nzLabel]="activity"></nz-option>
+                    <nz-option *ngFor="let activity of context.activities; let i = index" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>

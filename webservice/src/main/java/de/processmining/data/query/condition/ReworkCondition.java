@@ -27,7 +27,7 @@ import de.processmining.data.DatabaseModel;
  */
 public class ReworkCondition extends Condition {
 
-    private String activity;
+    private Integer activity;
 
     private int min;
 
@@ -37,7 +37,7 @@ public class ReworkCondition extends Condition {
 
     }
 
-    public ReworkCondition(String activity, int min, int max) {
+    public ReworkCondition(Integer activity, int min, int max) {
         this.activity = activity;
         this.min = min;
         this.max = max;
@@ -46,20 +46,20 @@ public class ReworkCondition extends Condition {
     @Override
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
         var query = new SelectQuery()
-                .addColumns(db.graphCaseIdCol)
-                .addCondition(BinaryCondition.equalTo(db.graphSourceEventCol, activity))
-                .addFromTable(db.graphTable)
-                .addGroupings(db.graphCaseIdCol)
+                .addColumns(db.eventCaseIdCol)
+                .addCondition(BinaryCondition.equalTo(db.eventSourceEventCol, activity))
+                .addFromTable(db.eventTable)
+                .addGroupings(db.eventCaseIdCol)
                 .addHaving(ComboCondition.and(BinaryCondition.greaterThanOrEq(FunctionCall.countAll(), min), BinaryCondition.lessThanOrEq(FunctionCall.countAll(), max)));
 
         return new InCondition(db.caseAttributeCaseIdCol, query);
     }
 
-    public String getActivity() {
+    public Integer getActivity() {
         return this.activity;
     }
 
-    public void setActivity(String activity) {
+    public void setActivity(Integer activity) {
         this.activity = activity;
     }
 

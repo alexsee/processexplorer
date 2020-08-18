@@ -17,13 +17,17 @@
   grid-area: navigation;
 
   display: grid;
-  grid-template-areas: "options sample"
-    "variant-slider variant-slider";
-  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "options sample social-network"
+    "variant-slider variant-slider variant-slider";
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 
   border-top: 1px solid lightgray;
   padding-top: 10px;
+}
+
+.navigation .social-network {
+  grid-area: social-network;
 }
 
 .navigation .options {

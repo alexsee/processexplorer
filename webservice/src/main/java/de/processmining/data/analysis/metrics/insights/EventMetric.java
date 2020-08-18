@@ -38,9 +38,9 @@ public abstract class EventMetric extends ClusterMetric {
                 .addAliasedColumn(expr, "attr")
                 .addCondition(condition)
                 .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseVariantJoin, db.caseCaseAttributeJoin)
-                .addGroupings(db.eventEventNameCol)
+                .addGroupings(db.eventTargetEventCol)
                 .addCustomGroupings(expr)
-                .addCondition(BinaryCondition.equalTo(db.eventEventNameCol, eventName));
+                .addCondition(BinaryCondition.equalTo(db.eventTable, eventName));
 
         var result = jdbcTemplate.queryForList(sql.validate().toString());
         var measures = new HashMap<Measure, Double>();
