@@ -25,12 +25,12 @@ import de.processmining.data.DatabaseModel;
 import de.processmining.data.analysis.metrics.StatisticMetrics;
 import de.processmining.data.model.Insight;
 import org.springframework.jdbc.core.JdbcTemplate;
-import smile.math.Math;
 
 import java.util.*;
 
 import static de.processmining.data.analysis.metrics.StatisticMetrics.norm;
 import static org.apache.commons.math3.stat.StatUtils.sum;
+import static smile.math.MathEx.JensenShannonDivergence;
 
 /**
  * @author Alexander Seeliger on 01.10.2019.
@@ -87,7 +87,7 @@ public abstract class ClusterMetric implements InsightMetric {
 
         var result = new ArrayList<Insight>();
         var effectSize = StatisticMetrics.effectByCohensD(with, without);
-        var divergence = Math.JensenShannonDivergence(norm(with), norm(without));
+        var divergence = JensenShannonDivergence(norm(with), norm(without));
 
         if (Math.sqrt(divergence) >= maxDivergence && combinations.size() > 1 && sum(with) > minSamples) {
             result.add(generateInsight(effectSize, new ArrayList<>(combinations), with, without));

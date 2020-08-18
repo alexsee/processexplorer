@@ -269,7 +269,7 @@ public class MultiPerspectiveTraceClustering {
         // perform clustering
         logger.info("Clustering...");
 
-        var algorithm = new HierarchicalClustering(new WardLinkage(distanceMatrix));
+        var algorithm = HierarchicalClustering.fit(new WardLinkage(distanceMatrix));
         var clusterMap = algorithm.partition(Math.min(numClusters, distanceMatrix.length));
         var clusters = buildClustersFromHACResult(clusterMap, itemsets, frequentItemsetListMap);
 

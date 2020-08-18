@@ -201,7 +201,6 @@ public class LogService {
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.variantsTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseAttributeTable.getTableNameSQL());
-//        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.graphTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.activityTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.eventTable.getTableNameSQL());
 
