@@ -100,7 +100,7 @@ public class SimpleTraceClustering {
         }
 
         // compute clusters
-        var algorithm = new HierarchicalClustering(new WardLinkage(distanceMatrix));
+        var algorithm = HierarchicalClustering.fit(new WardLinkage(distanceMatrix));
         var result = ClusterUtils.calculateOptimalClusters(algorithm, distanceMatrix);
 
         // add new column
