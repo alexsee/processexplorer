@@ -25,6 +25,9 @@ import de.processmining.data.analysis.categorization.EventAttributeCodes;
 import de.processmining.data.model.*;
 import de.processmining.data.query.condition.Condition;
 import de.processmining.data.query.selection.SelectionOrder;
+import de.processmining.data.rowmapper.ActivityRowMapper;
+import de.processmining.data.rowmapper.CaseRowMapper;
+import de.processmining.data.rowmapper.EventRowMapper;
 import de.processmining.webservice.database.EventLogAnnotationRepository;
 import de.processmining.webservice.database.entities.EventLogAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import javax.websocket.Decoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -598,6 +602,36 @@ public class QueryService {
     public List<Activity> getActivities(String logName) {
         var db = new DatabaseModel(logName);
         return jdbcTemplate.query(new SelectQuery().addColumns(db.activityIdCol).addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), new ActivityRowMapper());
+    }
+
+    /**
+     * Returns a single case including all attributes and events.
+     *
+     * @param logName
+     * @param caseId
+     * @return
+     */
+    public Case getSingleCase(String logName, long caseId) {
+        var db = new DatabaseModel(logName);
+
+        // get case level details
+        var caseSQL = new SelectQuery()
+                .addAllColumns()
+                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin)
+                .addCondition(BinaryCondition.equalTo(db.caseCaseIdCol, caseId));
+
+        var singleCase = jdbcTemplate.queryForObject(caseSQL.validate().toString(), new CaseRowMapper());
+
+        // get events
+        var eventsSQL = new SelectQuery()
+                .addColumns(db.eventCaseIdCol, db.activityIdCol, db.activityNameCol, db.eventSourceResourceCol, db.eventSourceTimestampCol)
+                .addJoins(SelectQuery.JoinType.INNER, db.eventActivityJoin)
+                .addCondition(BinaryCondition.equalTo(db.eventCaseIdCol, caseId))
+                .addOrdering(db.eventNumberCol, OrderObject.Dir.ASCENDING);
+
+        singleCase.setEvents(jdbcTemplate.query(eventsSQL.validate().toString(), new EventRowMapper()));
+
+        return singleCase;
     }
 
     private void addConditionsToSql(SelectQuery sql, DatabaseModel db, List<Condition> conditions) {

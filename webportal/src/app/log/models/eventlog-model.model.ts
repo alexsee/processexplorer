@@ -10,4 +10,5 @@ export class EventLogModel {
     trainingDuration: number;
     hyperparameters: string;
     state: string;
+    use: boolean;
 }

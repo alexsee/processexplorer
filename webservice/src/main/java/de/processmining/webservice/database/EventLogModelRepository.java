@@ -30,4 +30,6 @@ public interface EventLogModelRepository extends CrudRepository<EventLogModel, L
 
     List<EventLogModel> findByEventLogLogName(String logName);
 
+    EventLogModel findFirstByEventLogLogNameAndUse(String logName, boolean use);
+
 }

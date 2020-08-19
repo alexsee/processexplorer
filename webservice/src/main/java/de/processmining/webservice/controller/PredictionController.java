@@ -52,6 +52,11 @@ public class PredictionController {
         }
     }
 
+    @PostMapping("/default")
+    public ResponseEntity<EventLogModel> setDefault(@RequestParam("modelId") long modelId) {
+        return ResponseEntity.ok(predictionService.setDefault(modelId));
+    }
+
     @PostMapping("/train")
     public ResponseEntity trainModel(@RequestBody TrainingConfiguration configuration) {
         predictionService.train(configuration);
@@ -74,7 +79,6 @@ public class PredictionController {
     public ResponseEntity predict(@RequestParam(name = "logName") String logName) {
         var configuration = new PredictionConfiguration();
         configuration.setLogName(logName);
-        configuration.setModelId(4);
         configuration.setWhereCondition("c.state = 1");
 
         predictionService.predict(configuration);

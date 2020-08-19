@@ -18,7 +18,7 @@ export class PredictionModelListComponent implements OnInit, OnDestroy {
 
   public models: EventLogModel[] = [];
 
-  constructor(private predicationService: PredictionService,
+  constructor(private predictionService: PredictionService,
               private route: ActivatedRoute,
               private nzMessageService: NzMessageService,
               private rxStompService: RxStompService) { }
@@ -37,9 +37,9 @@ export class PredictionModelListComponent implements OnInit, OnDestroy {
 
   loadList(logName: string): void {
     if (logName !== null) {
-      this.predicationService.getByLogName(logName).subscribe(x => this.models = x);
+      this.predictionService.getByLogName(logName).subscribe(x => this.models = x);
     } else {
-      this.predicationService.getAll().subscribe(x => this.models = x);
+      this.predictionService.getAll().subscribe(x => this.models = x);
     }
   }
 
@@ -54,8 +54,15 @@ export class PredictionModelListComponent implements OnInit, OnDestroy {
   }
 
   doDelete(model: EventLogModel): void {
-    this.predicationService.delete(model.id).subscribe(x => {
+    this.predictionService.delete(model.id).subscribe(x => {
       this.nzMessageService.success('Model <b>' + model.modelName + '</b> deleted successfully.');
+      this.loadList(this.logName);
+    });
+  }
+
+  doSetDefault(model: EventLogModel): void {
+    this.predictionService.setDefault(model.id).subscribe(x => {
+      this.nzMessageService.success('Model <b>' + model.modelName + '</b> updated successfully.');
       this.loadList(this.logName);
     });
   }

@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.processmining.data.prediction;
+package de.processmining.data.rowmapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.processmining.data.prediction.OpenCaseResult;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -51,10 +52,13 @@ public class OpenCaseRowMapper implements RowMapper<OpenCaseResult> {
                 var prediction = values.next();
 
                 var name = prediction.findValue("name").asText();
+                var value = prediction.findValues("prediction").get(0);
                 if (name.equals("name")) {
-                    result.setNextActivity(prediction.findValues("prediction").get(0).findValue("value").asText());
+                    result.setNextActivity(value.findValue("value").asText());
+                    result.setNextActivityScore(value.findValue("probability").asDouble());
                 } else if (name.equals("resource")) {
                     result.setNextResource(prediction.findValues("prediction").get(0).findValue("value").asText());
+                    result.setNextResourceScore(value.findValue("probability").asDouble());
                 }
             }
         } catch (Exception ex) {

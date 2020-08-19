@@ -2,6 +2,9 @@
     <nz-header>
         <div class="logo">ProcessExplorer</div>
         <div class="log-selection">
+            <ul nz-menu nzTheme="dark" nzMode="horizontal">
+                <li nz-menu-item [routerLink]="['/', 'logs']" nzMatchRouter>Log Management</li>
+            </ul>
             <nz-select [compareWith]="compareByLogName" [(ngModel)]="selectedEventLog" nzAllowClear nzPlaceHolder="Select event log" (ngModelChange)="onSelectedEventLogChange()">
                 <nz-option *ngFor="let log of logs; trackBy:trackByLogName" [nzValue]="log" [nzLabel]="log.logName"></nz-option>
             </nz-select>
@@ -9,8 +12,7 @@
         <ul nz-menu nzTheme="dark" nzMode="horizontal">
             <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'analysis']" nzMatchRouter>Explore</li>
             <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'artifacts']" nzMatchRouter>Artifacts</li>
-            <li nz-menu-item [routerLink]="['/', 'logs']" nzMatchRouter>Log Management</li>
-            <li nz-menu-item [routerLink]="['/', 'models']" nzMatchRouter>Robotic Process Automation</li>
+            <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'models']" nzMatchRouter>Robotic Process Automation</li>
         </ul>
     </nz-header>
     <nz-content>

@@ -16,16 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.processmining.data.prediction;
+package de.processmining.data.model;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Alexander Seeliger on 19.08.2020.
  */
-public class OpenCaseResult {
+public class Case {
 
     private long caseId;
+
+    private String originalCaseId;
 
     private Timestamp timestampStart;
 
@@ -35,23 +38,11 @@ public class OpenCaseResult {
 
     private int numResources;
 
-    private String assignedTo;
+    private int variantId;
 
-    private int state;
+    private List<FieldValue> attributes;
 
-    private String currentActivity;
-
-    private String nextActivity;
-
-    private double nextActivityScore;
-
-    private String currentResource;
-
-    private String nextResource;
-
-    private double nextResourceScore;
-
-    private String attributes;
+    private List<Event> events;
 
     public long getCaseId() {
         return caseId;
@@ -59,6 +50,14 @@ public class OpenCaseResult {
 
     public void setCaseId(long caseId) {
         this.caseId = caseId;
+    }
+
+    public String getOriginalCaseId() {
+        return originalCaseId;
+    }
+
+    public void setOriginalCaseId(String originalCaseId) {
+        this.originalCaseId = originalCaseId;
     }
 
     public Timestamp getTimestampStart() {
@@ -93,75 +92,27 @@ public class OpenCaseResult {
         this.numResources = numResources;
     }
 
-    public String getAssignedTo() {
-        return assignedTo;
+    public int getVariantId() {
+        return variantId;
     }
 
-    public void setAssignedTo(String assignedTo) {
-        this.assignedTo = assignedTo;
+    public void setVariantId(int variantId) {
+        this.variantId = variantId;
     }
 
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public String getCurrentActivity() {
-        return currentActivity;
-    }
-
-    public void setCurrentActivity(String currentActivity) {
-        this.currentActivity = currentActivity;
-    }
-
-    public String getNextActivity() {
-        return nextActivity;
-    }
-
-    public void setNextActivity(String nextActivity) {
-        this.nextActivity = nextActivity;
-    }
-
-    public String getCurrentResource() {
-        return currentResource;
-    }
-
-    public void setCurrentResource(String currentResource) {
-        this.currentResource = currentResource;
-    }
-
-    public String getNextResource() {
-        return nextResource;
-    }
-
-    public void setNextResource(String nextResource) {
-        this.nextResource = nextResource;
-    }
-
-    public String getAttributes() {
+    public List<FieldValue> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(String attributes) {
+    public void setAttributes(List<FieldValue> attributes) {
         this.attributes = attributes;
     }
 
-    public double getNextActivityScore() {
-        return nextActivityScore;
+    public List<Event> getEvents() {
+        return events;
     }
 
-    public void setNextActivityScore(double nextActivityScore) {
-        this.nextActivityScore = nextActivityScore;
-    }
-
-    public double getNextResourceScore() {
-        return nextResourceScore;
-    }
-
-    public void setNextResourceScore(double nextResourceScore) {
-        this.nextResourceScore = nextResourceScore;
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 }

@@ -10,6 +10,7 @@ import { CaseAttributeValueResult } from '../models/results/case-attribute-value
 import { DrillDownResult } from '../models/results/drill-down-result.model';
 import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 import { SocialNetworkResult } from '../models/results/social-network-result.model';
+import { Case } from '../models/case.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -64,5 +65,9 @@ export class QueryService {
       environment.serviceUrl + '/query/drill_down',
       { logName, selections, conditions }
     );
+  }
+
+  getSingleCase(logName: string, id: number): Observable<Case> {
+    return this.http.get<Case>(environment.serviceUrl + '/query/case?logName=' + logName + '&id=' + id);
   }
 }

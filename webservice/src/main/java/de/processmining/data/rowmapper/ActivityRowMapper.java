@@ -16,40 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.processmining.data.prediction;
+package de.processmining.data.rowmapper;
+
+import de.processmining.data.model.Activity;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
- * @author Alexander Seeliger on 18.08.2020.
+ * @author Alexander Seeliger on 17.08.2020.
  */
-public class PredictionConfiguration {
-
-    private String logName;
-
-    private Long modelId;
-
-    private String whereCondition;
-
-    public String getLogName() {
-        return logName;
-    }
-
-    public void setLogName(String logName) {
-        this.logName = logName;
-    }
-
-    public Long getModelId() {
-        return modelId;
-    }
-
-    public void setModelId(Long modelId) {
-        this.modelId = modelId;
-    }
-
-    public String getWhereCondition() {
-        return whereCondition;
-    }
-
-    public void setWhereCondition(String whereCondition) {
-        this.whereCondition = whereCondition;
+public class ActivityRowMapper implements RowMapper<Activity> {
+    @Override
+    public Activity mapRow(ResultSet resultSet, int i) throws SQLException {
+        var result = new Activity();
+        result.setId(resultSet.getInt("id"));
+        result.setName(resultSet.getString("name"));
+        return result;
     }
 }

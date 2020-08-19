@@ -18,6 +18,7 @@
 
 package de.processmining.webservice.controller;
 
+import de.processmining.data.model.Case;
 import de.processmining.data.model.Log;
 import de.processmining.data.model.Variant;
 import de.processmining.data.query.*;
@@ -73,6 +74,11 @@ public class QueryController {
     @PostMapping("/query/drill_down")
     public DrillDownResult getDrillDown(@RequestBody DrillDownQuery query) {
         return queryService.getDrillDown(query);
+    }
+
+    @GetMapping("/query/case")
+    public Case getCase(@RequestParam("logName") String logName, @RequestParam("id") long caseId) {
+        return queryService.getSingleCase(logName, caseId);
     }
 
 }

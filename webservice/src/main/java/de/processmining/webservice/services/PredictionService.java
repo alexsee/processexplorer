@@ -19,9 +19,15 @@
 package de.processmining.webservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthmarketscience.sqlbuilder.*;
+import com.healthmarketscience.sqlbuilder.AlterTableQuery;
+import com.healthmarketscience.sqlbuilder.BinaryCondition;
+import com.healthmarketscience.sqlbuilder.UpdateQuery;
 import de.processmining.data.DatabaseModel;
-import de.processmining.data.prediction.*;
+import de.processmining.data.prediction.OpenCaseResult;
+import de.processmining.data.prediction.PredictionConfiguration;
+import de.processmining.data.prediction.TrainingConfiguration;
+import de.processmining.data.prediction.TrainingResult;
+import de.processmining.data.rowmapper.OpenCaseRowMapper;
 import de.processmining.utils.OutputBuilder;
 import de.processmining.webservice.database.EventLogFeatureRepository;
 import de.processmining.webservice.database.EventLogModelRepository;
@@ -30,7 +36,6 @@ import de.processmining.webservice.database.entities.EventLogFeature;
 import de.processmining.webservice.database.entities.EventLogModel;
 import de.processmining.webservice.database.entities.EventLogModelState;
 import de.processmining.webservice.properties.ApplicationProperties;
-import org.hibernate.loader.custom.sql.SQLCustomQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.xml.crypto.Data;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -120,6 +124,9 @@ public class PredictionService {
 
     @Async
     public void predict(PredictionConfiguration configuration) {
+        var model = eventLogModelRepository.findFirstByEventLogLogNameAndUse(configuration.getLogName(), true);
+        configuration.setModelId(model.getModelId());
+
         var eventLog = eventLogRepository.findByLogName(configuration.getLogName());
         var db = new DatabaseModel(configuration.getLogName());
         var predictionCol = db.caseTable.addColumn("prediction");
@@ -241,22 +248,35 @@ public class PredictionService {
 
         var sqlOutput = new OutputBuilder();
         sqlOutput.print("SELECT *,\n" +
-                "       (SELECT a.name\n" +
-                "        FROM %s t,\n" +
-                "             %s a\n" +
-                "        WHERE t.source_event = a.id\n" +
-                "          AND t.case_id = t2.case_id\n" +
-                "        ORDER BY t.event_number DESC\n" +
-                "        LIMIT 1) AS current_event,\n" +
-                "       (SELECT t.source_resource\n" +
-                "        FROM %s t\n" +
-                "        WHERE t.case_id = t2.case_id\n" +
-                "        ORDER BY t.event_number DESC\n" +
-                "        LIMIT 1) AS current_resource\n" +
-                "FROM %s t2\n" +
-                "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL)", db.eventTable.getTableNameSQL(),
+                        "       (SELECT a.name\n" +
+                        "        FROM %s t,\n" +
+                        "             %s a\n" +
+                        "        WHERE t.source_event = a.id\n" +
+                        "          AND t.case_id = t2.case_id\n" +
+                        "        ORDER BY t.event_number DESC\n" +
+                        "        LIMIT 1) AS current_event,\n" +
+                        "       (SELECT t.source_resource\n" +
+                        "        FROM %s t\n" +
+                        "        WHERE t.case_id = t2.case_id\n" +
+                        "        ORDER BY t.event_number DESC\n" +
+                        "        LIMIT 1) AS current_resource\n" +
+                        "FROM %s t2\n" +
+                        "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL)", db.eventTable.getTableNameSQL(),
                 db.activityTable.getTableNameSQL(), db.eventTable.getTableNameSQL(), db.caseTable.getTableNameSQL());
 
         return jdbcTemplate.query(sqlOutput.toString(), new OpenCaseRowMapper());
+    }
+
+    public EventLogModel setDefault(long modelId) {
+        var model = eventLogModelRepository.findById(modelId).get();
+
+        var models = eventLogModelRepository.findByEventLogLogName(model.getModelName());
+        for (var m : models) {
+            m.setUse(false);
+            eventLogModelRepository.save(m);
+        }
+
+        model.setUse(true);
+        return eventLogModelRepository.save(model);
     }
 }

@@ -9,6 +9,8 @@ export class OpenCase {
     currentActivity: string;
     currentResource: string;
     nextActivity: string;
+    nextActivityScore: number;
     nextResource: string;
+    nextResourceScore: number;
     attributes: string;
 }

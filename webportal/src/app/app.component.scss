@@ -35,5 +35,11 @@ nz-header {
 }
 
 .log-selection nz-select {
+    display: inline-block;
     width: 200px;
+}
+
+.log-selection ul {
+    display: inline-block;
+    margin-right: 15px;
 }

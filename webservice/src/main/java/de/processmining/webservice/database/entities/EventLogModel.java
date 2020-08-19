@@ -18,7 +18,10 @@
 
 package de.processmining.webservice.database.entities;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,7 +32,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "_meta_event_log_model")
-public class EventLogModel  implements Serializable {
+public class EventLogModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,6 +67,9 @@ public class EventLogModel  implements Serializable {
     @Column(name = "state")
     private EventLogModelState state;
 
+    @Column(name = "use")
+    private Boolean use;
+
     public EventLogModel() {
 
     }
@@ -89,7 +95,9 @@ public class EventLogModel  implements Serializable {
         return modelId;
     }
 
-    public void setModelId(long modelId) { this.modelId = modelId; }
+    public void setModelId(long modelId) {
+        this.modelId = modelId;
+    }
 
     public String getModelName() {
         return modelName;
@@ -137,5 +145,13 @@ public class EventLogModel  implements Serializable {
 
     public void setState(EventLogModelState state) {
         this.state = state;
+    }
+
+    public Boolean isUse() {
+        return use;
+    }
+
+    public void setUse(Boolean use) {
+        this.use = use;
     }
 }

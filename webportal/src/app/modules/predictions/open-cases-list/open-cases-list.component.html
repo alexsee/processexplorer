@@ -8,7 +8,7 @@
 <nz-layout>
     <nz-sider nzWidth="200px" nzTheme="light">
         <ul nz-menu nzMode="inline" class="sider-menu">
-            <li nz-menu-item [routerLink]="['/logs']">
+            <li nz-menu-item [routerLink]="['/models']">
                 <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
                 <span>Trained Models</span>
             </li>
@@ -24,32 +24,54 @@
         </nz-page-header>
 
         <div class="inner-content">
-            <nz-table #basicTable [nzData]="openCases">
+            <nz-table #basicTable nzSize="small" [nzData]="openCases" class="cases">
                 <thead>
                     <tr>
-                        <th nzWidth="80px">Case Id</th>
+                        <th>Case</th>
                         <th nzWidth="80px">Status</th>
-                        <th>Current Activity</th>
-                        <th>Current Resource</th>
-                        <th>Prediction</th>
+                        <th>Last Assigned</th>
+                        <th>Automation</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let case of basicTable.data">
-                    <td>{{case.caseId}}</td>
+                    <td>
+                        <b>Case #{{case.caseId}}</b><br />
+                        {{case.currentActivity}}
+                    </td>
                     <td>
                         <nz-tag *ngIf="case.state == 1" nzColor="orange">OPEN</nz-tag>
                     </td>
-                    <td>{{case.currentActivity}}</td>
                     <td><nz-avatar nzIcon="user" nzSize="small"></nz-avatar> {{case.currentResource}}</td>
-                    <td>{{case.nextActivity}}</td>
                     <td>
-                        
+                        <b>Next Activity</b><br />
+                        {{case.nextActivity}} ({{case.nextActivityScore * 100 | number : '1.1-1'}} %)
+                    </td>
+                    <td>
+                        <a (click)="showSingleCase(case.caseId)">Show Case</a>
                     </td>
                     </tr>
                 </tbody>
             </nz-table>
+
+            <div class="single-case" *ngIf="case">
+                <h3>Case Info</h3>
+                <nz-descriptions nzSize="small" [nzColumn]="1" nzBordered>
+                    <nz-descriptions-item nzTitle="Case Id">{{case.caseId}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Original Id">{{case.originalCaseId}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Start">{{case.timestampStart | date : 'dd.MM.yyyy HH:mm'}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Last Event">{{case.timestampEnd | date : 'dd.MM.yyyy HH:mm'}}</nz-descriptions-item>
+                </nz-descriptions>
+
+                <h3>Events</h3>
+                <nz-timeline>
+                    <nz-timeline-item *ngFor="let event of case.events">
+                        {{event.timestamp | date : 'dd.MM.yyyy HH:mm'}} {{event.resource}}
+                        <br />{{event.activity.name}} 
+                    </nz-timeline-item>
+                </nz-timeline>
+            </div>
         </div>
     </nz-content>
 </nz-layout>

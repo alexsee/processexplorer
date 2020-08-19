@@ -40,7 +40,8 @@
                     </td>
                     <td>
                         <span *ngIf="model.state == 'TRAINED'">
-                            <a [routerLink]="['/models', model.modelId]">{{model.modelName}}</a>
+                            <a [routerLink]="['/models', model.modelId]">{{model.modelName}} </a>
+                            <nz-tag *ngIf="model.use">Default</nz-tag>
                         </span>
                         <span *ngIf="model.state != 'TRAINED'">
                             {{model.modelName}}
@@ -64,6 +65,8 @@
                                 nzPopconfirmTitle="Are you sure delete this model?"
                                 nzPopconfirmPlacement="bottom"
                                 (nzOnConfirm)="doDelete(model)">Delete</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a (click)="doSetDefault(model)">Set Default</a>
                         </span>
                     </td>
                     </tr>
