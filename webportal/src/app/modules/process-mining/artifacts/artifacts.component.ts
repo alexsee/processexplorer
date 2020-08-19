@@ -7,6 +7,7 @@ import { InsightListComponent } from 'src/app/analysis/insight-list/insight-list
 import { QueryConvertService } from 'src/app/analysis/shared/query-convert.service';
 import { Condition } from 'src/app/analysis/models/condition.model';
 import { ArtifactService } from 'src/app/analysis/shared/artifact.service';
+import { LogService } from 'src/app/log/shared/log.service';
 
 @Component({
   selector: 'app-artifacts',
@@ -21,25 +22,31 @@ export class ArtifactsComponent implements OnInit {
 
   artifact: ArtifactResult;
   artifactResults: ArtifactResult[];
-  artifactTotal: number = 0;
+  artifactTotal = 0;
 
   conditions: Condition[];
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
+    private logService: LogService,
     private queryService: QueryService,
     private artifactService: ArtifactService,
     private queryConvert: QueryConvertService
   ) { }
 
   ngOnInit() {
-    this.logName = this.route.snapshot.paramMap.get('logName');
+    this.logService.currentLog.subscribe(eventLog => {
+      if (eventLog === null) {
+        return;
+      }
 
-    this.queryService.getStatistics(this.logName)
-      .subscribe(statistics => this.context = statistics);
+      this.logName = eventLog.logName;
 
-    this.runArtifacts();
+      this.queryService.getStatistics(this.logName)
+        .subscribe(statistics => this.context = statistics);
+
+      this.runArtifacts();
+    });
   }
 
   runArtifacts() {

@@ -76,6 +76,7 @@ public class DatabaseModel {
 
     public DbJoin eventCaseJoin;
     public DbJoin eventCaseAttributeJoin;
+    public DbJoin eventActivityJoin;
 
     public DatabaseModel(String logName) {
         // activity table
@@ -132,5 +133,8 @@ public class DatabaseModel {
         eventCaseAttributeJoin = spec.addJoin(null, eventTable.getTableNameSQL(),
                 null, caseAttributeTable.getTableNameSQL(),
                 "case_id");
+        eventActivityJoin = spec.addJoin(null, eventTable.getTableNameSQL(),
+                null, activityTable.getTableNameSQL(),
+                new String[]{"source_event"}, new String[]{"id"});
     }
 }

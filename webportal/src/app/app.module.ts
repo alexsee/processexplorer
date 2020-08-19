@@ -37,6 +37,7 @@ import { DurationConditionComponent } from './analysis/conditions/duration-condi
 import { PredictionModelListComponent } from './modules/predictions/model-list/model-list.component';
 import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
 import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
+import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { ModelDetailComponent } from './modules/predictions/model-detail/model-d
     PredictionModelListComponent,
     TrainModelComponent,
     ModelDetailComponent,
+    OpenCasesListComponent,
   ],
   imports: [
     BrowserModule,

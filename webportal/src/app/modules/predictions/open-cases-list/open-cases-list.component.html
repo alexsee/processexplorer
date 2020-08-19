@@ -1,0 +1,55 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{logName}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Robotic Process Automation</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Open Cases</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<nz-layout>
+    <nz-sider nzWidth="200px" nzTheme="light">
+        <ul nz-menu nzMode="inline" class="sider-menu">
+            <li nz-menu-item [routerLink]="['/logs']">
+                <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                <span>Trained Models</span>
+            </li>
+            <li nz-menu-item [routerLink]="['/cases/open']" nzSelected>
+                <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+                <span>Open Cases</span>
+            </li>
+        </ul>
+    </nz-sider>
+    <nz-content>
+        <nz-page-header [nzGhost]="false">
+            <nz-page-header-title>Open Cases</nz-page-header-title>
+        </nz-page-header>
+
+        <div class="inner-content">
+            <nz-table #basicTable [nzData]="openCases">
+                <thead>
+                    <tr>
+                        <th nzWidth="80px">Case Id</th>
+                        <th nzWidth="80px">Status</th>
+                        <th>Current Activity</th>
+                        <th>Current Resource</th>
+                        <th>Prediction</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let case of basicTable.data">
+                    <td>{{case.caseId}}</td>
+                    <td>
+                        <nz-tag *ngIf="case.state == 1" nzColor="orange">OPEN</nz-tag>
+                    </td>
+                    <td>{{case.currentActivity}}</td>
+                    <td><nz-avatar nzIcon="user" nzSize="small"></nz-avatar> {{case.currentResource}}</td>
+                    <td>{{case.nextActivity}}</td>
+                    <td>
+                        
+                    </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-content>
+</nz-layout>

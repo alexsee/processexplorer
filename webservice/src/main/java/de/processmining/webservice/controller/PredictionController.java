@@ -18,6 +18,7 @@
 
 package de.processmining.webservice.controller;
 
+import de.processmining.data.prediction.OpenCaseResult;
 import de.processmining.data.prediction.PredictionConfiguration;
 import de.processmining.data.prediction.TrainingConfiguration;
 import de.processmining.webservice.database.entities.EventLogModel;
@@ -25,6 +26,8 @@ import de.processmining.webservice.services.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Alexander Seeliger on 10.08.2020.
@@ -71,11 +74,16 @@ public class PredictionController {
     public ResponseEntity predict(@RequestParam(name = "logName") String logName) {
         var configuration = new PredictionConfiguration();
         configuration.setLogName(logName);
-        configuration.setModelId(2);
-        configuration.setWhereCondition("c.state = 0");
+        configuration.setModelId(4);
+        configuration.setWhereCondition("c.state = 1");
 
         predictionService.predict(configuration);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/open_cases")
+    public ResponseEntity<List<OpenCaseResult>> openCases(@RequestParam(name = "logName") String logName) {
+        return ResponseEntity.ok(predictionService.getOpenCases(logName));
     }
 
 }

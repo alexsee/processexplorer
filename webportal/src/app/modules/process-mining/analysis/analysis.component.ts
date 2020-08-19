@@ -14,6 +14,7 @@ import { Condition } from 'src/app/analysis/models/condition.model';
 import { Recommendation } from 'src/app/analysis/models/recommendation';
 import { ReworkConditionComponent } from 'src/app/analysis/conditions/rework-condition/rework-condition.component';
 import { DurationConditionComponent } from 'src/app/analysis/conditions/duration-condition/duration-condition.component';
+import { LogService } from 'src/app/log/shared/log.service';
 
 @Component({
   selector: 'app-analysis-module',
@@ -30,7 +31,7 @@ export class AnalysisComponent implements OnInit {
   conditions: Condition[];
 
   constructor(
-    private route: ActivatedRoute,
+    private logService: LogService,
     private queryService: QueryService,
     private queryConvertService: QueryConvertService,
     private storageService: LocalStorageService
@@ -38,18 +39,24 @@ export class AnalysisComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.logName = this.route.snapshot.paramMap.get('logName');
+    this.logService.currentLog.subscribe(eventLog => {
+      if (eventLog === null) {
+        return;
+      }
 
-    // load queries from local storage
-    if (window.history.state !== undefined && window.history.state.conditions !== undefined) {
-      this.conditions = this.queryConvertService.convertFromQuery(window.history.state.conditions);
-    } else {
-      const query = this.storageService.readQueryConditions(this.logName);
-      this.conditions = this.queryConvertService.convertFromQuery(query);
-    }
+      this.logName = eventLog.logName;
 
-    // update view components
-    this.onUpdate();
+      // load queries from local storage
+      if (window.history.state !== undefined && window.history.state.conditions !== undefined) {
+        this.conditions = this.queryConvertService.convertFromQuery(window.history.state.conditions);
+      } else {
+        const query = this.storageService.readQueryConditions(this.logName);
+        this.conditions = this.queryConvertService.convertFromQuery(query);
+      }
+
+      // update view components
+      this.onUpdate();
+    });
   }
 
   onUpdate() {

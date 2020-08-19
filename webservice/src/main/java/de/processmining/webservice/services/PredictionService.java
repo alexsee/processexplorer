@@ -19,13 +19,10 @@
 package de.processmining.webservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.healthmarketscience.sqlbuilder.AlterTableQuery;
-import com.healthmarketscience.sqlbuilder.UpdateQuery;
+import com.healthmarketscience.sqlbuilder.*;
 import de.processmining.data.DatabaseModel;
-import de.processmining.data.prediction.EventLogResult;
-import de.processmining.data.prediction.PredictionConfiguration;
-import de.processmining.data.prediction.TrainingConfiguration;
-import de.processmining.data.prediction.TrainingResult;
+import de.processmining.data.prediction.*;
+import de.processmining.utils.OutputBuilder;
 import de.processmining.webservice.database.EventLogFeatureRepository;
 import de.processmining.webservice.database.EventLogModelRepository;
 import de.processmining.webservice.database.EventLogRepository;
@@ -33,6 +30,7 @@ import de.processmining.webservice.database.entities.EventLogFeature;
 import de.processmining.webservice.database.entities.EventLogModel;
 import de.processmining.webservice.database.entities.EventLogModelState;
 import de.processmining.webservice.properties.ApplicationProperties;
+import org.hibernate.loader.custom.sql.SQLCustomQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,6 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.xml.crypto.Data;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -122,6 +121,8 @@ public class PredictionService {
     @Async
     public void predict(PredictionConfiguration configuration) {
         var eventLog = eventLogRepository.findByLogName(configuration.getLogName());
+        var db = new DatabaseModel(configuration.getLogName());
+        var predictionCol = db.caseTable.addColumn("prediction");
 
         // report processing
         messagingTemplate.convertAndSend("/notifications/predictions/prediction_started", eventLog);
@@ -134,15 +135,25 @@ public class PredictionService {
 
             var result = client.post().uri("/predict")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(configuration))
-                    .retrieve()
-                    .bodyToMono(EventLogResult.class)
+                    .exchange()
+                    .flatMap(response -> response.toEntity(String.class))
                     .block();
 
             var objectMapper = new ObjectMapper();
+            var predictions = objectMapper.readTree(result.getBody());
 
+            for (var c : predictions.findValues("cases")) {
+                var caseId = c.findValue("id").asLong();
+                var attributes = c.findValue("attributes");
+                var detection = attributes.findValue("detection").toString();
 
+                var updateSQL = new UpdateQuery(db.caseTable)
+                        .addSetClause(predictionCol, detection)
+                        .addCondition(BinaryCondition.equalTo(db.caseCaseIdCol, caseId));
+
+                jdbcTemplate.execute(updateSQL.validate().toString());
+            }
         } catch (Exception ex) {
 
         }
@@ -220,5 +231,32 @@ public class PredictionService {
         }
 
         eventLogModelRepository.delete(model.get());
+    }
+
+    public List<OpenCaseResult> getOpenCases(String logName) {
+        var db = new DatabaseModel(logName);
+        var stateCol = db.caseTable.addColumn("state");
+        var assignedCol = db.caseTable.addColumn("assigned");
+        var predictionCol = db.caseTable.addColumn("prediction");
+
+        var sqlOutput = new OutputBuilder();
+        sqlOutput.print("SELECT *,\n" +
+                "       (SELECT a.name\n" +
+                "        FROM %s t,\n" +
+                "             %s a\n" +
+                "        WHERE t.source_event = a.id\n" +
+                "          AND t.case_id = t2.case_id\n" +
+                "        ORDER BY t.event_number DESC\n" +
+                "        LIMIT 1) AS current_event,\n" +
+                "       (SELECT t.source_resource\n" +
+                "        FROM %s t\n" +
+                "        WHERE t.case_id = t2.case_id\n" +
+                "        ORDER BY t.event_number DESC\n" +
+                "        LIMIT 1) AS current_resource\n" +
+                "FROM %s t2\n" +
+                "WHERE (t2.state = 1)", db.eventTable.getTableNameSQL(),
+                db.activityTable.getTableNameSQL(), db.eventTable.getTableNameSQL(), db.caseTable.getTableNameSQL());
+
+        return jdbcTemplate.query(sqlOutput.toString(), new OpenCaseRowMapper());
     }
 }
