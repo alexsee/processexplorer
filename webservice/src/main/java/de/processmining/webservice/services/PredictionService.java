@@ -254,7 +254,7 @@ public class PredictionService {
                 "        ORDER BY t.event_number DESC\n" +
                 "        LIMIT 1) AS current_resource\n" +
                 "FROM %s t2\n" +
-                "WHERE (t2.state = 1)", db.eventTable.getTableNameSQL(),
+                "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL)", db.eventTable.getTableNameSQL(),
                 db.activityTable.getTableNameSQL(), db.eventTable.getTableNameSQL(), db.caseTable.getTableNameSQL());
 
         return jdbcTemplate.query(sqlOutput.toString(), new OpenCaseRowMapper());

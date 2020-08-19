@@ -29,7 +29,7 @@ export class AppComponent {
   }
 
   compareByLogName(o1: EventLog, o2: EventLog) {
-    if (o1 === undefined || o2 === undefined) {
+    if (o1 === null || o2 === null) {
       return false;
     }
     return o1.logName === o2.logName;
