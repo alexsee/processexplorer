@@ -44,7 +44,7 @@
                     </span>
                 </td>
                 <td>
-                    <span *ngFor="let feature of log.features">{{feature.feature}}</span>
+                    <nz-tag class="feature" *ngFor="let feature of log.features">{{feature.feature}}</nz-tag>
                 </td>
                 <td>
                     <span *ngIf="!log.imported && !log.processed && !log.processing"><a (click)="doImport(log)">Import Event Log</a></span>
@@ -67,6 +67,7 @@
                         <nz-dropdown-menu #menu2="nzDropdownMenu">
                             <ul nz-menu nzSelectable>
                                 <li nz-menu-item><a [routerLink]="['/logs/annotations/', log.logName]">Annotate Event Log</a></li>
+                                <li nz-menu-item><a (click)="doEnableCaseManagement(log)">Enable Case Management</a></li>
                                 <li nz-menu-item><a [routerLink]="['/logs/', log.logName, 'train']">Train Predictive Model</a></li>
                                 <li nz-menu-item><a [routerLink]="['/logs/', log.logName, 'models']">View Predictive Models</a></li>
                             </ul>

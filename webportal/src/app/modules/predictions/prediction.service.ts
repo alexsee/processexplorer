@@ -27,4 +27,8 @@ export class PredictionService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(environment.serviceUrl + '/prediction?id=' + id);
   }
+
+  enableCaseManagement(logName: string): Observable<void> {
+    return this.http.get<void>(environment.serviceUrl + '/prediction/init_case_management?logName=' + logName);
+  }
 }

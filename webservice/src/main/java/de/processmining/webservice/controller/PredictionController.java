@@ -18,6 +18,7 @@
 
 package de.processmining.webservice.controller;
 
+import de.processmining.data.prediction.PredictionConfiguration;
 import de.processmining.data.prediction.TrainingConfiguration;
 import de.processmining.webservice.database.entities.EventLogModel;
 import de.processmining.webservice.services.PredictionService;
@@ -57,6 +58,23 @@ public class PredictionController {
     @DeleteMapping()
     public ResponseEntity delete(@RequestParam("id") long id) {
         predictionService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/init_case_management")
+    public ResponseEntity initCaseManagement(@RequestParam(name = "logName") String logName) {
+        predictionService.initCaseManagement(logName);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/predict/open_cases")
+    public ResponseEntity predict(@RequestParam(name = "logName") String logName) {
+        var configuration = new PredictionConfiguration();
+        configuration.setLogName(logName);
+        configuration.setModelId(2);
+        configuration.setWhereCondition("c.state = 0");
+
+        predictionService.predict(configuration);
         return ResponseEntity.ok().build();
     }
 
