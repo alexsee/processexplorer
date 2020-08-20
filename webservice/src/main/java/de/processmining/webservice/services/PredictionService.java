@@ -150,7 +150,10 @@ public class PredictionService {
             var objectMapper = new ObjectMapper();
             var predictions = objectMapper.readTree(result.getBody());
 
-            for (var c : predictions.findValues("cases")) {
+            var cases = predictions.findValue("cases").elements();
+            while (cases.hasNext()) {
+                var c = cases.next();
+
                 var caseId = c.findValue("id").asLong();
                 var attributes = c.findValue("attributes");
                 var detection = attributes.findValue("detection").toString();
