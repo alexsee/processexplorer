@@ -36,6 +36,8 @@ import de.processmining.webservice.database.entities.EventLogFeature;
 import de.processmining.webservice.database.entities.EventLogModel;
 import de.processmining.webservice.database.entities.EventLogModelState;
 import de.processmining.webservice.properties.ApplicationProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -56,17 +58,19 @@ import java.util.concurrent.Future;
 @Service
 public class PredictionService {
 
-    private EventLogRepository eventLogRepository;
+    private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
 
-    private EventLogModelRepository eventLogModelRepository;
+    private final EventLogRepository eventLogRepository;
 
-    private EventLogFeatureRepository eventLogFeatureRepository;
+    private final EventLogModelRepository eventLogModelRepository;
 
-    private ApplicationProperties properties;
+    private final EventLogFeatureRepository eventLogFeatureRepository;
 
-    private SimpMessagingTemplate messagingTemplate;
+    private final ApplicationProperties properties;
 
-    private JdbcTemplate jdbcTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public PredictionService(EventLogModelRepository eventLogModelRepository,
@@ -80,10 +84,21 @@ public class PredictionService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Returns a list of prediction models for a given event log.
+     *
+     * @param logName
+     * @return
+     */
     public List<EventLogModel> getModelsByEventLog(String logName) {
         return this.eventLogModelRepository.findByEventLogLogName(logName);
     }
 
+    /**
+     * Initializes the case management for a given event log in order to store information about the predictions.
+     *
+     * @param logName
+     */
     public void initCaseManagement(String logName) {
         // check if case management is already initialized
         var features = this.eventLogFeatureRepository.findByEventLogLogName(logName);
@@ -99,7 +114,7 @@ public class PredictionService {
         var caseResourceCol = db.caseTable.addColumn("assigned", "varchar", 1024);
         var casePredictionsCol = db.caseTable.addColumn("prediction", "text", null);
 
-        jdbcTemplate.execute("ALTER TABLE " + db.caseTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseStateCol.getColumnNameSQL());
+        jdbcTemplate.execute( "ALTER TABLE " + db.caseTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseStateCol.getColumnNameSQL());
         jdbcTemplate.execute(new AlterTableQuery(db.caseTable).setAddColumn(caseStateCol).validate().toString());
 
         jdbcTemplate.execute("ALTER TABLE " + db.caseTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseResourceCol.getColumnNameSQL());
@@ -122,6 +137,11 @@ public class PredictionService {
         eventLogFeatureRepository.save(feature);
     }
 
+    /**
+     * Starts the prediction using the given prediction configuration. This method is non-blocking.
+     *
+     * @param configuration
+     */
     @Async
     public void predict(PredictionConfiguration configuration) {
         var model = eventLogModelRepository.findFirstByEventLogLogNameAndUse(configuration.getLogName(), true);
@@ -165,13 +185,20 @@ public class PredictionService {
                 jdbcTemplate.execute(updateSQL.validate().toString());
             }
         } catch (Exception ex) {
-
+            logger.error("Prediction for {} event log caused exception.", configuration.getLogName(), ex);
         }
 
         // report processing
         messagingTemplate.convertAndSend("/notifications/predictions/prediction_finished", eventLog);
     }
 
+    /**
+     * Starts the training of a prediction model using the given training configuration. This method is async and is
+     * non-blocking.
+     *
+     * @param configuration
+     * @return
+     */
     @Async
     public Future<EventLogModel> train(TrainingConfiguration configuration) {
         var eventLog = eventLogRepository.findByLogName(configuration.getLogName());
@@ -211,6 +238,8 @@ public class PredictionService {
         } catch (Exception ex) {
             eventLogModel.setState(EventLogModelState.ERROR);
             eventLogModel = eventLogModelRepository.save(eventLogModel);
+
+            logger.error("Could not train model for {} event log due to exception.", configuration.getLogName(), ex);
         }
 
         // report processing
@@ -218,17 +247,33 @@ public class PredictionService {
         return new AsyncResult<>(eventLogModel);
     }
 
+    /**
+     * Returns a list of all trained models.
+     *
+     * @return
+     */
     public Iterable<EventLogModel> getAll() {
         return eventLogModelRepository.findAll();
     }
 
+    /**
+     * Delets a given model from the database and from APRIL service.
+     *
+     * @param id
+     */
     public void delete(long id) {
         var model = eventLogModelRepository.findById(id);
         if (model.isEmpty()) {
             return;
         }
 
-        if (model.get().getModelId() != 0) {
+        // check if we have a model id
+        if (model.get().getModelId() == 0) {
+            return;
+        }
+
+        // delete model from APRIL service
+        try {
             var client = WebClient.builder()
                     .baseUrl(properties.getAprilBaseUri())
                     .build();
@@ -238,16 +283,22 @@ public class PredictionService {
                     .retrieve()
                     .bodyToMono(Long.class)
                     .block();
+        } catch (Exception ex) {
+            logger.error("Prediction model {} could not be deleted from APRIL service due to exception.", id, ex);
         }
 
         eventLogModelRepository.delete(model.get());
     }
 
+    /**
+     * Returns a list of all open cases for a given event log. The result contains the predictions for the next activity
+     * and resource.
+     *
+     * @param logName
+     * @return
+     */
     public List<OpenCaseResult> getOpenCases(String logName) {
         var db = new DatabaseModel(logName);
-        var stateCol = db.caseTable.addColumn("state");
-        var assignedCol = db.caseTable.addColumn("assigned");
-        var predictionCol = db.caseTable.addColumn("prediction");
 
         var sqlOutput = new OutputBuilder();
         sqlOutput.print("SELECT *,\n" +
@@ -270,6 +321,13 @@ public class PredictionService {
         return jdbcTemplate.query(sqlOutput.toString(), new OpenCaseRowMapper());
     }
 
+    /**
+     * Sets the given model as the default for predicting the next activity, resource etc. The model will be used
+     * whenever a prediction is scheduled. All other models are set to non-default
+     *
+     * @param modelId
+     * @return
+     */
     public EventLogModel setDefault(long modelId) {
         var model = eventLogModelRepository.findById(modelId).get();
 

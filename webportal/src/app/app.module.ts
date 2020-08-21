@@ -38,6 +38,7 @@ import { PredictionModelListComponent } from './modules/predictions/model-list/m
 import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
 import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
 import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
+import { PredictionNavigationComponent } from './modules/predictions/prediction-navigation/prediction-navigation.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { OpenCasesListComponent } from './modules/predictions/open-cases-list/op
     TrainModelComponent,
     ModelDetailComponent,
     OpenCasesListComponent,
+    PredictionNavigationComponent,
   ],
   imports: [
     BrowserModule,

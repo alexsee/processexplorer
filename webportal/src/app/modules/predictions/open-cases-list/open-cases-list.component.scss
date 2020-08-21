@@ -7,10 +7,6 @@ nz-breadcrumb {
     background: #fff;
 }
 
-.sider-menu {
-    height: 100%;
-}
-
 .inner-content {
     background: #fff;
     padding: 0 24px;
@@ -39,4 +35,12 @@ nz-breadcrumb {
 
 .error {
     color: darkred;
+}
+
+tr.case {
+    cursor: pointer;
+}
+
+tr.selected {
+    background-color: lightyellow;
 }

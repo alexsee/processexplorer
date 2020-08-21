@@ -40,4 +40,8 @@ export class PredictionService {
   setDefault(modelId: number): Observable<EventLogModel> {
     return this.http.post<EventLogModel>(environment.serviceUrl + '/prediction/default?modelId=' + modelId, null);
   }
+
+  predictOpenCases(logName: string): Observable<void> {
+    return this.http.get<void>(environment.serviceUrl + '/prediction/predict/open_cases?logName=' + logName);
+  }
 }

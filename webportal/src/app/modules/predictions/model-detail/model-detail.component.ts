@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { EventLog, Model, QueryParams, Evaluation, EvaluationParams, BACKEND_URL, Attribute } from '../shared/interfaces';
+import { EventLog, Model, QueryParams, BACKEND_URL, Attribute } from '../shared/interfaces';
 import { Title } from '@angular/platform-browser';
-import { BaseType } from 'd3';
 
 @Component({
   selector: 'app-model-detail',

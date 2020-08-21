@@ -6,14 +6,14 @@ import { EventLog } from '../models/eventlog.model';
 import { EventLogStatistics } from '../models/eventlog-statistics.model';
 import { EventLogAnnotation } from '../models/eventlog-annotation.model';
 import { map } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogService {
-  private currentLogSubject = new BehaviorSubject<EventLog>(null);
+  private currentLogSubject = new ReplaySubject<EventLog>(1);
   public currentLog = this.currentLogSubject.asObservable();
 
   public currentEventLogs: Observable<EventLog[]>;
@@ -26,12 +26,8 @@ export class LogService {
       // use current selected
       if (localStorage.getItem('currentLog') !== undefined) {
         this.currentLogSubject.next(log.filter(y => y.logName === localStorage.getItem('currentLog'))[0]);
-        }
+      }
     });
-  }
-
-  public get currentLogValue(): EventLog {
-    return this.currentLogSubject.value;
   }
 
   setCurrentLog(eventLog: string) {

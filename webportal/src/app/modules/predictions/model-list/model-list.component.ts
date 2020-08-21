@@ -6,6 +6,7 @@ import { RxStompService } from '@stomp/ng2-stompjs';
 import { Subscription } from 'rxjs';
 import { Message } from 'stompjs';
 import { NzMessageService } from 'ng-zorro-antd';
+import { LogService } from 'src/app/log/shared/log.service';
 
 @Component({
   selector: 'app-prediction-model-list',
@@ -19,14 +20,18 @@ export class PredictionModelListComponent implements OnInit, OnDestroy {
   public models: EventLogModel[] = [];
 
   constructor(private predictionService: PredictionService,
-              private route: ActivatedRoute,
+              private logService: LogService,
               private nzMessageService: NzMessageService,
               private rxStompService: RxStompService) { }
 
   ngOnInit(): void {
-    this.logName = this.route.snapshot.paramMap.get('logName');
-    this.loadList(this.logName);
+    // load open cases for current log
+    this.logService.currentLog.subscribe(eventLog => {
+      this.logName = eventLog.logName;
+      this.loadList(this.logName);
+    });
 
+    // subscribe to model changes
     this.subscription = this.rxStompService.watch('/notifications/predictions/**')
       .subscribe((message) => this.handleNotifications(message));
   }
@@ -47,9 +52,10 @@ export class PredictionModelListComponent implements OnInit, OnDestroy {
     // finished?
     if ((message.headers as any).destination === '/notifications/predictions/training_finished') {
       const log = JSON.parse(message.body);
-      this.nzMessageService.success('Training model for event log <b>' + log.logName + '</b> completed successfully.');
-
-      this.loadList(this.logName);
+      if (log.logName === this.logName) {
+        this.nzMessageService.success('Training model for event log <b>' + log.logName + '</b> completed successfully.');
+        this.loadList(this.logName);
+      }
     }
   }
 
