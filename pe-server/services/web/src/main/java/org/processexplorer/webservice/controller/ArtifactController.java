@@ -18,7 +18,7 @@
 
 package org.processexplorer.webservice.controller;
 
-import org.processexplorer.data.analysis.artifacts.*;
+import org.processexplorer.server.analysis.mining.artifacts.*;
 import org.processexplorer.server.common.persistence.entity.EventLogArtifact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

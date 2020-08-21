@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.data.analysis.artifacts;
+package org.processexplorer.server.analysis.mining.artifacts;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.processexplorer.server.analysis.query.QueryService;
@@ -137,7 +137,7 @@ public class ArtifactAnalysis {
         var scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(ArtifactDescription.class));
 
-        for (var artifact : scanner.findCandidateComponents("org.processexplorer.data.analysis.artifacts")) {
+        for (var artifact : scanner.findCandidateComponents("org.processexplorer.server.analysis.mining.artifacts")) {
             var ui = new ArtifactUI();
             ui.setType(artifact.getBeanClassName());
 

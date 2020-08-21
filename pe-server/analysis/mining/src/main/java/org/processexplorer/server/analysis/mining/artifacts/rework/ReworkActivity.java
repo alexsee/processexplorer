@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.data.analysis.artifacts.rework;
+package org.processexplorer.server.analysis.mining.artifacts.rework;
 
-import org.processexplorer.data.analysis.artifacts.ArtifactFieldDescription;
-import org.processexplorer.data.analysis.artifacts.ArtifactFieldType;
+import org.processexplorer.server.analysis.mining.artifacts.ArtifactFieldDescription;
+import org.processexplorer.server.analysis.mining.artifacts.ArtifactFieldType;
 
 /**
  * @author Alexander Seeliger on 11.12.2019.

@@ -11,9 +11,9 @@
         <b>Less or equal than {{data.maxDuration}} {{data.unit}}</b>
     </div>
     <div>
-        <span *ngIf="data.from">{{data.from}}</span><span *ngIf="!data.from">Process start</span>
+        <span *ngIf="data.from > -1">{{context.activities[data.from].name}}</span><span *ngIf="data.from == -1">Process start</span>
         -
-        <span *ngIf="data.to">{{data.to}}</span><span *ngIf="!data.to">Process end</span>
+        <span *ngIf="data.to > -2">{{context.activities[data.to].name}}</span><span *ngIf="data.to == -2">Process end</span>
     </div>
 </nz-card>
 
@@ -34,7 +34,8 @@
             <nz-form-label [nzSm]="8" nzFor="from">From first occurrence</nz-form-label>
             <nz-form-control [nzSm]="16">
                 <nz-select name="from" [(ngModel)]="data.from" nzPlaceHolder="Process start">
-                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                    <nz-option [nzValue]="-1" [nzLabel]="'Process start'"></nz-option>
+                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>
@@ -63,7 +64,8 @@
             <nz-form-label [nzSm]="8" nzFor="to">To last occurrence</nz-form-label>
             <nz-form-control [nzSm]="16">
                 <nz-select name="to" [(ngModel)]="data.to" nzPlaceHolder="Process end">
-                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity" [nzLabel]="activity"></nz-option>
+                    <nz-option [nzValue]="-2" [nzLabel]="'Process end'"></nz-option>
+                    <nz-option *ngFor="let activity of context.activities" [nzValue]="activity.id" [nzLabel]="activity.name"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>

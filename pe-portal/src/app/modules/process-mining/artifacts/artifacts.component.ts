@@ -71,7 +71,7 @@ export class ArtifactsComponent implements OnInit {
   }
 
   onShowCases(artifact: ArtifactResult) {
-    this.router.navigate(['/analysis', this.logName], { state: { conditions: artifact.conditions }});
+    this.router.navigate(['/analysis'], { state: { conditions: artifact.conditions }});
   }
 
   percentageFormat(percentage: number) {

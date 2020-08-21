@@ -16,27 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.data.analysis.artifacts;
+package org.processexplorer.server.analysis.mining.artifacts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alexander Seeliger on 11.12.2019.
  */
-public class ArtifactUIConfiguration {
+public class ArtifactUIField {
 
-    private long id;
+    private String fieldName;
+
+    private String name;
+
+    private String description;
 
     private String type;
 
-    private String configuration;
+    private List<ArtifactUIField> childs;
 
-    private boolean activated;
-
-    public long getId() {
-        return id;
+    public ArtifactUIField() {
+        this.childs = new ArrayList<>();
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getType() {
@@ -47,19 +64,19 @@ public class ArtifactUIConfiguration {
         this.type = type;
     }
 
-    public String getConfiguration() {
-        return configuration;
+    public List<ArtifactUIField> getChilds() {
+        return childs;
     }
 
-    public void setConfiguration(String configuration) {
-        this.configuration = configuration;
+    public void setChilds(List<ArtifactUIField> childs) {
+        this.childs = childs;
     }
 
-    public boolean isActivated() {
-        return activated;
+    public String getFieldName() {
+        return fieldName;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 }

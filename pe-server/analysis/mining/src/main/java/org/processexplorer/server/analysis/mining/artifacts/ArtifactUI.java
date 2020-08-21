@@ -16,11 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.data.analysis.artifacts;
+package org.processexplorer.server.analysis.mining.artifacts;
 
 /**
- * @author Alexander Seeliger on 10.12.2019.
+ * @author Alexander Seeliger on 11.12.2019.
  */
-public abstract class ArtifactConfiguration {
+public class ArtifactUI {
 
+    private String name;
+
+    private String description;
+
+    private String type;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

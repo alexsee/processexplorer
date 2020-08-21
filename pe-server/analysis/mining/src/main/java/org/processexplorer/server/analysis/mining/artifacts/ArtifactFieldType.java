@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.data.analysis.artifacts;
+package org.processexplorer.server.analysis.mining.artifacts;
 
 /**
  * @author Alexander Seeliger on 11.12.2019.

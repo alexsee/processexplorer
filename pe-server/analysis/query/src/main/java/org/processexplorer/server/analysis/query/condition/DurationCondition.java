@@ -64,10 +64,10 @@ public class DurationCondition extends Condition {
         innerSQL += "having ";
 
         if (minDuration != null) {
-            innerSQL += "age(max(b.target_timestamp), min(a.source_timestamp)) >= interval '" + getDuration(minDuration) + "' ";
+            innerSQL += "age(max(b.source_timestamp), min(a.target_timestamp)) >= interval '" + getDuration(minDuration) + "' ";
         }
         if (maxDuration != null) {
-            innerSQL += ((minDuration != null) ? "and " : "") + "age(max(b.target_timestamp), min(a.source_timestamp)) <= interval '" + getDuration(maxDuration) + "' ";
+            innerSQL += ((minDuration != null) ? "and " : "") + "age(max(b.source_timestamp), min(a.target_timestamp)) <= interval '" + getDuration(maxDuration) + "' ";
         }
 
         innerSQL += ")";

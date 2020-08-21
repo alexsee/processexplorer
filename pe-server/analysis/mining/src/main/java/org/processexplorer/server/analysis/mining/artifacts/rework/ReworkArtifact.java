@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.data.analysis.artifacts.rework;
+package org.processexplorer.server.analysis.mining.artifacts.rework;
 
-import org.processexplorer.data.analysis.artifacts.ArtifactBase;
-import org.processexplorer.data.analysis.artifacts.ArtifactDescription;
-import org.processexplorer.data.analysis.artifacts.ArtifactResult;
+import org.processexplorer.server.analysis.mining.artifacts.ArtifactBase;
+import org.processexplorer.server.analysis.mining.artifacts.ArtifactDescription;
+import org.processexplorer.server.analysis.mining.artifacts.ArtifactResult;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.Condition;
 import org.processexplorer.server.analysis.query.condition.ReworkCondition;
