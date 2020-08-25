@@ -21,8 +21,8 @@ package org.processexplorer.server.analysis.query;
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import org.processexplorer.server.analysis.query.codes.EventAttributeCodes;
-import org.processexplorer.server.analysis.query.model.*;
 import org.processexplorer.server.analysis.query.condition.Condition;
+import org.processexplorer.server.analysis.query.model.*;
 import org.processexplorer.server.analysis.query.request.CaseAttributeValueQuery;
 import org.processexplorer.server.analysis.query.request.CasesQuery;
 import org.processexplorer.server.analysis.query.request.DrillDownQuery;
@@ -31,12 +31,12 @@ import org.processexplorer.server.analysis.query.result.CaseAttributeValueResult
 import org.processexplorer.server.analysis.query.result.DrillDownResult;
 import org.processexplorer.server.analysis.query.result.ProcessMapResult;
 import org.processexplorer.server.analysis.query.result.SocialNetworkResult;
-import org.processexplorer.server.analysis.query.selection.SelectionOrder;
 import org.processexplorer.server.analysis.query.rowmapper.ActivityRowMapper;
 import org.processexplorer.server.analysis.query.rowmapper.CaseRowMapper;
 import org.processexplorer.server.analysis.query.rowmapper.EventRowMapper;
-import org.processexplorer.server.common.persistence.repository.EventLogAnnotationRepository;
+import org.processexplorer.server.analysis.query.selection.SelectionOrder;
 import org.processexplorer.server.common.persistence.entity.EventLogAnnotation;
+import org.processexplorer.server.common.persistence.repository.EventLogAnnotationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -437,13 +437,16 @@ public class QueryService {
         var categoricalAttrs = new ArrayList<String>();
 
         for (var attr : attrs) {
-            var sql = new SelectQuery()
-                    .addAliasedColumn(new CustomSql("CAST(COUNT(DISTINCT \"" + attr + "\") AS float) / COUNT(\"" + attr + "\")"), "occurrence")
-                    .addFromTable(db.caseAttributeTable);
+            try {
+                var sql = new SelectQuery()
+                        .addAliasedColumn(new CustomSql("CAST(COUNT(DISTINCT \"" + attr + "\") AS float) / COUNT(\"" + attr + "\")"), "occurrence")
+                        .addFromTable(db.caseAttributeTable);
 
-            var result = jdbcTemplate.queryForObject(sql.validate().toString(), Double.class);
-            if (result != null && result <= 0.05) {
-                categoricalAttrs.add(attr);
+                var result = jdbcTemplate.queryForObject(sql.validate().toString(), Double.class);
+                if (result != null && result <= 0.05) {
+                    categoricalAttrs.add(attr);
+                }
+            } catch (Exception ex) {
             }
         }
 
