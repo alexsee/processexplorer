@@ -1,5 +1,8 @@
 # Process Mining Tool with Computer-assisted Guidance
 
+![Angular CI with npm](https://github.com/alexsee/processexplorer/workflows/Angular%20CI%20with%20npm/badge.svg)
+![Java CI with Maven](https://github.com/alexsee/processexplorer/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 This is the home of the prototype for enhancing guidance during the analysis of business processes with process mining.
 
 The project consists of two parts:
