@@ -16,36 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.server.analysis.query;
+package org.processexplorer.server.analysis.query.request;
 
-import org.processexplorer.server.analysis.query.condition.Condition;
+import org.processexplorer.server.analysis.query.selection.Selection;
 
 import java.util.List;
 
-public class CaseAttributeValueQuery extends BaseQuery {
+public class DrillDownQuery extends BaseQuery {
 
-    private String attributeName;
+    private List<Selection> selections;
 
-    public CaseAttributeValueQuery() {
+    public DrillDownQuery() {
     }
 
-    public CaseAttributeValueQuery(String logName, String attributeName) {
+    public DrillDownQuery(String logName, List<Selection> selections) {
         super(logName);
-        this.attributeName = attributeName;
+        this.selections = selections;
     }
 
-    public CaseAttributeValueQuery(String logName, List<Condition> conditions, String attributeName) {
-        super(logName, conditions);
-        this.attributeName = attributeName;
+    public List<Selection> getSelections() {
+        return selections;
     }
 
-
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
+    public void setSelections(List<Selection> selections) {
+        this.selections = selections;
     }
 
 }

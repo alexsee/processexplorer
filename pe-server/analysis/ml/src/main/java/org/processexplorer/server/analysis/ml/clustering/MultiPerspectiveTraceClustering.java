@@ -34,7 +34,7 @@ import org.processexplorer.server.analysis.ml.itemsets.Itemset;
 import org.processexplorer.server.analysis.ml.metric.EvaluationUtils;
 import org.processexplorer.server.analysis.ml.metric.ItemsetMetrics;
 import org.processexplorer.server.analysis.ml.metric.SequenceMetrics;
-import org.processexplorer.server.analysis.query.CasesQuery;
+import org.processexplorer.server.analysis.query.request.CasesQuery;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.ComboCondition;

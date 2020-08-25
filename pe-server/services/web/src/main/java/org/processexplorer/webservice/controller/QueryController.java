@@ -23,6 +23,13 @@ import org.processexplorer.server.analysis.query.model.Case;
 import org.processexplorer.server.analysis.query.model.Log;
 import org.processexplorer.server.analysis.query.model.Variant;
 import org.processexplorer.server.analysis.query.condition.Condition;
+import org.processexplorer.server.analysis.query.request.CaseAttributeValueQuery;
+import org.processexplorer.server.analysis.query.request.DrillDownQuery;
+import org.processexplorer.server.analysis.query.request.ProcessMapQuery;
+import org.processexplorer.server.analysis.query.result.CaseAttributeValueResult;
+import org.processexplorer.server.analysis.query.result.DrillDownResult;
+import org.processexplorer.server.analysis.query.result.ProcessMapResult;
+import org.processexplorer.server.analysis.query.result.SocialNetworkResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

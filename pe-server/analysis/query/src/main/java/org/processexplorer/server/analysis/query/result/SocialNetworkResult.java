@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.server.analysis.query;
+package org.processexplorer.server.analysis.query.result;
 
 import org.processexplorer.server.analysis.query.model.SocialNetwork;
 import org.processexplorer.server.analysis.query.model.Variant;

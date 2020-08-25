@@ -16,37 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.server.analysis.query;
+package org.processexplorer.server.analysis.query.result;
 
-import org.processexplorer.server.analysis.query.model.ColumnMetaData;
+import org.processexplorer.server.analysis.query.model.Graph;
+import org.processexplorer.server.analysis.query.model.Variant;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DrillDownResult {
+public class ProcessMapResult {
 
-    private List<ColumnMetaData> metaData;
+    private Graph processMap;
 
-    private List<Object> data;
+    private List<Variant> variants;
 
-    public DrillDownResult() {
-        this.metaData = new ArrayList<>();
-        this.data = new ArrayList<>();
+    public Graph getProcessMap() {
+        return processMap;
     }
 
-    public List<ColumnMetaData> getMetaData() {
-        return metaData;
+    public void setProcessMap(Graph processMap) {
+        this.processMap = processMap;
     }
 
-    public void setMetaData(List<ColumnMetaData> metaData) {
-        this.metaData = metaData;
+    public List<Variant> getVariants() {
+        return variants;
     }
 
-    public List<Object> getData() {
-        return data;
-    }
-
-    public void setData(List<Object> data) {
-        this.data = data;
+    public void setVariants(List<Variant> variants) {
+        this.variants = variants;
     }
 }

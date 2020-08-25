@@ -16,32 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.server.analysis.query;
+package org.processexplorer.server.analysis.query.request;
 
-import org.processexplorer.server.analysis.query.model.Graph;
-import org.processexplorer.server.analysis.query.model.Variant;
+import org.processexplorer.server.analysis.query.condition.Condition;
 
 import java.util.List;
 
-public class ProcessMapResult {
+public class CaseAttributeValueQuery extends BaseQuery {
 
-    private Graph processMap;
+    private String attributeName;
 
-    private List<Variant> variants;
-
-    public Graph getProcessMap() {
-        return processMap;
+    public CaseAttributeValueQuery() {
     }
 
-    public void setProcessMap(Graph processMap) {
-        this.processMap = processMap;
+    public CaseAttributeValueQuery(String logName, String attributeName) {
+        super(logName);
+        this.attributeName = attributeName;
     }
 
-    public List<Variant> getVariants() {
-        return variants;
+    public CaseAttributeValueQuery(String logName, List<Condition> conditions, String attributeName) {
+        super(logName, conditions);
+        this.attributeName = attributeName;
     }
 
-    public void setVariants(List<Variant> variants) {
-        this.variants = variants;
+
+    public String getAttributeName() {
+        return attributeName;
     }
+
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
+    }
+
 }

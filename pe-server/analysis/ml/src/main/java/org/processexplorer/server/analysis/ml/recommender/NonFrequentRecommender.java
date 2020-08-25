@@ -20,7 +20,7 @@ package org.processexplorer.server.analysis.ml.recommender;
 
 import org.processexplorer.server.analysis.ml.itemsets.FrequentItemset;
 import org.processexplorer.server.analysis.ml.itemsets.FrequentItemsetMiner;
-import org.processexplorer.server.analysis.query.CasesQuery;
+import org.processexplorer.server.analysis.query.request.CasesQuery;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.*;
 import org.processexplorer.server.analysis.query.model.FieldValue;

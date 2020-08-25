@@ -16,39 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.server.analysis.query;
+package org.processexplorer.server.analysis.query.result;
 
+import org.processexplorer.server.analysis.query.model.ColumnMetaData;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class CaseAttributeValueResult {
+public class DrillDownResult {
 
-    private String attributeName;
+    private List<ColumnMetaData> metaData;
 
-    private boolean categorical;
+    private List<Object> data;
 
-    private List<String> values;
-
-    public String getAttributeName() {
-        return attributeName;
+    public DrillDownResult() {
+        this.metaData = new ArrayList<>();
+        this.data = new ArrayList<>();
     }
 
-    public void setAttributeName(String attributeName) {
-        this.attributeName = attributeName;
+    public List<ColumnMetaData> getMetaData() {
+        return metaData;
     }
 
-    public boolean isCategorical() {
-        return categorical;
+    public void setMetaData(List<ColumnMetaData> metaData) {
+        this.metaData = metaData;
     }
 
-    public void setCategorical(boolean categorical) {
-        this.categorical = categorical;
+    public List<Object> getData() {
+        return data;
     }
 
-    public List<String> getValues() {
-        return values;
-    }
-
-    public void setValues(List<String> values) {
-        this.values = values;
+    public void setData(List<Object> data) {
+        this.data = data;
     }
 }

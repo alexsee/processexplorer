@@ -16,30 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.processexplorer.server.analysis.query;
-
-import org.processexplorer.server.analysis.query.selection.Selection;
+package org.processexplorer.server.analysis.query.result;
 
 import java.util.List;
 
-public class DrillDownQuery extends BaseQuery {
+public class CaseAttributeValueResult {
 
-    private List<Selection> selections;
+    private String attributeName;
 
-    public DrillDownQuery() {
+    private boolean categorical;
+
+    private List<String> values;
+
+    public String getAttributeName() {
+        return attributeName;
     }
 
-    public DrillDownQuery(String logName, List<Selection> selections) {
-        super(logName);
-        this.selections = selections;
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
     }
 
-    public List<Selection> getSelections() {
-        return selections;
+    public boolean isCategorical() {
+        return categorical;
     }
 
-    public void setSelections(List<Selection> selections) {
-        this.selections = selections;
+    public void setCategorical(boolean categorical) {
+        this.categorical = categorical;
     }
 
+    public List<String> getValues() {
+        return values;
+    }
+
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
 }
