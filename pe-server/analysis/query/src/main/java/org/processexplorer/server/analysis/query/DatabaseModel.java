@@ -35,11 +35,6 @@ public class DatabaseModel {
     public DbColumn activityIdCol;
     public DbColumn activityNameCol;
 
-    // variants table
-    public DbTable variantsTable;
-    public DbColumn variantsIdCol;
-    public DbColumn variantsVariantCol;
-
     // case table
     public DbTable caseTable;
     public DbColumn caseCaseIdCol;
@@ -49,12 +44,11 @@ public class DatabaseModel {
     public DbColumn caseNumUsersCol;
     public DbColumn caseDurationCol;
     public DbColumn caseVariantIdCol;
+    public DbColumn caseVariantCol;
 
     // events table
     public DbTable eventTable;
     public DbColumn eventCaseIdCol;
-    public DbColumn eventEdgeIdCol;
-    public DbColumn eventOriginalCaseIdCol;
     public DbColumn eventSourceEventCol;
     public DbColumn eventTargetEventCol;
     public DbColumn eventSourceTimestampCol;
@@ -71,7 +65,6 @@ public class DatabaseModel {
     public DbColumn caseAttributeOriginalCaseIdCol;
 
     // joints
-    public DbJoin caseVariantJoin;
     public DbJoin caseCaseAttributeJoin;
 
     public DbJoin eventCaseJoin;
@@ -85,11 +78,6 @@ public class DatabaseModel {
         activityNameCol = activityTable.addColumn("name", "varchar", 1024);
         activityTable.primaryKey(getActivityTableName(logName) + "_pk", "id");
 
-        // variants table
-        variantsTable = schema.addTable(getVariantsTableName(logName));
-        variantsIdCol = variantsTable.addColumn("id", "integer", null);
-        variantsVariantCol = variantsTable.addColumn("variant", "text", null);
-
         // case table
         caseTable = schema.addTable(getCaseTableName(logName));
         caseCaseIdCol = caseTable.addColumn("case_id", "integer", null);
@@ -99,11 +87,11 @@ public class DatabaseModel {
         caseNumUsersCol = caseTable.addColumn("num_users", "bigint", null);
         caseDurationCol = caseTable.addColumn("total_duration", "interval", null);
         caseVariantIdCol = caseTable.addColumn("variant_id", "integer", null);
+        caseVariantCol = caseTable.addColumn("variant", "text", null);
 
         // events table
         eventTable = schema.addTable(getEventsTableName(logName));
         eventCaseIdCol = eventTable.addColumn("case_id", "integer", null);
-        eventOriginalCaseIdCol = eventTable.addColumn("original_case_id", "varchar", 1024);
         eventSourceEventCol = eventTable.addColumn("source_event", "bigint", null);
         eventTargetEventCol = eventTable.addColumn("target_event", "bigint", null);
         eventSourceTimestampCol = eventTable.addColumn("source_timestamp", "timestamp", null);
@@ -120,9 +108,6 @@ public class DatabaseModel {
         caseAttributeOriginalCaseIdCol = caseAttributeTable.addColumn("original_case_id", "varchar", 1024);
 
         // joins
-        caseVariantJoin = spec.addJoin(null, caseTable.getTableNameSQL(),
-                null, variantsTable.getTableNameSQL(),
-                new String[]{"variant_id"}, new String[]{"id"});
         caseCaseAttributeJoin = spec.addJoin(null, caseTable.getTableNameSQL(),
                 null, caseAttributeTable.getTableNameSQL(),
                 "case_id");

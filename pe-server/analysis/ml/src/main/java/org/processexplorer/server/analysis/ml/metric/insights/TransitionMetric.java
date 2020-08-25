@@ -43,7 +43,7 @@ public abstract class TransitionMetric extends CaseMetric<CaseMetric.Measure, Tr
                 .addAliasedColumn(targetActivityTable.findColumnByName("name"), "target_event_name")
                 .addAliasedColumn(expr, "expr")
                 .addCondition(condition)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin, db.caseVariantJoin)
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin)
                 .addCustomJoin(SelectQuery.JoinType.INNER, db.eventTable, sourceActivityTable, BinaryCondition.equalTo(db.eventSourceEventCol, sourceActivityTable.findColumnByName("id")))
                 .addCustomJoin(SelectQuery.JoinType.INNER, db.eventTable, targetActivityTable, BinaryCondition.equalTo(db.eventTargetEventCol, targetActivityTable.findColumnByName("id")))
                 .addGroupings(db.eventCaseIdCol, db.eventSourceEventCol, db.eventTargetEventCol, sourceActivityTable.findColumnByName("name"), targetActivityTable.findColumnByName("name"));

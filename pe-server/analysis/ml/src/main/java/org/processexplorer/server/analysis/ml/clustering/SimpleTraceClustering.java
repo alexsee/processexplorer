@@ -19,16 +19,14 @@
 package org.processexplorer.server.analysis.ml.clustering;
 
 import com.healthmarketscience.sqlbuilder.AlterTableQuery;
-import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import com.healthmarketscience.sqlbuilder.QueryPreparer;
-import com.healthmarketscience.sqlbuilder.UpdateQuery;
 import org.processexplorer.server.analysis.ml.metric.SequenceMetrics;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.analysis.query.QueryService;
-import org.processexplorer.server.common.persistence.repository.EventLogFeatureRepository;
-import org.processexplorer.server.common.persistence.repository.EventLogRepository;
 import org.processexplorer.server.common.persistence.entity.EventLog;
 import org.processexplorer.server.common.persistence.entity.EventLogFeature;
+import org.processexplorer.server.common.persistence.repository.EventLogFeatureRepository;
+import org.processexplorer.server.common.persistence.repository.EventLogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,56 +81,59 @@ public class SimpleTraceClustering {
         messagingTemplate.convertAndSend("/notifications/logs/analysis_started", eventLog);
 
         // compute distance matrix
-        var variants = queryService.getAllPaths(logName, new ArrayList<>());
-        double[][] distanceMatrix = new double[variants.size()][variants.size()];
+        try {
+            var variants = queryService.getAllPaths(logName, new ArrayList<>());
+            double[][] distanceMatrix = new double[variants.size()][variants.size()];
 
-        for (int i = 0; i < variants.size(); i++) {
-            for (int j = 0; j < i; j++) {
-                var variant_a = variants.get(i).getPathIndex();
-                var variant_b = variants.get(j).getPathIndex();
+            for (int i = 0; i < variants.size(); i++) {
+                for (int j = 0; j < i; j++) {
+                    var variant_a = variants.get(i).getPathIndex();
+                    var variant_b = variants.get(j).getPathIndex();
 
-                var distance = SequenceMetrics.getLevenshteinDistance(variant_a, variant_b);
+                    var distance = SequenceMetrics.getLevenshteinDistance(variant_a, variant_b);
 
-                distanceMatrix[i][j] = distance;
-                distanceMatrix[j][i] = distance;
+                    distanceMatrix[i][j] = distance;
+                    distanceMatrix[j][i] = distance;
+                }
             }
+
+            // compute clusters
+            var algorithm = HierarchicalClustering.fit(new WardLinkage(distanceMatrix));
+            var result = ClusterUtils.calculateOptimalClusters(algorithm, distanceMatrix);
+
+            // add new column
+            var db = new DatabaseModel(logName);
+            var variantClusterIndexCol = db.caseAttributeTable.addColumn("cluster_index", "integer", null);
+
+            var sql = new AlterTableQuery(db.caseAttributeTable)
+                    .setAddColumn(variantClusterIndexCol)
+                    .validate().toString();
+
+            jdbcTemplate.execute("ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + variantClusterIndexCol.getColumnNameSQL());
+            jdbcTemplate.execute(sql);
+
+            // update variants
+            sql = "UPDATE " + db.caseAttributeTable.getAbsoluteName() + " SET " + variantClusterIndexCol.getColumnNameSQL() + " = ? " +
+                    "FROM " + db.caseTable.getAbsoluteName() + " " +
+                    "WHERE " + db.caseCaseIdCol.getAbsoluteName() + " = " + db.caseAttributeCaseIdCol.getAbsoluteName() + " " +
+                    "AND " + db.caseVariantIdCol.getAbsoluteName() + " = ?";
+
+            var batch = new ArrayList<Object[]>();
+            for (int i = 0; i < variants.size(); i++) {
+                batch.add(new Object[]{result[i], variants.get(i).getId()});
+            }
+            jdbcTemplate.batchUpdate(sql, batch);
+        } catch (Exception ex) {
+            logger.error("Error during trace clustering.", ex);
+
+            messagingTemplate.convertAndSend("/notifications/logs/analysis_finished", eventLog);
+            return new AsyncResult<>(eventLog);
+        } finally {
+            eventLog.setProcessing(false);
+            eventLog = eventLogRepository.save(eventLog);
         }
-
-        // compute clusters
-        var algorithm = HierarchicalClustering.fit(new WardLinkage(distanceMatrix));
-        var result = ClusterUtils.calculateOptimalClusters(algorithm, distanceMatrix);
-
-        // add new column
-        var db = new DatabaseModel(logName);
-        var variantClusterIndexCol = db.variantsTable.addColumn("cluster_index", "integer", null);
-
-        var sql = new AlterTableQuery(db.variantsTable)
-                .setAddColumn(variantClusterIndexCol)
-                .validate().toString();
-
-        jdbcTemplate.execute("ALTER TABLE " + db.variantsTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + variantClusterIndexCol.getColumnNameSQL());
-        jdbcTemplate.execute(sql);
-
-        // update variants
-        var preparer = new QueryPreparer();
-        QueryPreparer.PlaceHolder clusterIndexParam = preparer.getNewPlaceHolder();
-        QueryPreparer.PlaceHolder variantIdParam = preparer.getNewPlaceHolder();
-
-        sql = new UpdateQuery(db.variantsTable)
-                .addSetClause(variantClusterIndexCol, preparer.addStaticPlaceHolder(clusterIndexParam))
-                .addCondition(BinaryCondition.equalTo(db.variantsIdCol, preparer.addStaticPlaceHolder(variantIdParam)))
-                .validate().toString();
-
-        var batch = new ArrayList<Object[]>();
-        for (int i = 0; i < variants.size(); i++) {
-            batch.add(new Object[]{result[i], variants.get(i).getId()});
-        }
-        jdbcTemplate.batchUpdate(sql, batch);
 
         logger.info("Finished simple trace clustering for \"{}\"", logName);
-
-        eventLog.setProcessing(false);
-        eventLog = eventLogRepository.save(eventLog);
 
         // store clustering feature
         var feature = eventLogFeatureRepository.findByEventLogLogNameAndFeature(logName, "clustering");

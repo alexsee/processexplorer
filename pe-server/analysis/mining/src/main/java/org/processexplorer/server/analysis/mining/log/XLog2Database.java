@@ -47,17 +47,17 @@ import static org.processexplorer.server.analysis.query.DatabaseConstants.*;
  */
 public class XLog2Database {
 
-    private static Logger logger = LoggerFactory.getLogger(XLog2Database.class);
+    private static final Logger logger = LoggerFactory.getLogger(XLog2Database.class);
 
-    private final int bufferSize = 1000;
+    private static final int BUFFER_SIZE = 1000;
 
-    private String logName;
+    private final String logName;
 
-    private XEventClassifier classifier = new XEventNameClassifier();
+    private final XEventClassifier classifier = new XEventNameClassifier();
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    private DatabaseModel db;
+    private final DatabaseModel db;
 
     public XLog2Database(JdbcTemplate jdbcTemplate, String logName) {
         this.logName = logName;
@@ -119,22 +119,21 @@ public class XLog2Database {
                     var timestamp = (Date) XLogUtils.getAttributeValue(event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
                     var timestampPrevious = previousEvent == null ? null : (Date) XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
 
-                    var eventPrep = new Object[11 + eventAttributes.size()];
+                    var eventPrep = new Object[10 + eventAttributes.size()];
 
                     eventPrep[0] = i;
-                    eventPrep[1] = caseId;
-                    eventPrep[2] = previousEvent == null ? -1 : logInfo.getEventClasses().getClassOf(previousEvent).getIndex();
-                    eventPrep[3] = logInfo.getEventClasses().getClassOf(event).getIndex();
-                    eventPrep[4] = previousEvent == null ? null : new java.sql.Timestamp(timestampPrevious.getTime());
-                    eventPrep[5] = new java.sql.Timestamp(timestamp.getTime());
-                    eventPrep[6] = previousEvent == null ? null : XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
-                    eventPrep[7] = XLogUtils.getAttributeValue(event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
-                    eventPrep[8] = null;
-                    eventPrep[9] = e;
-                    eventPrep[10] = XLogUtils.getAttributeValue(event.getAttributes().get(XLifecycleExtension.KEY_MODEL));
+                    eventPrep[1] = previousEvent == null ? -1 : logInfo.getEventClasses().getClassOf(previousEvent).getIndex();
+                    eventPrep[2] = logInfo.getEventClasses().getClassOf(event).getIndex();
+                    eventPrep[3] = previousEvent == null ? null : new java.sql.Timestamp(timestampPrevious.getTime());
+                    eventPrep[4] = new java.sql.Timestamp(timestamp.getTime());
+                    eventPrep[5] = previousEvent == null ? null : XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
+                    eventPrep[6] = XLogUtils.getAttributeValue(event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE));
+                    eventPrep[7] = null;
+                    eventPrep[8] = e;
+                    eventPrep[9] = XLogUtils.getAttributeValue(event.getAttributes().get(XLifecycleExtension.KEY_MODEL));
 
                     // add additional attributes
-                    int j = 11;
+                    int j = 10;
                     for (var attr : eventAttributes) {
                         var value = XLogUtils.getAttributeValue(event.getAttributes().get(attr.getKey()));
                         eventPrep[j] = value;
@@ -149,7 +148,6 @@ public class XLog2Database {
                 // insert end event
                 prepInsertEvent.add(new Object[]{
                         i,
-                        caseId,
                         logInfo.getEventClasses().getClassOf(previousEvent).getIndex(),
                         -2,
                         new java.sql.Timestamp(((Date) XLogUtils.getAttributeValue(previousEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP))).getTime()),
@@ -163,7 +161,7 @@ public class XLog2Database {
 
                 // execute buffer?
                 buffer++;
-                if (buffer >= bufferSize) {
+                if (buffer >= BUFFER_SIZE) {
                     jdbcTemplate.batchUpdate(insertEventSql, prepInsertEvent);
                     jdbcTemplate.batchUpdate(insertTraceSql, prepInsertTrace);
 
@@ -184,59 +182,34 @@ public class XLog2Database {
             throw ex;
         }
 
-        // clean tables
-        jdbcTemplate.update("DROP TABLE IF EXISTS " + db.caseTable.getTableNameSQL());
-        jdbcTemplate.update("DROP TABLE IF EXISTS " + db.variantsTable.getTableNameSQL());
-        jdbcTemplate.execute(getPathsTableQuery(db.variantsTable.getTableNameSQL()));
+        // create depending case view
+        generateCaseView();
 
-        // generate directly follows graph
-        var sql = new OutputBuilder();
-        sql.print("WITH");
-        sql.print("sel AS (");
-        sql.print("  SELECT");
-        sql.print("    %s,", "case_id");
-        sql.print("    MIN(source_timestamp) AS start_time,");
-        sql.print("    MAX(source_timestamp) AS end_time,");
-        sql.print("    COUNT(%s) AS %s,", "source_event", "num_events");
-        sql.print("    COUNT(DISTINCT %s) AS %s,", "source_resource", "num_users");
-        sql.print("    CAST(%s AS interval) AS %s,", "age(MAX(source_timestamp), MIN(source_timestamp))", "total_duration");
-        sql.print("    CONCAT(':', STRING_AGG(CAST(source_event AS VARCHAR(5)), '::' ORDER BY source_timestamp, lifecycle, source_event), ':') AS variant");
-        sql.print("  FROM %s AS log", db.eventTable.getTableNameSQL());
-        sql.print("  WHERE source_event <> -1");
-        sql.print("  GROUP BY case_id),");
-
-        sql.print("  ins AS (");
-        sql.print("    INSERT INTO %s (%s)", db.variantsTable.getTableNameSQL(), "variant");
-        sql.print("    SELECT %s FROM sel GROUP BY variant ORDER BY COUNT(*) DESC RETURNING %s AS %s, %s)", "variant", "id", "variant_id", "variant");
-        sql.print("SELECT %s, %s, %s, %s, %s, %s, %s",
-                "sel.case_id",
-                "sel.start_time",
-                "sel.end_time",
-                "sel.num_events",
-                "sel.num_users",
-                "sel.total_duration",
-                "variant_id");
-        sql.print("INTO %s", db.caseTable.getTableNameSQL());
-        sql.print("FROM sel LEFT JOIN ins USING (variant)");
-
-        jdbcTemplate.execute(sql.toString());
-
-        // create index for cases table
-        jdbcTemplate.execute("CREATE INDEX p_case_id_index_" + db.caseTable.getTableNameSQL() + " ON " + db.caseTable.getTableNameSQL() + " (case_id)");
+        // update case table
         jdbcTemplate.execute("UPDATE " + db.eventTable.getTableNameSQL() + " SET " + db.eventDurationCol.getColumnNameSQL() + " = age(" + db.eventTargetTimestampCol.getColumnNameSQL() + "," + db.eventSourceTimestampCol.getColumnNameSQL() + ") WHERE " + db.eventDurationCol.getColumnNameSQL() + " IS NULL");
 
         logger.info("Finished importing event log \"{}\"", this.logName);
         return true;
     }
 
-    private String getPathsTableQuery(String variantsTableName) {
-        OutputBuilder sql = new OutputBuilder();
-        sql.print("CREATE TABLE %s (", variantsTableName);
-        sql.indentPrint("%s %s,", "id", "SERIAL NOT NULL PRIMARY KEY");
-        sql.indentPrint("%s %s NULL", "variant", "TEXT");
-        sql.print(")");
+    private void generateCaseView() {
+        // generate directly follows graph
+        var sql = new OutputBuilder();
+        sql.print("CREATE OR REPLACE VIEW " + db.caseTable.getTableNameSQL() + " AS ");
+        sql.print("SELECT");
+        sql.print("%s,", "case_id");
+        sql.print("MIN(source_timestamp) AS start_time,");
+        sql.print("MAX(source_timestamp) AS end_time,");
+        sql.print("COUNT(%s) AS %s,", "source_event", "num_events");
+        sql.print("COUNT(DISTINCT %s) AS %s,", "source_resource", "num_users");
+        sql.print("CAST(%s AS interval) AS %s,", "age(MAX(source_timestamp), MIN(source_timestamp))", "total_duration");
+        sql.print("CONCAT(':', STRING_AGG(CAST(source_event AS VARCHAR(5)), '::' ORDER BY source_timestamp, lifecycle, source_event), ':') AS variant,");
+        sql.print("HASHTEXT(STRING_AGG(CAST(source_event AS VARCHAR(5)), '::' ORDER BY source_timestamp, lifecycle, source_event)) AS variant_id");
+        sql.print("FROM %s AS log", db.eventTable.getTableNameSQL());
+        sql.print("WHERE source_event <> -1");
+        sql.print("GROUP BY case_id");
 
-        return sql.toString();
+        jdbcTemplate.execute(sql.toString());
     }
 
     /**

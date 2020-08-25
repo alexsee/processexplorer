@@ -29,7 +29,7 @@ public class CountVariantsSelection extends Selection {
 
     @Override
     public Object getSelection(DatabaseModel db) {
-        return FunctionCall.count().setIsDistinct(true).addColumnParams(db.variantsIdCol);
+        return FunctionCall.count().setIsDistinct(true).addColumnParams(db.caseVariantIdCol);
     }
 
     @Override

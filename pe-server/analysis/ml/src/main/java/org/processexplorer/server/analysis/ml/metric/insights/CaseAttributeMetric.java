@@ -81,7 +81,7 @@ public class CaseAttributeMetric extends ClusterMetric {
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence")
                 .addAliasedColumn(calculation, "attr")
                 .addFromTable(db.caseTable)
-                .addJoins(SelectQuery.JoinType.INNER, db.caseVariantJoin, db.caseCaseAttributeJoin)
+                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin)
                 .addCondition(conditions)
                 .addCustomGroupings(calculation);
 

@@ -35,7 +35,7 @@ public class ClusterCondition extends Condition {
     @Override
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
         if (clusterIndex != null) {
-            return BinaryCondition.equalTo(db.variantsTable.addColumn("cluster_index"), clusterIndex);
+            return BinaryCondition.equalTo(db.caseAttributeTable.addColumn("cluster_index"), clusterIndex);
         }
         return null;
     }

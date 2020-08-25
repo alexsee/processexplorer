@@ -37,7 +37,7 @@ public abstract class EventMetric extends ClusterMetric {
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence")
                 .addAliasedColumn(expr, "attr")
                 .addCondition(condition)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseVariantJoin, db.caseCaseAttributeJoin)
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin)
                 .addGroupings(db.eventTargetEventCol)
                 .addCustomGroupings(expr)
                 .addCondition(BinaryCondition.equalTo(db.eventTable, eventName));

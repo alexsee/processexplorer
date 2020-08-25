@@ -45,32 +45,32 @@ public class PathCondition extends Condition {
 
         switch (conditionType) {
             case RESPONSE:
-                return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%:" + end + ":%"));
+                return (BinaryCondition.like(db.caseVariantCol, "%:" + start + ":%:" + end + ":%"));
             case DIRECT_RESPONSE:
-                return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + "::" + end + ":%"));
+                return (BinaryCondition.like(db.caseVariantCol, "%:" + start + "::" + end + ":%"));
             case NO_RESPONSE:
-                return (BinaryCondition.notLike(db.variantsVariantCol, "%:" + start + ":%:" + end + ":%"));
+                return (BinaryCondition.notLike(db.caseVariantCol, "%:" + start + ":%:" + end + ":%"));
             case NO_DIRECT_RESPONSE:
-                return (BinaryCondition.notLike(db.variantsVariantCol, "%:" + start + "::" + end + ":%"));
+                return (BinaryCondition.notLike(db.caseVariantCol, "%:" + start + "::" + end + ":%"));
             case EXISTS:
-                return (BinaryCondition.like(db.variantsVariantCol, "%:" + start + ":%"));
+                return (BinaryCondition.like(db.caseVariantCol, "%:" + start + ":%"));
             case START_END:
                 if (start != null)
                     path += ":" + start + ":";
                 path += "%";
                 if (end != null)
                     path += ":" + end + ":";
-                return (BinaryCondition.like(db.variantsVariantCol, path));
+                return (BinaryCondition.like(db.caseVariantCol, path));
             case NO_START_END:
                 if (start != null)
                     path += ":" + start + ":";
                 path += "%";
                 if (end != null)
                     path += ":" + end + ":";
-                return (BinaryCondition.notLike(db.variantsVariantCol, path));
+                return (BinaryCondition.notLike(db.caseVariantCol, path));
             case CUSTOM:
             case CUSTOM_EXACT:
-                return (BinaryCondition.like(db.variantsVariantCol, start));
+                return (BinaryCondition.like(db.caseVariantCol, start));
         }
 
         return null;

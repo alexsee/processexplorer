@@ -76,7 +76,7 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
                 .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.eventCaseIdCol), "num_cases")
                 .addAliasedColumn(calculation, "expr")
                 .addCondition(conditions)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin, db.caseVariantJoin)
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin)
                 .addGroupings(db.caseAttributeCaseIdCol, db.eventSourceEventCol);
 
         var outer_sql = new SelectQuery()

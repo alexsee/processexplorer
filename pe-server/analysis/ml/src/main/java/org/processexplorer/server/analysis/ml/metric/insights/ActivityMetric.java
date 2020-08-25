@@ -68,7 +68,7 @@ public class ActivityMetric extends ClusterMetric {
                 .addColumns(db.eventTargetEventCol)
                 .addAliasedColumn(expression, "expr")
                 .addCondition(conditions)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin, db.caseVariantJoin)
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin)
                 .addGroupings(db.eventTargetEventCol);
 
         var result = jdbcTemplate.queryForList(sql.validate().toString());

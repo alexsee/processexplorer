@@ -39,7 +39,7 @@ public class VariantCondition extends Condition {
     @Override
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
         if (variantIds != null) {
-            return new InCondition(db.variantsIdCol, variantIds);
+            return new InCondition(db.caseVariantIdCol, variantIds);
         }
         return null;
     }

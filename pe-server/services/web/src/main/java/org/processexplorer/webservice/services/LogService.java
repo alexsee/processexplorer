@@ -197,8 +197,7 @@ public class LogService {
 
         // remove data tables
         var db = new DatabaseModel(logName);
-        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseTable.getTableNameSQL());
-        jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.variantsTable.getTableNameSQL());
+        jdbcTemplate.execute("DROP VIEW IF EXISTS " + db.caseTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.caseAttributeTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.activityTable.getTableNameSQL());
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + db.eventTable.getTableNameSQL());

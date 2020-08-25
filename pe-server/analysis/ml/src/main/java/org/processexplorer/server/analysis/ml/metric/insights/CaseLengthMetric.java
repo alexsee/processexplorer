@@ -68,7 +68,7 @@ public class CaseLengthMetric extends CaseMetric<CaseMetric.Measure, String> {
                 .addColumns(db.caseCaseIdCol)
                 .addAliasedColumn(calculation, "expr")
                 .addCondition(conditions)
-                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin, db.caseVariantJoin);
+                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin);
 
         var outer_sql = new SelectQuery()
                 .addAliasedColumn(FunctionCall.avg().addCustomParams(new CustomSql("a.expr")), "average")

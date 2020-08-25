@@ -106,21 +106,21 @@ public class PredictionService {
 
         // add new columns
         var db = new DatabaseModel(logName);
-        var caseStateCol = db.caseTable.addColumn("state", "integer", null);
-        var caseResourceCol = db.caseTable.addColumn("assigned", "varchar", 1024);
-        var casePredictionsCol = db.caseTable.addColumn("prediction", "text", null);
+        var caseStateCol = db.caseAttributeTable.addColumn("state", "integer", null);
+        var caseResourceCol = db.caseAttributeTable.addColumn("assigned", "varchar", 1024);
+        var casePredictionsCol = db.caseAttributeTable.addColumn("prediction", "text", null);
 
-        jdbcTemplate.execute( "ALTER TABLE " + db.caseTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseStateCol.getColumnNameSQL());
-        jdbcTemplate.execute(new AlterTableQuery(db.caseTable).setAddColumn(caseStateCol).validate().toString());
+        jdbcTemplate.execute( "ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseStateCol.getColumnNameSQL());
+        jdbcTemplate.execute(new AlterTableQuery(db.caseAttributeTable).setAddColumn(caseStateCol).validate().toString());
 
-        jdbcTemplate.execute("ALTER TABLE " + db.caseTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseResourceCol.getColumnNameSQL());
-        jdbcTemplate.execute(new AlterTableQuery(db.caseTable).setAddColumn(caseResourceCol).validate().toString());
+        jdbcTemplate.execute("ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseResourceCol.getColumnNameSQL());
+        jdbcTemplate.execute(new AlterTableQuery(db.caseAttributeTable).setAddColumn(caseResourceCol).validate().toString());
 
-        jdbcTemplate.execute("ALTER TABLE " + db.caseTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + casePredictionsCol.getColumnNameSQL());
-        jdbcTemplate.execute(new AlterTableQuery(db.caseTable).setAddColumn(casePredictionsCol).validate().toString());
+        jdbcTemplate.execute("ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + casePredictionsCol.getColumnNameSQL());
+        jdbcTemplate.execute(new AlterTableQuery(db.caseAttributeTable).setAddColumn(casePredictionsCol).validate().toString());
 
         // set all cases as closed
-        jdbcTemplate.execute(new UpdateQuery(db.caseTable).addSetClause(caseStateCol, 0).validate().toString());
+        jdbcTemplate.execute(new UpdateQuery(db.caseAttributeTable).addSetClause(caseStateCol, 0).validate().toString());
 
         // save feature
         var eventLog = eventLogRepository.findByLogName(logName);
@@ -145,7 +145,7 @@ public class PredictionService {
 
         var eventLog = eventLogRepository.findByLogName(configuration.getLogName());
         var db = new DatabaseModel(configuration.getLogName());
-        var predictionCol = db.caseTable.addColumn("prediction");
+        var predictionCol = db.caseAttributeTable.addColumn("prediction");
 
         // report processing
         messagingTemplate.convertAndSend("/notifications/predictions/prediction_started", eventLog);
@@ -174,9 +174,9 @@ public class PredictionService {
                 var attributes = c.findValue("attributes");
                 var detection = attributes.findValue("detection").toString();
 
-                var updateSQL = new UpdateQuery(db.caseTable)
+                var updateSQL = new UpdateQuery(db.caseAttributeTable)
                         .addSetClause(predictionCol, detection)
-                        .addCondition(BinaryCondition.equalTo(db.caseCaseIdCol, caseId));
+                        .addCondition(BinaryCondition.equalTo(db.caseAttributeCaseIdCol, caseId));
 
                 jdbcTemplate.execute(updateSQL.validate().toString());
             }
@@ -297,7 +297,7 @@ public class PredictionService {
         var db = new DatabaseModel(logName);
 
         var sqlOutput = new OutputBuilder();
-        sqlOutput.print("SELECT *,\n" +
+        sqlOutput.print("SELECT t3.*, t2.state, t2.assigned,\n" +
                         "       (SELECT a.name\n" +
                         "        FROM %s t,\n" +
                         "             %s a\n" +
@@ -310,9 +310,9 @@ public class PredictionService {
                         "        WHERE t.case_id = t2.case_id\n" +
                         "        ORDER BY t.event_number DESC\n" +
                         "        LIMIT 1) AS current_resource\n" +
-                        "FROM %s t2\n" +
-                        "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL)", db.eventTable.getTableNameSQL(),
-                db.activityTable.getTableNameSQL(), db.eventTable.getTableNameSQL(), db.caseTable.getTableNameSQL());
+                        "FROM %s t2, %s t3\n" +
+                        "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL AND t2.case_id = t3.case_id)", db.eventTable.getTableNameSQL(),
+                db.activityTable.getTableNameSQL(), db.eventTable.getTableNameSQL(), db.caseAttributeTable.getTableNameSQL(), db.caseTable.getTableNameSQL());
 
         return jdbcTemplate.query(sqlOutput.toString(), new OpenCaseRowMapper());
     }

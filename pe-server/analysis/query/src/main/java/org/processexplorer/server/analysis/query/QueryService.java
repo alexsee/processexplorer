@@ -116,7 +116,7 @@ public class QueryService {
         // get number of events
         var sql_num_events = new SelectQuery()
                 .addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events")
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin, db.caseVariantJoin);
+                .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.eventCaseJoin, db.caseCaseAttributeJoin);
 
         addConditionsToSql(sql_num_events, db, conditions);
 
@@ -125,7 +125,7 @@ public class QueryService {
         // get number of traces
         var sql_num_traces = new SelectQuery()
                 .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.caseAttributeCaseIdCol), "num_traces")
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin, db.caseVariantJoin);
+                .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.eventCaseJoin, db.caseCaseAttributeJoin);
 
         addConditionsToSql(sql_num_traces, db, conditions);
 
@@ -159,10 +159,9 @@ public class QueryService {
         var db = new DatabaseModel(logName);
 
         var sql = new SelectQuery()
-                .addAllTableColumns(db.variantsTable)
+                .addColumns(db.caseVariantIdCol, db.caseVariantCol)
                 .addAliasedColumn(FunctionCall.count().addColumnParams(db.caseVariantIdCol), "occurrence")
-                .addJoins(SelectQuery.JoinType.INNER, db.caseVariantJoin)
-                .addGroupings(db.variantsIdCol)
+                .addGroupings(db.caseVariantIdCol, db.caseVariantCol)
                 .addCustomOrdering("occurrence", OrderObject.Dir.DESCENDING);
 
         for (var rule : conditions) {
@@ -175,7 +174,7 @@ public class QueryService {
         var rowMapper = new RowMapper<Variant>() {
             public Variant mapRow(ResultSet rs, int rowNum) throws SQLException {
                 var result = new Variant();
-                result.setId(rs.getLong("id"));
+                result.setId(rs.getLong("variant_id"));
                 result.setOccurrence(rs.getLong("occurrence"));
 
                 var path = rs.getString("variant").split("::");
@@ -208,10 +207,10 @@ public class QueryService {
         var db = new DatabaseModel(logName);
 
         var sql = new SelectQuery()
-                .addColumns(db.variantsIdCol)
+                .addColumns(db.caseVariantIdCol)
                 .addAliasedColumn(FunctionCall.count().addColumnParams(db.caseVariantIdCol), "occurrence")
-                .addJoins(SelectQuery.JoinType.INNER, db.caseVariantJoin, db.caseCaseAttributeJoin)
-                .addGroupings(db.variantsIdCol)
+                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin)
+                .addGroupings(db.caseVariantIdCol)
                 .addCustomOrdering("occurrence", OrderObject.Dir.DESCENDING);
 
         for (var rule : conditions) {
@@ -224,7 +223,7 @@ public class QueryService {
         var rowMapper = new RowMapper<Variant>() {
             public Variant mapRow(ResultSet rs, int rowNum) throws SQLException {
                 var result = new Variant();
-                result.setId(rs.getLong("id"));
+                result.setId(rs.getLong("variant_id"));
                 result.setOccurrence(rs.getLong("occurrence"));
                 return result;
             }
@@ -258,7 +257,7 @@ public class QueryService {
         }
 
         var sqlT = sql.addGroupings(db.eventSourceEventCol, db.eventTargetEventCol)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin, db.caseVariantJoin)
+                .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.eventCaseJoin, db.eventCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
@@ -314,7 +313,7 @@ public class QueryService {
         }
 
         var sqlT = sql.addGroupings(db.eventSourceResourceCol, db.eventTargetResourceCol)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin, db.caseVariantJoin)
+                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
@@ -471,7 +470,6 @@ public class QueryService {
         }
 
         sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin);
-        sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseVariantJoin);
 
         // add conditions
         for (var rule : query.getConditions()) {
@@ -498,7 +496,7 @@ public class QueryService {
                 .addAliasedColumn(db.caseAttributeTable.addColumn("\"" + query.getAttributeName() + "\""), "attr")
                 .addFromTable(db.caseTable);
 
-        sql = sql.addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin, db.caseVariantJoin);
+        sql = sql.addJoins(SelectQuery.JoinType.LEFT_OUTER, db.caseCaseAttributeJoin);
 
         // add conditions
         addConditionsToSql(sql, db, query.getConditions());
@@ -528,8 +526,8 @@ public class QueryService {
         var db = new DatabaseModel(logName);
 
         var sql = new SelectQuery(true)
-                .addColumns(db.variantsTable.addColumn("cluster_index"))
-                .addFromTable(db.variantsTable);
+                .addColumns(db.caseAttributeTable.addColumn("cluster_index"))
+                .addFromTable(db.caseAttributeTable);
 
         var values = jdbcTemplate.queryForList(sql.validate().toString(), Long.class);
         return values;
@@ -547,7 +545,7 @@ public class QueryService {
 
         var sql = new SelectQuery()
                 .addFromTable(db.caseTable)
-                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin, db.caseVariantJoin);
+                .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin);
 
         // add selections
         int i = 0;

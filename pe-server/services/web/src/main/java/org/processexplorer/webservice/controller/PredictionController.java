@@ -79,7 +79,7 @@ public class PredictionController {
     public ResponseEntity predict(@RequestParam(name = "logName") String logName) {
         var configuration = new PredictionConfiguration();
         configuration.setLogName(logName);
-        configuration.setWhereCondition("c.state = 1");
+        configuration.setWhereCondition("ca.state = 1");
 
         predictionService.predict(configuration);
         return ResponseEntity.ok().build();

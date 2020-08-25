@@ -34,7 +34,6 @@ import org.processexplorer.server.analysis.ml.itemsets.Itemset;
 import org.processexplorer.server.analysis.ml.metric.EvaluationUtils;
 import org.processexplorer.server.analysis.ml.metric.ItemsetMetrics;
 import org.processexplorer.server.analysis.ml.metric.SequenceMetrics;
-import org.processexplorer.server.analysis.query.request.CasesQuery;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.ComboCondition;
@@ -44,6 +43,7 @@ import org.processexplorer.server.analysis.query.condition.VariantCondition;
 import org.processexplorer.server.analysis.query.model.FieldValue;
 import org.processexplorer.server.analysis.query.model.Log;
 import org.processexplorer.server.analysis.query.model.Variant;
+import org.processexplorer.server.analysis.query.request.CasesQuery;
 import org.processexplorer.server.common.persistence.entity.EventLog;
 import org.processexplorer.server.common.persistence.entity.EventLogFeature;
 import org.processexplorer.server.common.persistence.repository.EventLogFeatureRepository;
@@ -186,24 +186,20 @@ public class MultiPerspectiveTraceClustering {
     private void updateDatabase(EventLogClusters clusters) {
         // add new column
         var db = new DatabaseModel(logName);
-        var variantClusterIndexCol = db.variantsTable.addColumn("cluster_index", "integer", null);
+        var variantClusterIndexCol = db.caseAttributeTable.addColumn("cluster_index", "integer", null);
 
-        var sql = new AlterTableQuery(db.variantsTable)
+        var sql = new AlterTableQuery(db.caseAttributeTable)
                 .setAddColumn(variantClusterIndexCol)
                 .validate().toString();
 
-        jdbcTemplate.execute("ALTER TABLE " + db.variantsTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + variantClusterIndexCol.getColumnNameSQL());
+        jdbcTemplate.execute("ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + variantClusterIndexCol.getColumnNameSQL());
         jdbcTemplate.execute(sql);
 
         // update variants
-        var preparer = new QueryPreparer();
-        QueryPreparer.PlaceHolder clusterIndexParam = preparer.getNewPlaceHolder();
-        QueryPreparer.PlaceHolder variantIdParam = preparer.getNewPlaceHolder();
-
-        sql = new UpdateQuery(db.variantsTable)
-                .addSetClause(variantClusterIndexCol, preparer.addStaticPlaceHolder(clusterIndexParam))
-                .addCondition(BinaryCondition.equalTo(db.variantsIdCol, preparer.addStaticPlaceHolder(variantIdParam)))
-                .validate().toString();
+        sql = "UPDATE " + db.caseAttributeTable.getAbsoluteName() + " SET " + variantClusterIndexCol.getColumnNameSQL() + " = ? " +
+                "FROM " + db.caseTable.getAbsoluteName() + " " +
+                "WHERE " + db.caseCaseIdCol.getAbsoluteName() + " = " + db.caseAttributeCaseIdCol.getAbsoluteName() + " " +
+                "AND " + db.caseVariantIdCol.getAbsoluteName() + " = ?";
 
         var batch = new ArrayList<Object[]>();
         for (int i = 0; i < clusters.getClusters().size(); i++) {
