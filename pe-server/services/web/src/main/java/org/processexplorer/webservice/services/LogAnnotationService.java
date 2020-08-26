@@ -28,7 +28,7 @@ import java.util.List;
 @Service
 public class LogAnnotationService {
 
-    private EventLogAnnotationRepository eventLogAnnotationRepository;
+    private final EventLogAnnotationRepository eventLogAnnotationRepository;
 
     @Autowired
     public LogAnnotationService(EventLogAnnotationRepository eventLogAnnotationRepository) {

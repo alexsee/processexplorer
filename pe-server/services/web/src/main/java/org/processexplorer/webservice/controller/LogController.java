@@ -61,13 +61,13 @@ public class LogController {
     }
 
     @GetMapping("/import")
-    public ResponseEntity importLog(@RequestParam("logName") String logName) {
+    public ResponseEntity<Void> importLog(@RequestParam("logName") String logName) {
         logService.importLog(logName);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping()
-    public ResponseEntity deleteLog(@RequestParam("logName") String logName) {
+    public ResponseEntity<Void> deleteLog(@RequestParam("logName") String logName) {
         logService.deleteLog(logName);
         return ResponseEntity.ok().build();
     }
@@ -85,7 +85,7 @@ public class LogController {
     }
 
     @DeleteMapping("/annotation")
-    public ResponseEntity deleteAnnotation(@RequestParam("id") Long id) {
+    public ResponseEntity<Void> deleteAnnotation(@RequestParam("id") Long id) {
         logAnnotationService.deleteById(id);
         return ResponseEntity.ok().build();
     }

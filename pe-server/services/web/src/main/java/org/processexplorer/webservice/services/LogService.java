@@ -45,17 +45,17 @@ import java.util.concurrent.Future;
 @Service
 public class LogService {
 
-    private EventLogRepository eventLogRepository;
-    private EventLogFeatureRepository eventLogFeatureRepository;
-    private EventLogArtifactRepository eventLogArtifactRepository;
-    private EventLogAnnotationRepository eventLogAnnotationRepository;
-    private EventLogRecommendationRepository eventLogRecommendationRepository;
-    private EventLogModelRepository eventLogModelRepository;
+    private final EventLogRepository eventLogRepository;
+    private final EventLogFeatureRepository eventLogFeatureRepository;
+    private final EventLogArtifactRepository eventLogArtifactRepository;
+    private final EventLogAnnotationRepository eventLogAnnotationRepository;
+    private final EventLogRecommendationRepository eventLogRecommendationRepository;
+    private final EventLogModelRepository eventLogModelRepository;
 
-    private SimpMessagingTemplate messagingTemplate;
-    private StorageService storageService;
-    private QueryService queryService;
-    private JdbcTemplate jdbcTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final StorageService storageService;
+    private final QueryService queryService;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public LogService(EventLogRepository eventLogRepository,

@@ -33,7 +33,7 @@ import java.util.List;
 @RequestMapping("/artifacts")
 public class ArtifactController {
 
-    private ArtifactAnalysis artifactAnalysis;
+    private final ArtifactAnalysis artifactAnalysis;
 
     @Autowired
     public ArtifactController(ArtifactAnalysis artifactAnalysis) {
@@ -63,7 +63,7 @@ public class ArtifactController {
     }
 
     @DeleteMapping("/configuration")
-    public ResponseEntity delete(@RequestParam("id") Long id) {
+    public ResponseEntity<Void> delete(@RequestParam("id") Long id) {
         artifactAnalysis.delete(id);
         return ResponseEntity.ok().build();
     }

@@ -58,25 +58,25 @@ public class PredictionController {
     }
 
     @PostMapping("/train")
-    public ResponseEntity trainModel(@RequestBody TrainingConfiguration configuration) {
+    public ResponseEntity<Void> trainModel(@RequestBody TrainingConfiguration configuration) {
         predictionService.train(configuration);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping()
-    public ResponseEntity delete(@RequestParam("id") long id) {
+    public ResponseEntity<Void> delete(@RequestParam("id") long id) {
         predictionService.delete(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/init_case_management")
-    public ResponseEntity initCaseManagement(@RequestParam(name = "logName") String logName) {
+    public ResponseEntity<Void> initCaseManagement(@RequestParam(name = "logName") String logName) {
         predictionService.initCaseManagement(logName);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/predict/open_cases")
-    public ResponseEntity predict(@RequestParam(name = "logName") String logName) {
+    public ResponseEntity<Void> predict(@RequestParam(name = "logName") String logName) {
         var configuration = new PredictionConfiguration();
         configuration.setLogName(logName);
         configuration.setWhereCondition("ca.state = 1");

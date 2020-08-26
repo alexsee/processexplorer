@@ -36,9 +36,9 @@ import java.util.List;
 @Service
 public class LogRecommendationService {
 
-    private EventLogRepository eventLogRepository;
-    private EventLogRecommendationRepository eventLogRecommendationRepository;
-    private RecommendationService recommendationService;
+    private final EventLogRepository eventLogRepository;
+    private final EventLogRecommendationRepository eventLogRecommendationRepository;
+    private final RecommendationService recommendationService;
 
     public LogRecommendationService(
             EventLogRepository eventLogRepository,
