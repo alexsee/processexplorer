@@ -1,13 +1,13 @@
 package org.processexplorer.server.analysis.mining.log;
 
-import com.healthmarketscience.sqlbuilder.*;
-import org.hibernate.loader.custom.sql.SQLCustomQuery;
-import org.hibernate.sql.Update;
+import com.healthmarketscience.sqlbuilder.BinaryCondition;
+import com.healthmarketscience.sqlbuilder.CustomExpression;
+import com.healthmarketscience.sqlbuilder.InsertQuery;
+import com.healthmarketscience.sqlbuilder.UpdateQuery;
 import org.processexplorer.server.analysis.query.DatabaseModel;
+import org.processexplorer.server.analysis.query.model.Event;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
 
 /**
  * @author Alexander Seeliger on 25.08.2020.
@@ -21,14 +21,21 @@ public class StreamingService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void addEvent(String logName, String caseId, long activityId, Timestamp timestamp, String resource) {
+    /**
+     * Adds a new event to an existing case.
+     *
+     * @param logName
+     * @param caseId
+     * @param event
+     */
+    public void addEvent(String logName, String caseId, Event event) {
         var db = new DatabaseModel(logName);
 
         // update entry
         var updateSQL = new UpdateQuery(db.eventTable)
-                .addSetClause(db.eventTargetEventCol, activityId)
-                .addSetClause(db.eventTargetTimestampCol, timestamp)
-                .addSetClause(db.eventTargetResourceCol, resource)
+                .addSetClause(db.eventTargetEventCol, event.getActivity().getId())
+                .addSetClause(db.eventTargetTimestampCol, event.getTimestamp())
+                .addSetClause(db.eventTargetResourceCol, event.getResource())
                 .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventCaseIdCol, caseId))
                 .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventTargetEventCol, -2));
 
@@ -37,11 +44,11 @@ public class StreamingService {
         // append end symbol
         var insertSQL = new InsertQuery(db.eventTable)
                 .addColumn(db.eventCaseIdCol, caseId)
-                .addColumn(db.eventSourceEventCol, activityId)
+                .addColumn(db.eventSourceEventCol, event.getActivity().getId())
                 .addColumn(db.eventTargetEventCol, -2)
-                .addColumn(db.eventSourceTimestampCol, timestamp)
+                .addColumn(db.eventSourceTimestampCol, event.getTimestamp())
                 .addColumn(db.eventTargetTimestampCol, null)
-                .addColumn(db.eventSourceResourceCol, resource)
+                .addColumn(db.eventSourceResourceCol, event.getResource())
                 .addColumn(db.eventTargetResourceCol, null)
                 .addColumn(db.eventDurationCol, null)
                 .addColumn(db.eventNumberCol, null);
@@ -55,5 +62,4 @@ public class StreamingService {
 
         jdbcTemplate.update(updateStatsSQL.validate().toString());
     }
-
 }

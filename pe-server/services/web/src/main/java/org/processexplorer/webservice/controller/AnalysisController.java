@@ -39,13 +39,13 @@ import java.util.List;
 @RequestMapping("/analysis")
 public class AnalysisController {
 
-    private SimpleTraceClustering traceClustering;
+    private final SimpleTraceClustering traceClustering;
 
-    private MultiPerspectiveTraceClustering multiPerspectiveTraceClustering;
+    private final MultiPerspectiveTraceClustering multiPerspectiveTraceClustering;
 
-    private DifferenceAnalysis differenceAnalysis;
+    private final DifferenceAnalysis differenceAnalysis;
 
-    private LogRecommendationService logRecommendationService;
+    private final LogRecommendationService logRecommendationService;
 
     @Autowired
     public AnalysisController(SimpleTraceClustering traceClustering, MultiPerspectiveTraceClustering multiPerspectiveTraceClustering, DifferenceAnalysis differenceAnalysis, LogRecommendationService logRecommendationService) {
@@ -56,7 +56,7 @@ public class AnalysisController {
     }
 
     @PostMapping("/simple_trace_clustering")
-    public ResponseEntity simpleTraceClustering(@RequestParam("logName") String logName) {
+    public ResponseEntity<Void> simpleTraceClustering(@RequestParam("logName") String logName) {
         traceClustering.cluster(logName);
 
         return ResponseEntity.ok().build();
@@ -69,7 +69,7 @@ public class AnalysisController {
     }
 
     @PostMapping("/multi_trace_clustering")
-    public ResponseEntity multiTraceClustering(@RequestParam("logName") String logName) {
+    public ResponseEntity<Void> multiTraceClustering(@RequestParam("logName") String logName) {
         multiPerspectiveTraceClustering.cluster(logName);
 
         return ResponseEntity.ok().build();
