@@ -34,4 +34,6 @@ public interface EventLogModelRepository extends CrudRepository<EventLogModel, L
 
     EventLogModel findFirstByEventLogLogNameAndUse(String logName, boolean use);
 
+    void deleteAllByEventLogLogName(String logName);
+
 }

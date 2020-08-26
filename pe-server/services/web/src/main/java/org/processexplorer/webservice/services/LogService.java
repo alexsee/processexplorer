@@ -50,6 +50,7 @@ public class LogService {
     private EventLogArtifactRepository eventLogArtifactRepository;
     private EventLogAnnotationRepository eventLogAnnotationRepository;
     private EventLogRecommendationRepository eventLogRecommendationRepository;
+    private EventLogModelRepository eventLogModelRepository;
 
     private SimpMessagingTemplate messagingTemplate;
     private StorageService storageService;
@@ -62,6 +63,7 @@ public class LogService {
                       EventLogArtifactRepository eventLogArtifactRepository,
                       EventLogAnnotationRepository eventLogAnnotationRepository,
                       EventLogRecommendationRepository eventLogRecommendationRepository,
+                      EventLogModelRepository eventLogModelRepository,
                       SimpMessagingTemplate messagingTemplate,
                       StorageService storageService,
                       QueryService queryService,
@@ -71,6 +73,7 @@ public class LogService {
         this.eventLogArtifactRepository = eventLogArtifactRepository;
         this.eventLogAnnotationRepository = eventLogAnnotationRepository;
         this.eventLogRecommendationRepository = eventLogRecommendationRepository;
+        this.eventLogModelRepository = eventLogModelRepository;
         this.messagingTemplate = messagingTemplate;
         this.storageService = storageService;
         this.queryService = queryService;
@@ -193,6 +196,7 @@ public class LogService {
         eventLogArtifactRepository.deleteAllByLogName(logName);
         eventLogFeatureRepository.deleteAllByEventLogLogName(logName);
         eventLogRecommendationRepository.deleteAllByEventLogLogName(logName);
+        eventLogModelRepository.deleteAllByEventLogLogName(logName);
         eventLogRepository.delete(eventLog);
 
         // remove data tables
