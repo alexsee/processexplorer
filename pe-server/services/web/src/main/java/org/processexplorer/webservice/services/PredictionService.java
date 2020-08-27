@@ -24,14 +24,14 @@ import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import com.healthmarketscience.sqlbuilder.UpdateQuery;
 import org.processexplorer.data.prediction.*;
 import org.processexplorer.server.analysis.query.DatabaseModel;
-import org.processexplorer.server.common.persistence.repository.EventLogFeatureRepository;
-import org.processexplorer.server.common.persistence.repository.EventLogModelRepository;
-import org.processexplorer.server.common.persistence.repository.EventLogRepository;
 import org.processexplorer.server.common.persistence.entity.EventLogFeature;
 import org.processexplorer.server.common.persistence.entity.EventLogModel;
 import org.processexplorer.server.common.persistence.entity.EventLogModelState;
-import org.processexplorer.webservice.properties.ApplicationProperties;
+import org.processexplorer.server.common.persistence.repository.EventLogFeatureRepository;
+import org.processexplorer.server.common.persistence.repository.EventLogModelRepository;
+import org.processexplorer.server.common.persistence.repository.EventLogRepository;
 import org.processexplorer.server.common.utils.OutputBuilder;
+import org.processexplorer.webservice.properties.ApplicationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +110,7 @@ public class PredictionService {
         var caseResourceCol = db.caseAttributeTable.addColumn("assigned", "varchar", 1024);
         var casePredictionsCol = db.caseAttributeTable.addColumn("prediction", "text", null);
 
-        jdbcTemplate.execute( "ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseStateCol.getColumnNameSQL());
+        jdbcTemplate.execute("ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseStateCol.getColumnNameSQL());
         jdbcTemplate.execute(new AlterTableQuery(db.caseAttributeTable).setAddColumn(caseStateCol).validate().toString());
 
         jdbcTemplate.execute("ALTER TABLE " + db.caseAttributeTable.getTableNameSQL() + " DROP COLUMN IF EXISTS " + caseResourceCol.getColumnNameSQL());
@@ -263,22 +263,20 @@ public class PredictionService {
             return;
         }
 
-        // check if we have a model id
-        if (model.get().getModelId() == 0) {
-            return;
-        }
-
         // delete model from APRIL service
         try {
-            var client = WebClient.builder()
-                    .baseUrl(properties.getAprilBaseUri())
-                    .build();
+            // check if we have a model id
+            if (model.get().getModelId() != 0) {
+                var client = WebClient.builder()
+                        .baseUrl(properties.getAprilBaseUri())
+                        .build();
 
-            client.delete().uri("/models/" + model.get().getModelId())
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(Long.class)
-                    .block();
+                client.delete().uri("/models/" + model.get().getModelId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .retrieve()
+                        .bodyToMono(Long.class)
+                        .block();
+            }
         } catch (Exception ex) {
             logger.error("Prediction model {} could not be deleted from APRIL service due to exception.", id, ex);
         }
@@ -325,15 +323,18 @@ public class PredictionService {
      * @return
      */
     public EventLogModel setDefault(long modelId) {
-        var model = eventLogModelRepository.findById(modelId).get();
+        var model = eventLogModelRepository.findById(modelId);
+        if (model.isEmpty()) {
+            return null;
+        }
 
-        var models = eventLogModelRepository.findByEventLogLogName(model.getModelName());
+        var models = eventLogModelRepository.findByEventLogLogName(model.get().getModelName());
         for (var m : models) {
             m.setUse(false);
             eventLogModelRepository.save(m);
         }
 
-        model.setUse(true);
-        return eventLogModelRepository.save(model);
+        model.get().setUse(true);
+        return eventLogModelRepository.save(model.get());
     }
 }
