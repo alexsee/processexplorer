@@ -20,26 +20,29 @@ import { SocialNetwork } from '../models/social-network.model';
 export class ProcessMapComponent implements OnInit, OnChanges {
   @ViewChild('processmap', {static: true}) private processmapContainer: ElementRef;
 
-  @Input() private logName: string;
-  @Input() private context: EventLogStatistics;
-  @Input() private conditions: Condition[];
+  @Input() public logName: string;
+  @Input() public context: EventLogStatistics;
+  @Input() public conditions: Condition[];
 
-  data: ProcessMap;
-  socialNetwork: SocialNetwork;
-  settings: ProcessMapSettings;
+  public isActivityFilterModal = false;
+  public selectedActivities = new Set<number>();
 
-  toggleSocialNetwork = false;
+  public data: ProcessMap;
+  public socialNetwork: SocialNetwork;
+  public settings: ProcessMapSettings;
 
-  zoom: any;
-  svg: any;
-  inner: any;
+  public toggleSocialNetwork = false;
 
-  graph: any;
+  public zoom: any;
+  public svg: any;
+  public inner: any;
 
-  variant = 0;
-  variants: Variant[];
-  minVariant: number;
-  maxVariant: number;
+  public graph: any;
+
+  public variant = 0;
+  public variants: Variant[];
+  public minVariant: number;
+  public maxVariant: number;
 
   constructor(
     private queryService: QueryService,
@@ -66,9 +69,16 @@ export class ProcessMapComponent implements OnInit, OnChanges {
       return;
     }
 
+    // set activity set
+    if (this.selectedActivities.size === 0) {
+      this.context.activities.forEach(item => this.selectedActivities.add(item.id));
+    }
+
     // query process map
     if (!this.toggleSocialNetwork) {
-      this.queryService.getProcessMap(this.logName, this.queryConvertService.convertToQuery(this.conditions))
+      this.queryService.getProcessMap(this.logName,
+        this.queryConvertService.convertToQuery(this.conditions),
+        Array.from(this.selectedActivities))
         .subscribe(response => {
           this.data = response.processMap;
           this.variants = response.variants;
@@ -124,6 +134,10 @@ export class ProcessMapComponent implements OnInit, OnChanges {
   }
 
   setVariantSliderPareto() {
+    if (this.variant !== 0) {
+      return;
+    }
+
     const total =  this.variants.reduce((s, current) => s + current.occurrence, 0) * .8;
     let i = 0;
     let sum = 0;
@@ -334,5 +348,30 @@ export class ProcessMapComponent implements OnInit, OnChanges {
   toggleGraph(): void {
     this.toggleSocialNetwork = !this.toggleSocialNetwork;
     this.update();
+  }
+
+  doActivityFilter(): void {
+    this.isActivityFilterModal = true;
+  }
+
+  doFilter(): void {
+    this.isActivityFilterModal = false;
+    this.update();
+  }
+
+  doCancel(): void {
+    this.isActivityFilterModal = false;
+  }
+
+  onItemChecked(id: number, checked: boolean): void {
+    this.updateCheckedSet(id, checked);
+  }
+
+  updateCheckedSet(id: number, checked: boolean): void {
+    if (checked) {
+      this.selectedActivities.add(id);
+    } else {
+      this.selectedActivities.delete(id);
+    }
   }
 }

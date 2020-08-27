@@ -19,4 +19,14 @@
 package org.processexplorer.server.analysis.query.request;
 
 public class ProcessMapQuery extends BaseQuery {
+
+    private String[] activityFilter;
+
+    public String[] getActivityFilter() {
+        return activityFilter;
+    }
+
+    public void setActivityFilter(String[] activityFilter) {
+        this.activityFilter = activityFilter;
+    }
 }

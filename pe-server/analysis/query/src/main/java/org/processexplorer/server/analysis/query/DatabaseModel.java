@@ -144,21 +144,37 @@ public class DatabaseModel {
     }
 
     public String getGraphTable(String perspective, String nullSource, String nullTarget) {
-        return "WITH " + getGraphTableName(this.logName) + " AS (SELECT " +
+        return getGraphTable(perspective, nullSource, nullTarget, null);
+    }
+
+    public String getGraphTable(String perspective, String nullSource, String nullTarget, String[] filter) {
+        String SQL = "WITH " + getGraphTableName(this.logName) + " AS (SELECT " +
                 "case_id, " +
                 perspective + " AS source, " +
                 "COALESCE(LEAD(" + perspective + ", 1) OVER (PARTITION BY case_id ORDER BY timestamp, event), " + nullTarget + ") AS target, " +
                 "timestamp AS source_timestamp, " +
                 "LEAD(timestamp, 1) OVER (PARTITION BY case_id ORDER BY timestamp, event) AS target_timestamp " +
-                "FROM " + this.eventTable.getTableNameSQL() + " " +
-                "UNION ALL " +
+                "FROM " + this.eventTable.getTableNameSQL() + " ";
+
+        if (filter != null) {
+            SQL += "WHERE " + perspective + " IN (" + String.join(", ", filter) + ") ";
+        }
+
+        SQL += "UNION ALL " +
                 "SELECT DISTINCT ON (case_id) " +
                 "case_id, " +
                 nullSource + " as source, " +
                 perspective + " as target, " +
                 "null as source_timestamp, " +
                 "timestamp as target_timestamp " +
-                "FROM " + this.eventTable.getTableNameSQL() + " " +
-                "ORDER BY source_timestamp, source) ";
+                "FROM " + this.eventTable.getTableNameSQL() + " ";
+
+        if (filter != null) {
+            SQL += "WHERE " + perspective + " IN (" + String.join(", ", filter) + ") ";
+        }
+
+        SQL += "ORDER BY source_timestamp, source) ";
+
+        return SQL;
     }
 }

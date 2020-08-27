@@ -257,7 +257,7 @@ public class QueryService {
             }
         }
 
-        var sqlT = db.getGraphTable("event", "-1", "-2") + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
+        var sqlT = db.getGraphTable("event", "-1", "-2", query.getActivityFilter()) + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
                 .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.graphCaseJoin, db.graphCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
