@@ -164,6 +164,9 @@ export class ProcessMapComponent implements OnInit, OnChanges {
       }
 
       // add as nodes
+      edge.sourceEvent = edge.sourceEvent === null ? -1 : edge.sourceEvent;
+      edge.targetEvent = edge.targetEvent === null ? -2 : edge.targetEvent;
+
       if (nodes.indexOf(edge.sourceEvent) === -1) {
         nodes.push(edge.sourceEvent);
         this.addNode(edge.sourceEvent, this.graph);

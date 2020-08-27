@@ -55,6 +55,6 @@ public class EventResourceMetric extends EventMetric {
 
     @Override
     protected Object getExpression() {
-        return db.eventSourceEventCol;
+        return db.eventEventCol;
     }
 }

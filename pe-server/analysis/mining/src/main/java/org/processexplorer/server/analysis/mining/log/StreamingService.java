@@ -31,35 +31,35 @@ public class StreamingService {
     public void addEvent(String logName, String caseId, Event event) {
         var db = new DatabaseModel(logName);
 
-        // update entry
-        var updateSQL = new UpdateQuery(db.eventTable)
-                .addSetClause(db.eventTargetEventCol, event.getActivity().getId())
-                .addSetClause(db.eventTargetTimestampCol, event.getTimestamp())
-                .addSetClause(db.eventTargetResourceCol, event.getResource())
-                .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventCaseIdCol, caseId))
-                .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventTargetEventCol, -2));
-
-        jdbcTemplate.update(updateSQL.validate().toString());
-
-        // append end symbol
-        var insertSQL = new InsertQuery(db.eventTable)
-                .addColumn(db.eventCaseIdCol, caseId)
-                .addColumn(db.eventSourceEventCol, event.getActivity().getId())
-                .addColumn(db.eventTargetEventCol, -2)
-                .addColumn(db.eventSourceTimestampCol, event.getTimestamp())
-                .addColumn(db.eventTargetTimestampCol, null)
-                .addColumn(db.eventSourceResourceCol, event.getResource())
-                .addColumn(db.eventTargetResourceCol, null)
-                .addColumn(db.eventDurationCol, null)
-                .addColumn(db.eventNumberCol, null);
-
-        jdbcTemplate.update(insertSQL.validate().toString());
-
-        // update case statistics
-        var updateStatsSQL = new UpdateQuery(db.eventTable)
-                .addSetClause(db.eventDurationCol, new CustomExpression("age(" + db.eventSourceEventCol.getColumnNameSQL() + ", " + db.eventTargetEventCol.getColumnNameSQL() + ")"))
-                .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventCaseIdCol, caseId));
-
-        jdbcTemplate.update(updateStatsSQL.validate().toString());
+//        // update entry
+//        var updateSQL = new UpdateQuery(db.eventTable)
+//                .addSetClause(db.eventTargetEventCol, event.getActivity().getId())
+//                .addSetClause(db.eventTargetTimestampCol, event.getTimestamp())
+//                .addSetClause(db.eventTargetResourceCol, event.getResource())
+//                .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventCaseIdCol, caseId))
+//                .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventTargetEventCol, -2));
+//
+//        jdbcTemplate.update(updateSQL.validate().toString());
+//
+//        // append end symbol
+//        var insertSQL = new InsertQuery(db.eventTable)
+//                .addColumn(db.eventCaseIdCol, caseId)
+//                .addColumn(db.eventEventCol, event.getActivity().getId())
+//                .addColumn(db.eventTargetEventCol, -2)
+//                .addColumn(db.eventTimestampCol, event.getTimestamp())
+//                .addColumn(db.eventTargetTimestampCol, null)
+//                .addColumn(db.eventResourceCol, event.getResource())
+//                .addColumn(db.eventTargetResourceCol, null)
+//                .addColumn(db.eventDurationCol, null)
+//                .addColumn(db.eventNumberCol, null);
+//
+//        jdbcTemplate.update(insertSQL.validate().toString());
+//
+//        // update case statistics
+//        var updateStatsSQL = new UpdateQuery(db.eventTable)
+//                .addSetClause(db.eventDurationCol, new CustomExpression("age(" + db.eventEventCol.getColumnNameSQL() + ", " + db.eventTargetEventCol.getColumnNameSQL() + ")"))
+//                .addCondition(new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.eventCaseIdCol, caseId));
+//
+//        jdbcTemplate.update(updateStatsSQL.validate().toString());
     }
 }

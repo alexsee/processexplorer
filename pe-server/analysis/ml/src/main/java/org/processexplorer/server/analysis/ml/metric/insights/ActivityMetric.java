@@ -65,18 +65,18 @@ public class ActivityMetric extends ClusterMetric {
     @Override
     protected Map<ClusterMetric.Measure, Double> computeDifference(Object expression, Condition conditions) {
         var sql = new SelectQuery()
-                .addColumns(db.eventTargetEventCol)
+                .addColumns(db.eventEventCol)
                 .addAliasedColumn(expression, "expr")
                 .addCondition(conditions)
                 .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.caseCaseAttributeJoin)
-                .addGroupings(db.eventTargetEventCol);
+                .addGroupings(db.eventEventCol);
 
         var result = jdbcTemplate.queryForList(sql.validate().toString());
 
         var measures = new HashMap<ClusterMetric.Measure, Double>();
 
         for (var item : result) {
-            var measure = new ClusterMetric.Measure("event_name", item.get(db.eventTargetEventCol.getColumnNameSQL()).toString());
+            var measure = new ClusterMetric.Measure("event_name", item.get(db.eventEventCol.getColumnNameSQL()).toString());
             measures.put(measure, Double.parseDouble(item.get("expr").toString()));
         }
 

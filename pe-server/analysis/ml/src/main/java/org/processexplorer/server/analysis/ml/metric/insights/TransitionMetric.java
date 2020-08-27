@@ -38,26 +38,26 @@ public abstract class TransitionMetric extends CaseMetric<CaseMetric.Measure, Tr
         var targetActivityTable = db.activityTable.rejoin("target_activity");
 
         var inner_sql = new SelectQuery()
-                .addColumns(db.eventSourceEventCol, db.eventTargetEventCol)
+                .addColumns(db.graphSourceCol, db.graphTargetCol)
                 .addAliasedColumn(sourceActivityTable.findColumnByName("name"), "source_event_name")
                 .addAliasedColumn(targetActivityTable.findColumnByName("name"), "target_event_name")
                 .addAliasedColumn(expr, "expr")
                 .addCondition(condition)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin)
-                .addCustomJoin(SelectQuery.JoinType.INNER, db.eventTable, sourceActivityTable, BinaryCondition.equalTo(db.eventSourceEventCol, sourceActivityTable.findColumnByName("id")))
-                .addCustomJoin(SelectQuery.JoinType.INNER, db.eventTable, targetActivityTable, BinaryCondition.equalTo(db.eventTargetEventCol, targetActivityTable.findColumnByName("id")))
-                .addGroupings(db.eventCaseIdCol, db.eventSourceEventCol, db.eventTargetEventCol, sourceActivityTable.findColumnByName("name"), targetActivityTable.findColumnByName("name"));
+                .addJoins(SelectQuery.JoinType.INNER, db.graphCaseJoin, db.graphCaseAttributeJoin)
+                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, sourceActivityTable, BinaryCondition.equalTo(db.graphSourceCol, sourceActivityTable.findColumnByName("id")))
+                .addCustomJoin(SelectQuery.JoinType.INNER, db.graphTable, targetActivityTable, BinaryCondition.equalTo(db.graphTargetCol, targetActivityTable.findColumnByName("id")))
+                .addGroupings(db.graphCaseIdCol, db.graphSourceCol, db.graphTargetCol, sourceActivityTable.findColumnByName("name"), targetActivityTable.findColumnByName("name"));
 
         var outer_sql = new SelectQuery()
-                .addCustomColumns(new CustomSql("a.source_event"), new CustomSql("a.target_event"), new CustomSql("a.source_event_name"), new CustomSql("a.target_event_name"))
+                .addCustomColumns(new CustomSql("a.source"), new CustomSql("a.target"), new CustomSql("a.source_event_name"), new CustomSql("a.target_event_name"))
                 .addAliasedColumn(FunctionCall.avg().addCustomParams(new CustomSql("a.expr")), "average")
                 .addAliasedColumn(new CustomExpression("stddev(a.expr)"), "standard_deviation")
                 .addAliasedColumn(FunctionCall.countAll(), "num_cases")
                 .addCustomFromTable(AliasedObject.toAliasedObject(new CustomExpression(inner_sql.toString()), "a"))
-                .addCustomGroupings("a.source_event", "a.target_event", "a.source_event_name", "a.target_event_name")
+                .addCustomGroupings("a.source", "a.target", "a.source_event_name", "a.target_event_name")
                 .addHaving(new CustomCondition("stddev(a.expr) > 0"));
 
-        var result = jdbcTemplate.queryForList(outer_sql.validate().toString());
+        var result = jdbcTemplate.queryForList(db.getGraphTable("event", "-1", "-2") + outer_sql.validate().toString());
         var measures = new HashMap<Edge, CaseMetric.Measure>();
 
         for (var item : result) {

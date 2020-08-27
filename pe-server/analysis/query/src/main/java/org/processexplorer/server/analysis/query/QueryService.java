@@ -22,6 +22,7 @@ import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import org.processexplorer.server.analysis.query.codes.EventAttributeCodes;
 import org.processexplorer.server.analysis.query.condition.Condition;
+import org.processexplorer.server.analysis.query.db.PostgresFunctionCall;
 import org.processexplorer.server.analysis.query.model.*;
 import org.processexplorer.server.analysis.query.request.CaseAttributeValueQuery;
 import org.processexplorer.server.analysis.query.request.CasesQuery;
@@ -242,10 +243,10 @@ public class QueryService {
         var db = new DatabaseModel(query.getLogName());
 
         var sql = new SelectQuery()
-                .addColumns(db.eventSourceEventCol, db.eventTargetEventCol)
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addColumnParams(db.eventDurationCol)), "avg_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addColumnParams(db.eventDurationCol)), "min_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addColumnParams(db.eventDurationCol)), "max_duration")
+                .addColumns(db.graphSourceCol, db.graphTargetCol)
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "avg_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "min_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "max_duration")
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence")
                 .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.caseVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
 
@@ -256,8 +257,8 @@ public class QueryService {
             }
         }
 
-        var sqlT = sql.addGroupings(db.eventSourceEventCol, db.eventTargetEventCol)
-                .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.eventCaseJoin, db.eventCaseAttributeJoin)
+        var sqlT = db.getGraphTable("event", "-1", "-2") + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
+                .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.graphCaseJoin, db.graphCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
@@ -298,10 +299,10 @@ public class QueryService {
         var db = new DatabaseModel(query.getLogName());
 
         var sql = new SelectQuery()
-                .addColumns(db.eventSourceResourceCol, db.eventTargetResourceCol)
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addColumnParams(db.eventDurationCol)), "avg_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addColumnParams(db.eventDurationCol)), "min_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addColumnParams(db.eventDurationCol)), "max_duration")
+                .addColumns(db.graphSourceCol, db.graphTargetCol)
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "avg_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "min_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "max_duration")
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence")
                 .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.caseVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
 
@@ -312,8 +313,8 @@ public class QueryService {
             }
         }
 
-        var sqlT = sql.addGroupings(db.eventSourceResourceCol, db.eventTargetResourceCol)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin)
+        var sqlT = db.getGraphTable("resource", "'start'", "'end'") + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
+                .addJoins(SelectQuery.JoinType.INNER, db.graphCaseJoin, db.graphCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
@@ -631,10 +632,10 @@ public class QueryService {
 
         // get events
         var eventsSQL = new SelectQuery()
-                .addColumns(db.eventCaseIdCol, db.activityIdCol, db.activityNameCol, db.eventSourceResourceCol, db.eventSourceTimestampCol)
+                .addColumns(db.eventCaseIdCol, db.activityIdCol, db.activityNameCol, db.eventResourceCol, db.eventTimestampCol)
                 .addJoins(SelectQuery.JoinType.INNER, db.eventActivityJoin)
                 .addCondition(BinaryCondition.equalTo(db.eventCaseIdCol, caseId))
-                .addOrdering(db.eventNumberCol, OrderObject.Dir.ASCENDING);
+                .addOrderings(db.eventTimestampCol, db.eventEventCol);
 
         singleCase.setEvents(jdbcTemplate.query(eventsSQL.validate().toString(), new EventRowMapper()));
 

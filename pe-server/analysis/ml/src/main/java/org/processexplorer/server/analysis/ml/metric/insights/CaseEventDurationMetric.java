@@ -22,6 +22,7 @@ import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.analysis.query.codes.VisualizationCodes;
+import org.processexplorer.server.analysis.query.db.PostgresFunctionCall;
 import org.processexplorer.server.analysis.query.model.Insight;
 import org.processexplorer.server.analysis.query.model.InsightValueFormat;
 
@@ -71,13 +72,13 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
         var sourceActivityTable = db.activityTable.rejoin("source_activity");
 
         var inner_sql = new SelectQuery()
-                .addColumns(db.caseAttributeCaseIdCol)
-                .addAliasedColumn(db.eventSourceEventCol, "event_id")
-                .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.eventCaseIdCol), "num_cases")
+                .addColumns(db.graphCaseIdCol)
+                .addAliasedColumn(db.graphSourceCol, "event_id")
+                .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.graphCaseIdCol), "num_cases")
                 .addAliasedColumn(calculation, "expr")
                 .addCondition(conditions)
-                .addJoins(SelectQuery.JoinType.INNER, db.eventCaseJoin, db.eventCaseAttributeJoin)
-                .addGroupings(db.caseAttributeCaseIdCol, db.eventSourceEventCol);
+                .addJoins(SelectQuery.JoinType.INNER, db.graphCaseJoin, db.graphCaseAttributeJoin)
+                .addGroupings(db.graphCaseIdCol, db.graphSourceCol);
 
         var outer_sql = new SelectQuery()
                 .addAliasedColumn(new CustomExpression("a.event_id"), "event_id")
@@ -90,7 +91,7 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
                 .addCustomGroupings(new CustomExpression("a.event_id"), sourceActivityTable.findColumnByName("name"))
                 .addHaving(new CustomCondition("stddev(a.expr) > 0"));
 
-        var result = jdbcTemplate.queryForList(outer_sql.validate().toString());
+        var result = jdbcTemplate.queryForList(db.getGraphTable("event", "-1", "-2") + outer_sql.validate().toString());
         var measures = new HashMap<String, CaseMetric.Measure>();
 
         for (var item : result) {
@@ -108,6 +109,6 @@ public class CaseEventDurationMetric extends CaseMetric<CaseMetric.Measure, Stri
 
     @Override
     protected Object getExpression() {
-        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, db.eventDurationCol));
+        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, PostgresFunctionCall.age().addColumnParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol)));
     }
 }

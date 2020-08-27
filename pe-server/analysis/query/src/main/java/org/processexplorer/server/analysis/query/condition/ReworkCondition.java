@@ -47,7 +47,7 @@ public class ReworkCondition extends Condition {
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
         var query = new SelectQuery()
                 .addColumns(db.eventCaseIdCol)
-                .addCondition(BinaryCondition.equalTo(db.eventSourceEventCol, activity))
+                .addCondition(BinaryCondition.equalTo(db.eventEventCol, activity))
                 .addFromTable(db.eventTable)
                 .addGroupings(db.eventCaseIdCol)
                 .addHaving(ComboCondition.and(BinaryCondition.greaterThanOrEq(FunctionCall.countAll(), min), BinaryCondition.lessThanOrEq(FunctionCall.countAll(), max)));

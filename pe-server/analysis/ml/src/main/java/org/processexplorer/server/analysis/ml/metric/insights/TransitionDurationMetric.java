@@ -25,6 +25,7 @@ import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
 import org.processexplorer.server.analysis.query.codes.AnalysisTargetCodes;
 import org.processexplorer.server.analysis.query.codes.DomainCodes;
 import org.processexplorer.server.analysis.query.codes.VisualizationCodes;
+import org.processexplorer.server.analysis.query.db.PostgresFunctionCall;
 import org.processexplorer.server.analysis.query.model.Insight;
 import org.processexplorer.server.analysis.query.model.InsightValueFormat;
 
@@ -41,7 +42,7 @@ public class TransitionDurationMetric extends TransitionMetric {
 
     @Override
     protected Object getExpression() {
-        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, new CustomSql("duration")));
+        return FunctionCall.avg().addCustomParams(new ExtractExpression(PgExtractDatePart.EPOCH, PostgresFunctionCall.age().addColumnParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol)));
     }
 
     protected Insight generateInsight(double effectSize, CaseMetric.Measure measure1, CaseMetric.Measure measure2, Edge edge) {

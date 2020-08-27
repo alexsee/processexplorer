@@ -27,6 +27,8 @@ import static org.processexplorer.server.analysis.query.DatabaseConstants.*;
  */
 public class DatabaseModel {
 
+    private final String logName;
+
     private DbSpec spec = new DbSpec();
     private DbSchema schema = spec.addDefaultSchema();
 
@@ -49,15 +51,18 @@ public class DatabaseModel {
     // events table
     public DbTable eventTable;
     public DbColumn eventCaseIdCol;
-    public DbColumn eventSourceEventCol;
-    public DbColumn eventTargetEventCol;
-    public DbColumn eventSourceTimestampCol;
-    public DbColumn eventTargetTimestampCol;
-    public DbColumn eventSourceResourceCol;
-    public DbColumn eventTargetResourceCol;
-    public DbColumn eventDurationCol;
-    public DbColumn eventNumberCol;
+    public DbColumn eventEventCol;
+    public DbColumn eventTimestampCol;
+    public DbColumn eventResourceCol;
     public DbColumn eventLifecycleCol;
+
+    // graph table
+    public DbTable graphTable;
+    public DbColumn graphCaseIdCol;
+    public DbColumn graphSourceCol;
+    public DbColumn graphTargetCol;
+    public DbColumn graphSourceTimestampCol;
+    public DbColumn graphTargetTimestampCol;
 
     // case attribute table
     public DbTable caseAttributeTable;
@@ -67,11 +72,16 @@ public class DatabaseModel {
     // joints
     public DbJoin caseCaseAttributeJoin;
 
+    public DbJoin graphCaseJoin;
+    public DbJoin graphCaseAttributeJoin;
+
     public DbJoin eventCaseJoin;
     public DbJoin eventCaseAttributeJoin;
     public DbJoin eventActivityJoin;
 
     public DatabaseModel(String logName) {
+        this.logName = logName;
+
         // activity table
         activityTable = schema.addTable(getActivityTableName(logName));
         activityIdCol = activityTable.addColumn("id", "integer", null);
@@ -92,15 +102,18 @@ public class DatabaseModel {
         // events table
         eventTable = schema.addTable(getEventsTableName(logName));
         eventCaseIdCol = eventTable.addColumn("case_id", "integer", null);
-        eventSourceEventCol = eventTable.addColumn("source_event", "bigint", null);
-        eventTargetEventCol = eventTable.addColumn("target_event", "bigint", null);
-        eventSourceTimestampCol = eventTable.addColumn("source_timestamp", "timestamp", null);
-        eventTargetTimestampCol = eventTable.addColumn("target_timestamp", "timestamp", null);
-        eventSourceResourceCol = eventTable.addColumn("source_resource", "varchar", 1024);
-        eventTargetResourceCol = eventTable.addColumn("target_resource", "varchar", 1024);
-        eventDurationCol = eventTable.addColumn("duration", "interval", null);
-        eventNumberCol = eventTable.addColumn("event_number", "integer", null);
+        eventEventCol = eventTable.addColumn("event", "bigint", null);
+        eventTimestampCol = eventTable.addColumn("timestamp", "timestamp", null);
+        eventResourceCol = eventTable.addColumn("resource", "varchar", 1024);
         eventLifecycleCol = eventTable.addColumn("lifecycle", "varchar", 1024);
+
+        // graph table
+        graphTable = schema.addTable(getGraphTableName(logName));
+        graphCaseIdCol = graphTable.addColumn("case_id", "integer", null);
+        graphSourceCol = graphTable.addColumn("source", "integer", null);
+        graphTargetCol = graphTable.addColumn("target", "integer", null);
+        graphSourceTimestampCol = graphTable.addColumn("source_timestamp", "timestamp", null);
+        graphTargetTimestampCol = graphTable.addColumn("target_timestamp", "timestamp", null);
 
         // case attribute table
         caseAttributeTable = schema.addTable(getCaseAttributeTableName(logName));
@@ -108,6 +121,13 @@ public class DatabaseModel {
         caseAttributeOriginalCaseIdCol = caseAttributeTable.addColumn("original_case_id", "varchar", 1024);
 
         // joins
+        graphCaseJoin = spec.addJoin(null, graphTable.getTableNameSQL(),
+                null, caseTable.getTableNameSQL(),
+                "case_id");
+        graphCaseAttributeJoin = spec.addJoin(null, graphTable.getTableNameSQL(),
+                null, caseAttributeTable.getTableNameSQL(),
+                "case_id");
+
         caseCaseAttributeJoin = spec.addJoin(null, caseTable.getTableNameSQL(),
                 null, caseAttributeTable.getTableNameSQL(),
                 "case_id");
@@ -120,6 +140,25 @@ public class DatabaseModel {
                 "case_id");
         eventActivityJoin = spec.addJoin(null, eventTable.getTableNameSQL(),
                 null, activityTable.getTableNameSQL(),
-                new String[]{"source_event"}, new String[]{"id"});
+                new String[]{"event"}, new String[]{"id"});
+    }
+
+    public String getGraphTable(String perspective, String nullSource, String nullTarget) {
+        return "WITH " + getGraphTableName(this.logName) + " AS (SELECT " +
+                "case_id, " +
+                perspective + " AS source, " +
+                "COALESCE(LEAD(" + perspective + ", 1) OVER (PARTITION BY case_id ORDER BY timestamp, event), " + nullTarget + ") AS target, " +
+                "timestamp AS source_timestamp, " +
+                "LEAD(timestamp, 1) OVER (PARTITION BY case_id ORDER BY timestamp, event) AS target_timestamp " +
+                "FROM " + this.eventTable.getTableNameSQL() + " " +
+                "UNION ALL " +
+                "SELECT DISTINCT ON (case_id) " +
+                "case_id, " +
+                nullSource + " as source, " +
+                perspective + " as target, " +
+                "null as source_timestamp, " +
+                "timestamp as target_timestamp " +
+                "FROM " + this.eventTable.getTableNameSQL() + " " +
+                "ORDER BY source_timestamp, source) ";
     }
 }
