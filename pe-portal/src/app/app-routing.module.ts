@@ -10,25 +10,29 @@ import { PredictionModelListComponent as PredictionModelListComponent } from './
 import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
 import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
 import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
+import { AuthGuardService } from './shared/auth-guard.service';
+import { LoginComponent } from './auth/login/login.component';
 
 const routes: Routes = [
-  { path: '', component: LogComponent },
+  { path: 'login', component: LoginComponent },
 
-  { path: 'analysis', component: AnalysisComponent },
+  { path: '', component: LogComponent, canActivate: [AuthGuardService] },
 
-  { path: 'artifacts', component: ArtifactsComponent },
-  { path: 'artifacts/settings/:logName', component: ArtifactSettingsComponent },
+  { path: 'analysis', component: AnalysisComponent, canActivate: [AuthGuardService] },
 
-  { path: 'logs', component: LogComponent },
-  { path: 'logs/upload', component: LogUploadComponent },
-  { path: 'logs/annotations/:logName', component: LogAnnotationComponent },
+  { path: 'artifacts', component: ArtifactsComponent, canActivate: [AuthGuardService] },
+  { path: 'artifacts/settings/:logName', component: ArtifactSettingsComponent, canActivate: [AuthGuardService] },
 
-  { path: 'models', component: PredictionModelListComponent },
-  { path: 'logs/:logName/models', component: PredictionModelListComponent },
-  { path: 'logs/:logName/train', component: TrainModelComponent },
-  { path: 'models/:id', component: ModelDetailComponent },
+  { path: 'logs', component: LogComponent, canActivate: [AuthGuardService] },
+  { path: 'logs/upload', component: LogUploadComponent, canActivate: [AuthGuardService] },
+  { path: 'logs/annotations/:logName', component: LogAnnotationComponent, canActivate: [AuthGuardService] },
 
-  { path: 'cases/open', component: OpenCasesListComponent }
+  { path: 'models', component: PredictionModelListComponent, canActivate: [AuthGuardService] },
+  { path: 'logs/:logName/models', component: PredictionModelListComponent, canActivate: [AuthGuardService] },
+  { path: 'logs/:logName/train', component: TrainModelComponent, canActivate: [AuthGuardService] },
+  { path: 'models/:id', component: ModelDetailComponent, canActivate: [AuthGuardService] },
+
+  { path: 'cases/open', component: OpenCasesListComponent, canActivate: [AuthGuardService] }
 ];
 
 @NgModule({

@@ -1,25 +1,34 @@
-import { InjectableRxStompConfig } from '@stomp/ng2-stompjs';
 
 import { environment } from '../environments/environment';
+import { AuthenticationService } from './shared/authentication.service';
+import { InjectableRxStompConfig } from '@stomp/ng2-stompjs';
 
-export const rxStompConfig: InjectableRxStompConfig = {
-  // Which server?
-  brokerURL: environment.webSocketEndPoint,
+export class RxStompConfig extends InjectableRxStompConfig {
 
-  // How often to heartbeat?
-  // Interval in milliseconds, set to 0 to disable
-  heartbeatIncoming: 0, // Typical value 0 - disabled
-  heartbeatOutgoing: 20000, // Typical value 20000 - every 20 seconds
+  constructor(private authenticationService: AuthenticationService) {
+    super();
 
-  // Wait in milliseconds before attempting auto reconnect
-  // Set to 0 to disable
-  // Typical value 500 (500 milli seconds)
-  reconnectDelay: 200,
+    this.brokerURL = environment.webSocketEndPoint;
 
-  // Will log diagnostics on console
-  // It can be quite verbose, not recommended in production
-  // Skip this key to stop logging to console
-  debug: (msg: string): void => {
-    console.log(new Date(), msg);
+    // How often to heartbeat?
+    // Interval in milliseconds, set to 0 to disable
+    this.heartbeatIncoming = 0;
+    this.heartbeatOutgoing = 20000;
+
+    this.reconnectDelay = 50000;
+
+    // subscribe to authentication service
+    this.beforeConnect = (client: any): Promise<void> => {
+      return new Promise<void>((resolve, reject) => {
+          this.authenticationService.loginState.subscribe(token => {
+              if (token) {
+                  client.connectHeaders = { 'X-Authorization': sessionStorage.getItem('token') };
+                  resolve();
+              }
+          });
+      });
+    };
+
+    console.log(environment.webSocketEndPoint);
   }
-};
+}

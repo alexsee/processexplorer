@@ -7,6 +7,7 @@ import { EventLogStatistics } from '../models/eventlog-statistics.model';
 import { EventLogAnnotation } from '../models/eventlog-annotation.model';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { AuthenticationService } from 'src/app/shared/authentication.service';
 
 
 @Injectable({
@@ -14,19 +15,28 @@ import { BehaviorSubject, ReplaySubject } from 'rxjs';
 })
 export class LogService {
   private currentLogSubject = new ReplaySubject<EventLog>(1);
-  public currentLog = this.currentLogSubject.asObservable();
+  private currentLogsSubject = new ReplaySubject<EventLog[]>(1);
 
-  public currentEventLogs: Observable<EventLog[]>;
+  public currentLog = this.currentLogSubject.asObservable();
+  public currentEventLogs = this.currentLogsSubject.asObservable();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private authenticationService: AuthenticationService
   ) {
-    this.currentEventLogs = this.list();
-    this.currentEventLogs.subscribe(log => {
-      // use current selected
-      if (localStorage.getItem('currentLog') !== undefined) {
-        this.currentLogSubject.next(log.filter(y => y.logName === localStorage.getItem('currentLog'))[0]);
+    this.authenticationService.loginState.subscribe(isLoggedIn => {
+      if (!isLoggedIn) {
+        return;
       }
+
+      this.list().subscribe(logs => this.currentLogsSubject.next(logs));
+
+      this.currentEventLogs.subscribe(log => {
+        // use current selected
+        if (localStorage.getItem('currentLog') !== undefined) {
+          this.currentLogSubject.next(log.filter(y => y.logName === localStorage.getItem('currentLog'))[0]);
+        }
+      });
     });
   }
 

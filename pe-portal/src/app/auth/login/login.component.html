@@ -1,0 +1,20 @@
+<form class="login-form" (ngSubmit)="checkLogin()">
+  <h1>Sign in</h1>
+  <nz-alert nzType="error" *ngIf="invalidLogin" nzMessage="Username or password is wrong. Please try again."></nz-alert>
+  <br />
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input your username!">
+      <nz-input-group nzPrefixIcon="user">
+        <input type="text" nz-input [(ngModel)]="username" placeholder="Username" [ngModelOptions]="{standalone: true}" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Please input your Password!">
+      <nz-input-group nzPrefixIcon="lock">
+        <input type="password" nz-input [(ngModel)]="password" placeholder="Password" [ngModelOptions]="{standalone: true}" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Log in</button>
+</form>

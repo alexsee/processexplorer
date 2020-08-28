@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 
-import { rxStompConfig } from './rx-stomp.config';
+import { RxStompConfig } from './rx-stomp.config';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -39,6 +39,9 @@ import { TrainModelComponent } from './modules/predictions/train-model/train-mod
 import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
 import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
 import { PredictionNavigationComponent } from './modules/predictions/prediction-navigation/prediction-navigation.component';
+import { BasicAuthHttpInterceptorService } from './shared/basic-auth-http-interceptor.service';
+import { LoginComponent } from './auth/login/login.component';
+import { AuthenticationService } from './shared/authentication.service';
 
 @NgModule({
   declarations: [
@@ -72,6 +75,7 @@ import { PredictionNavigationComponent } from './modules/predictions/prediction-
     ModelDetailComponent,
     OpenCasesListComponent,
     PredictionNavigationComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,11 +94,16 @@ import { PredictionNavigationComponent } from './modules/predictions/prediction-
       useValue: en_US
     }, {
       provide: InjectableRxStompConfig,
-      useValue: rxStompConfig
+      useClass: RxStompConfig,
+      deps: [AuthenticationService]
     }, {
       provide: RxStompService,
       useFactory: rxStompServiceFactory,
       deps: [InjectableRxStompConfig]
+    }, {
+      provide: HTTP_INTERCEPTORS,
+      useClass: BasicAuthHttpInterceptorService,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]

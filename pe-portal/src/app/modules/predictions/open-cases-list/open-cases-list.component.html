@@ -60,7 +60,7 @@
             <h3>Events</h3>
             <nz-timeline>
                 <nz-timeline-item *ngFor="let event of case.events">
-                    {{event.timestamp | date : 'dd.MM.yyyy HH:mm'}} {{event.resource}}
+                    {{event.timestamp | date : 'dd.MM.yyyy HH:mm'}} <span>by</span> {{event.resource}}
                     <br />{{event.activity.name}} 
                 </nz-timeline-item>
             </nz-timeline>

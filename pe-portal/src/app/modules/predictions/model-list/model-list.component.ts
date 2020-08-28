@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventLogModel } from 'src/app/log/models/eventlog-model.model';
 import { PredictionService } from '../prediction.service';
-import { ActivatedRoute } from '@angular/router';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Subscription } from 'rxjs';
-import { Message } from 'stompjs';
 import { NzMessageService } from 'ng-zorro-antd';
 import { LogService } from 'src/app/log/shared/log.service';
+import { Message } from 'stompjs';
 
 @Component({
   selector: 'app-prediction-model-list',

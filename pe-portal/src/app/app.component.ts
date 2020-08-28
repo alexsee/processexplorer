@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { LogService } from './log/shared/log.service';
 import { EventLog } from './log/models/eventlog.model';
+import { AuthenticationService } from './shared/authentication.service';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +14,16 @@ export class AppComponent {
   logs: EventLog[];
   selectedEventLog: EventLog;
 
+  public isLoggedIn = false;
+
   constructor(
-    private logService: LogService
+    private logService: LogService,
+    private authenticationService: AuthenticationService
   ) {
-    this.logService.currentEventLogs.subscribe(x => this.logs = x);
+    this.logService.currentEventLogs.subscribe(logs => this.logs = logs);
     this.logService.currentLog.subscribe(x => this.selectedEventLog = x);
+
+    authenticationService.loginState.subscribe(x => this.isLoggedIn = x);
   }
 
   onSelectedEventLogChange() {
@@ -33,5 +39,9 @@ export class AppComponent {
       return false;
     }
     return o1.logName === o2.logName;
+  }
+
+  doLogout(): void {
+    this.authenticationService.logOut();
   }
 }
