@@ -299,14 +299,14 @@ public class PredictionService {
                         "       (SELECT a.name\n" +
                         "        FROM %s t,\n" +
                         "             %s a\n" +
-                        "        WHERE t.source_event = a.id\n" +
+                        "        WHERE t.event = a.id\n" +
                         "          AND t.case_id = t2.case_id\n" +
-                        "        ORDER BY t.event_number DESC\n" +
+                        "        ORDER BY t.timestamp, t.event DESC\n" +
                         "        LIMIT 1) AS current_event,\n" +
-                        "       (SELECT t.source_resource\n" +
+                        "       (SELECT t.resource\n" +
                         "        FROM %s t\n" +
                         "        WHERE t.case_id = t2.case_id\n" +
-                        "        ORDER BY t.event_number DESC\n" +
+                        "        ORDER BY t.timestamp, t.event DESC\n" +
                         "        LIMIT 1) AS current_resource\n" +
                         "FROM %s t2, %s t3\n" +
                         "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL AND t2.case_id = t3.case_id)", db.eventTable.getTableNameSQL(),

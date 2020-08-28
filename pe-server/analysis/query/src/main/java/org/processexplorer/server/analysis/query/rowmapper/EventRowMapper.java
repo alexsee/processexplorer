@@ -34,8 +34,8 @@ public class EventRowMapper implements RowMapper<Event> {
     public Event mapRow(ResultSet resultSet, int i) throws SQLException {
         var result = new Event();
         result.setActivity(new Activity(resultSet.getInt("id"), resultSet.getString("name")));
-        result.setTimestamp(resultSet.getTimestamp("source_timestamp"));
-        result.setResource(resultSet.getString("source_resource"));
+        result.setTimestamp(resultSet.getTimestamp("timestamp"));
+        result.setResource(resultSet.getString("resource"));
 
         return result;
     }
