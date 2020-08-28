@@ -295,18 +295,18 @@ public class PredictionService {
         var db = new DatabaseModel(logName);
 
         var sqlOutput = new OutputBuilder();
-        sqlOutput.print("SELECT t3.*, t2.state, t2.assigned,\n" +
+        sqlOutput.print("SELECT t3.*, t2.state, t2.assigned, t2.prediction,\n" +
                         "       (SELECT a.name\n" +
                         "        FROM %s t,\n" +
                         "             %s a\n" +
                         "        WHERE t.event = a.id\n" +
                         "          AND t.case_id = t2.case_id\n" +
-                        "        ORDER BY t.timestamp, t.event DESC\n" +
+                        "        ORDER BY t.timestamp DESC, t.event DESC\n" +
                         "        LIMIT 1) AS current_event,\n" +
                         "       (SELECT t.resource\n" +
                         "        FROM %s t\n" +
                         "        WHERE t.case_id = t2.case_id\n" +
-                        "        ORDER BY t.timestamp, t.event DESC\n" +
+                        "        ORDER BY t.timestamp DESC, t.event DESC\n" +
                         "        LIMIT 1) AS current_resource\n" +
                         "FROM %s t2, %s t3\n" +
                         "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL AND t2.case_id = t3.case_id)", db.eventTable.getTableNameSQL(),
