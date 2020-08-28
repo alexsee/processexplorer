@@ -521,6 +521,10 @@ public class QueryService {
 
         var singleCase = jdbcTemplate.queryForObject(caseSQL.validate().toString(), new CaseRowMapper());
 
+        if (singleCase == null) {
+            return null;
+        }
+
         // get events
         var eventsSQL = new SelectQuery()
                 .addColumns(db.eventCaseIdCol, db.activityIdCol, db.activityNameCol, db.eventResourceCol, db.eventTimestampCol)

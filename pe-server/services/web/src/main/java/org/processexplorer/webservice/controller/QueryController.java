@@ -86,6 +86,11 @@ public class QueryController {
 
     @GetMapping("/query/case")
     public ResponseEntity<Case> getCase(@RequestParam("logName") String logName, @RequestParam("id") long caseId) {
-        return ResponseEntity.ok(queryService.getSingleCase(logName, caseId));
+        var singleCase = queryService.getSingleCase(logName, caseId);
+        if (singleCase == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(singleCase);
     }
 }
