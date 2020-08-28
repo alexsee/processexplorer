@@ -17,13 +17,17 @@
   grid-area: navigation;
 
   display: grid;
-  grid-template-areas: "options sample social-network"
-    "variant-slider variant-slider variant-slider";
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: "options sample social-network activity-filter"
+    "variant-slider variant-slider variant-slider variant-slider";
+  grid-template-columns: 1fr 1fr .5fr .5fr;
   grid-template-rows: 1fr 1fr;
 
   border-top: 1px solid lightgray;
   padding-top: 10px;
+}
+
+.navigation .activity-filter {
+  grid-area: activity-filter;
 }
 
 .navigation .social-network {

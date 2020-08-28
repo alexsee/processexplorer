@@ -27,10 +27,10 @@ export class QueryService {
     private http: HttpClient
   ) { }
 
-  getProcessMap(logName: string, conditions: Condition[]): Observable<ProcessMapResult> {
+  getProcessMap(logName: string, conditions: Condition[], activityFilter: number[]): Observable<ProcessMapResult> {
     return this.http.post<ProcessMapResult>(
       environment.serviceUrl + '/query/process_map',
-      { logName, conditions },
+      { logName, conditions, activityFilter },
       httpOptions
     );
   }

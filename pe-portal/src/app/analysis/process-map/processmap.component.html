@@ -14,5 +14,23 @@
         <nz-slider class="variant-slider" [(ngModel)]="variant" [(nzMin)]="minVariant" [(nzMax)]="maxVariant" (nzOnAfterChange)="onSettingsChange()"></nz-slider>
 
         <button class="social-network" nz-button (click)="toggleGraph()" [nzType]="toggleSocialNetwork ? 'primary' : ''"><i nz-icon nzType="team"></i>Toogle Social Network</button>
+        <button class="activity-filter" nz-button (click)="doActivityFilter()">Activities</button>
     </div>
+
+    <nz-modal [(nzVisible)]="isActivityFilterModal" nzTitle="Activity Filter" (nzOnCancel)="doCancel()" (nzOnOk)="doFilter()" *ngIf="context">
+        <nz-table #rowSelectionTable nzShowSizeChanger [nzFrontPagination]="false" [nzScroll]="{ y: '400px' }" nzSize="small" [nzData]="context.activities">
+            <thead>
+              <tr>
+                <th [nzSelections]="selectedActivities" nzWidth="30px"></th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of rowSelectionTable.data">
+                <td [nzChecked]="selectedActivities.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+                <td>{{ data.name }}</td>
+              </tr>
+            </tbody>
+          </nz-table>
+    </nz-modal>
 </div>

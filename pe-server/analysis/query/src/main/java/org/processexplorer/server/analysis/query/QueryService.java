@@ -32,21 +32,15 @@ import org.processexplorer.server.analysis.query.result.CaseAttributeValueResult
 import org.processexplorer.server.analysis.query.result.DrillDownResult;
 import org.processexplorer.server.analysis.query.result.ProcessMapResult;
 import org.processexplorer.server.analysis.query.result.SocialNetworkResult;
-import org.processexplorer.server.analysis.query.rowmapper.ActivityRowMapper;
-import org.processexplorer.server.analysis.query.rowmapper.CaseRowMapper;
-import org.processexplorer.server.analysis.query.rowmapper.EventRowMapper;
+import org.processexplorer.server.analysis.query.rowmapper.*;
 import org.processexplorer.server.analysis.query.selection.SelectionOrder;
 import org.processexplorer.server.common.persistence.entity.EventLogAnnotation;
 import org.processexplorer.server.common.persistence.repository.EventLogAnnotationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,9 +51,9 @@ import java.util.stream.Collectors;
 @Service
 public class QueryService {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    private EventLogAnnotationRepository eventLogAnnotationRepository;
+    private final EventLogAnnotationRepository eventLogAnnotationRepository;
 
     @Autowired
     public QueryService(JdbcTemplate jdbcTemplate,
@@ -75,26 +69,7 @@ public class QueryService {
      * @return
      */
     public Log getLogStatistics(String logName) {
-        var db = new DatabaseModel(logName);
-
-        var activities = jdbcTemplate.query(new SelectQuery().addColumns(db.activityIdCol).addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), new ActivityRowMapper());
-        var numEvents = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events").toString(), Long.class);
-        var numTraces = jdbcTemplate.queryForObject(new SelectQuery().addAliasedColumn(FunctionCall.count().addColumnParams(db.caseAttributeCaseIdCol), "num_traces").toString(), Long.class);
-
-        var caseAttributes = getCaseAttributesDetails(logName);
-        var eventAttributes = getEventAttributesDetails(logName);
-
-        var result = new Log();
-        result.setLogName(logName);
-        result.setNumActivities(activities.size());
-        result.setActivities(activities);
-        result.setNumEvents(numEvents);
-        result.setNumTraces(numTraces);
-
-        result.setCaseAttributes(caseAttributes);
-        result.setEventAttributes(eventAttributes);
-
-        return result;
+        return getLogStatistics(logName, null);
     }
 
     /**
@@ -107,30 +82,30 @@ public class QueryService {
         var db = new DatabaseModel(logName);
 
         // get activities
-        var sql_activities = new SelectQuery()
+        var sqlActivities = new SelectQuery()
                 .addColumns(db.activityIdCol)
                 .addColumns(db.activityNameCol)
                 .addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING);
 
-        var activities = jdbcTemplate.query(sql_activities.toString(), new ActivityRowMapper());
+        var activities = jdbcTemplate.query(sqlActivities.toString(), new ActivityRowMapper());
 
         // get number of events
-        var sql_num_events = new SelectQuery()
+        var sqlNumEvents = new SelectQuery()
                 .addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events")
                 .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.eventCaseJoin, db.caseCaseAttributeJoin);
 
-        addConditionsToSql(sql_num_events, db, conditions);
+        addConditionsToSql(sqlNumEvents, db, conditions);
 
-        var numEvents = jdbcTemplate.queryForObject(sql_num_events.toString(), Long.class);
+        var numEvents = jdbcTemplate.queryForObject(sqlNumEvents.toString(), Long.class);
 
         // get number of traces
-        var sql_num_traces = new SelectQuery()
+        var sqlNumTraces = new SelectQuery()
                 .addAliasedColumn(FunctionCall.count().setIsDistinct(true).addColumnParams(db.caseAttributeCaseIdCol), "num_traces")
                 .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.eventCaseJoin, db.caseCaseAttributeJoin);
 
-        addConditionsToSql(sql_num_traces, db, conditions);
+        addConditionsToSql(sqlNumTraces, db, conditions);
 
-        var numTraces = jdbcTemplate.queryForObject(sql_num_traces.toString(), Long.class);
+        var numTraces = jdbcTemplate.queryForObject(sqlNumTraces.toString(), Long.class);
 
         var caseAttributes = getCaseAttributesDetails(logName);
         var eventAttributes = getEventAttributesDetails(logName);
@@ -172,29 +147,7 @@ public class QueryService {
             }
         }
 
-        var rowMapper = new RowMapper<Variant>() {
-            public Variant mapRow(ResultSet rs, int rowNum) throws SQLException {
-                var result = new Variant();
-                result.setId(rs.getLong("variant_id"));
-                result.setOccurrence(rs.getLong("occurrence"));
-
-                var path = rs.getString("variant").split("::");
-                var path_index = new int[path.length];
-
-                for (int i = 0; i < path.length; i++) {
-                    var index = Integer.parseInt(path[i].replace(":", ""));
-
-                    path[i] = logStats.getActivities().get(index).getName();
-                    path_index[i] = index;
-                }
-
-                result.setPath(path);
-                result.setPathIndex(path_index);
-                return result;
-            }
-        };
-
-        return jdbcTemplate.query(sql.validate().toString(), rowMapper);
+        return jdbcTemplate.query(sql.validate().toString(), new ExtendedVariantRowMapper(logStats));
     }
 
     /**
@@ -221,16 +174,7 @@ public class QueryService {
             }
         }
 
-        var rowMapper = new RowMapper<Variant>() {
-            public Variant mapRow(ResultSet rs, int rowNum) throws SQLException {
-                var result = new Variant();
-                result.setId(rs.getLong("variant_id"));
-                result.setOccurrence(rs.getLong("occurrence"));
-                return result;
-            }
-        };
-
-        return jdbcTemplate.query(sql.validate().toString(), rowMapper);
+        return jdbcTemplate.query(sql.validate().toString(), new VariantRowMapper());
     }
 
     /**
@@ -242,42 +186,13 @@ public class QueryService {
     public ProcessMapResult getProcessMap(ProcessMapQuery query) {
         var db = new DatabaseModel(query.getLogName());
 
-        var sql = new SelectQuery()
-                .addColumns(db.graphSourceCol, db.graphTargetCol)
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "avg_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "min_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "max_duration")
-                .addAliasedColumn(FunctionCall.countAll(), "occurrence")
-                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.caseVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
-
-        for (var rule : query.getConditions()) {
-            var condition = rule.getCondition(db);
-            if (condition != null) {
-                sql.addCondition(condition);
-            }
-        }
-
+        var sql = getGraphEdgeQuery(query.getLogName(), query.getConditions());
         var sqlT = db.getGraphTable("event", "-1", "-2", query.getActivityFilter()) + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
                 .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.graphCaseJoin, db.graphCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
-        var rowMapper = new RowMapper<GraphEdge>() {
-            public GraphEdge mapRow(ResultSet rs, int rowNum) throws SQLException {
-                var result = new GraphEdge();
-                result.setSourceEvent(rs.getLong(1));
-                result.setTargetEvent(rs.getLong(2));
-                result.setAvgDuration(rs.getLong(3));
-                result.setMinDuration(rs.getLong(4));
-                result.setMaxDuration(rs.getLong(5));
-                result.setOccurrence(rs.getLong(6));
-                result.setVariants(Arrays.stream(rs.getString(7).split(",")).mapToInt(Integer::parseInt).toArray());
-
-                return result;
-            }
-        };
-
-        var edges = jdbcTemplate.query(sqlT, rowMapper);
+        var edges = jdbcTemplate.query(sqlT, new GraphEdgeRowMapper());
 
         var graph = new Graph();
         graph.setEdges(edges);
@@ -298,42 +213,13 @@ public class QueryService {
     public SocialNetworkResult getSocialNetworkGraph(ProcessMapQuery query) {
         var db = new DatabaseModel(query.getLogName());
 
-        var sql = new SelectQuery()
-                .addColumns(db.graphSourceCol, db.graphTargetCol)
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "avg_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "min_duration")
-                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "max_duration")
-                .addAliasedColumn(FunctionCall.countAll(), "occurrence")
-                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.caseVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
-
-        for (var rule : query.getConditions()) {
-            var condition = rule.getCondition(db);
-            if (condition != null) {
-                sql.addCondition(condition);
-            }
-        }
-
+        var sql = getGraphEdgeQuery(query.getLogName(), query.getConditions());
         var sqlT = db.getGraphTable("resource", "'start'", "'end'") + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
                 .addJoins(SelectQuery.JoinType.INNER, db.graphCaseJoin, db.graphCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
                 .validate().toString();
 
-        var rowMapper = new RowMapper<SocialNetworkEdge>() {
-            public SocialNetworkEdge mapRow(ResultSet rs, int rowNum) throws SQLException {
-                var result = new SocialNetworkEdge();
-                result.setSourceResource(rs.getString(1));
-                result.setTargetResource(rs.getString(2));
-                result.setAvgDuration(rs.getLong(3));
-                result.setMinDuration(rs.getLong(4));
-                result.setMaxDuration(rs.getLong(5));
-                result.setOccurrence(rs.getLong(6));
-                result.setVariants(Arrays.stream(rs.getString(7).split(",")).mapToInt(Integer::parseInt).toArray());
-
-                return result;
-            }
-        };
-
-        var edges = jdbcTemplate.query(sqlT, rowMapper);
+        var edges = jdbcTemplate.query(sqlT, new SocialNetworkEdgeRowMapper());
 
         var graph = new SocialNetwork();
         graph.setEdges(edges);
@@ -448,6 +334,7 @@ public class QueryService {
                     categoricalAttrs.add(attr);
                 }
             } catch (Exception ex) {
+                // ignore single attribute failures
             }
         }
 
@@ -533,8 +420,7 @@ public class QueryService {
                 .addColumns(db.caseAttributeTable.addColumn("cluster_index"))
                 .addFromTable(db.caseAttributeTable);
 
-        var values = jdbcTemplate.queryForList(sql.validate().toString(), Long.class);
-        return values;
+        return jdbcTemplate.queryForList(sql.validate().toString(), Long.class);
     }
 
     /**
@@ -609,7 +495,12 @@ public class QueryService {
      */
     public List<Activity> getActivities(String logName) {
         var db = new DatabaseModel(logName);
-        return jdbcTemplate.query(new SelectQuery().addColumns(db.activityIdCol).addColumns(db.activityNameCol).addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING).toString(), new ActivityRowMapper());
+        var query = new SelectQuery()
+                .addColumns(db.activityIdCol, db.activityNameCol)
+                .addOrdering(db.activityIdCol, OrderObject.Dir.ASCENDING)
+                .toString();
+
+        return jdbcTemplate.query(query, new ActivityRowMapper());
     }
 
     /**
@@ -642,7 +533,19 @@ public class QueryService {
         return singleCase;
     }
 
+    /**
+     * Adds conditions to an existing select query object.
+     *
+     * @param sql
+     * @param db
+     * @param conditions
+     */
     private void addConditionsToSql(SelectQuery sql, DatabaseModel db, List<Condition> conditions) {
+        // conditions available?
+        if (conditions == null) {
+            return;
+        }
+
         // add conditions
         for (var rule : conditions) {
             var condition = rule.getCondition(db);
@@ -650,5 +553,29 @@ public class QueryService {
                 sql.addCondition(condition);
             }
         }
+    }
+
+    /**
+     * Returns a select query object for obtaining general statistics about the graph edges.
+     *
+     * @param logName
+     * @param conditions
+     * @return
+     */
+    private SelectQuery getGraphEdgeQuery(String logName, List<Condition> conditions) {
+        var db = new DatabaseModel(logName);
+
+        var sql = new SelectQuery()
+                .addColumns(db.graphSourceCol, db.graphTargetCol)
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.avg().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "avg_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "min_duration")
+                .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "max_duration")
+                .addAliasedColumn(FunctionCall.countAll(), "occurrence")
+                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.caseVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
+
+        // add conditions
+        addConditionsToSql(sql, db, conditions);
+
+        return sql;
     }
 }
