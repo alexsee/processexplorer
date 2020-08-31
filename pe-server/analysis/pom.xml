@@ -6,7 +6,7 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>org.processexplorer</groupId>
-    <version>${revision}</version>
+    <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -25,7 +25,7 @@
     <dependency>
       <groupId>org.processexplorer</groupId>
       <artifactId>common</artifactId>
-      <version>${revision}</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

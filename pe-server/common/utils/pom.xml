@@ -11,7 +11,7 @@
 
 	<groupId>org.processexplorer</groupId>
 	<artifactId>utils</artifactId>
-	<version>${revision}</version>
+	<version>1.0.0-SNAPSHOT</version>
 	
 	 <properties>
 		<java.version>13</java.version>

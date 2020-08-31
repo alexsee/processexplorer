@@ -14,7 +14,7 @@
 
   <artifactId>services</artifactId>
   <groupId>org.processexplorer</groupId>
-  <version>${revision}</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
   <modules>

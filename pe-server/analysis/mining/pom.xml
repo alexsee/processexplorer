@@ -11,7 +11,7 @@
 
     <groupId>org.processexplorer</groupId>
     <artifactId>mining</artifactId>
-    <version>${revision}</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <java.version>13</java.version>
@@ -33,17 +33,17 @@
         <dependency>
             <groupId>org.processexplorer</groupId>
             <artifactId>persistence</artifactId>
-            <version>${revision}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.processexplorer</groupId>
             <artifactId>query</artifactId>
-            <version>${revision}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.processexplorer</groupId>
             <artifactId>utils</artifactId>
-            <version>${revision}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
