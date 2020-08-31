@@ -1,0 +1,94 @@
+.process-map-container {
+  display: grid;
+  grid-template-areas: 
+    "process-map"
+    "navigation";
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 55px;
+  height: 100%;
+  widows: 100%;
+}
+
+.d3-process-map {
+  grid-area: process-map;
+}
+
+.navigation {
+  grid-area: navigation;
+
+  display: grid;
+  grid-template-areas: "options sample social-network activity-filter"
+    "variant-slider variant-slider variant-slider variant-slider";
+  grid-template-columns: 1fr 1fr .5fr .5fr;
+  grid-template-rows: 1fr 1fr;
+
+  border-top: 1px solid lightgray;
+  padding-top: 10px;
+}
+
+.navigation .activity-filter {
+  grid-area: activity-filter;
+}
+
+.navigation .social-network {
+  grid-area: social-network;
+}
+
+.navigation .options {
+  grid-area: options;
+}
+
+.navigation .sample {
+  grid-area: sample;
+}
+
+.navigation .variant-slider {
+  grid-area: variant-slider;
+}
+
+.navigation .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.no-data-container {
+  width: 100%;
+  height: 100%;
+}
+
+.no-data {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "no-data";
+  justify-content: center;
+  align-content: center;
+}
+
+.no-data p {
+  grid-template: "no-data";
+  text-align: center;
+}
+
+.progress-container {
+  width: 100%;
+  height: 100%;
+}
+
+.progress {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "progress";
+  justify-content: center;
+  align-content: center;
+}
+
+.progress .mat-spinner {
+  grid-template: "progress";
+  text-align: center;
+  margin: 0 auto;
+}

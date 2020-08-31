@@ -6,10 +6,10 @@
 version: 2
 updates:
   - package-ecosystem: "maven"
-    directory: "/webservice"
+    directory: "/pe-server"
     schedule:
-      interval: "daily"
+      interval: "weekly"
   - package-ecosystem: "npm"
-    directory: "/webportal"
+    directory: "/pe-portal"
     schedule:
-      interval: "daily"
+      interval: "weekly"

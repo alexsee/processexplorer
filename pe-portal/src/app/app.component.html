@@ -1,0 +1,20 @@
+<nz-layout>
+    <nz-header>
+        <div class="logo">ProcessExplorer</div>
+        <div class="log-selection">
+            <ul nz-menu nzTheme="dark" nzMode="horizontal">
+                <li nz-menu-item [routerLink]="['/', 'logs']" nzMatchRouter *ngIf="isLoggedIn">Log Management</li>
+            </ul>
+            <nz-select *ngIf="isLoggedIn" [compareWith]="compareByLogName" [(ngModel)]="selectedEventLog" nzAllowClear nzPlaceHolder="Select event log" (ngModelChange)="onSelectedEventLogChange()">
+                <nz-option *ngFor="let log of logs; trackBy:trackByLogName" [nzValue]="log" [nzLabel]="log.logName"></nz-option>
+            </nz-select>
+        </div>
+        <ul nz-menu nzTheme="dark" nzMode="horizontal" *ngIf="isLoggedIn">
+            <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'analysis']" nzMatchRouter>Explore</li>
+            <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'artifacts']" nzMatchRouter>Artifacts</li>
+        </ul>
+    </nz-header>
+    <nz-content>
+        <router-outlet></router-outlet>
+    </nz-content>
+</nz-layout>

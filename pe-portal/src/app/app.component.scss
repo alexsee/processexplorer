@@ -1,0 +1,45 @@
+.logo {
+    height: 31px;
+    margin: 0 24px 14px 0;
+    float: left;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+nz-layout {
+    height: 100%;
+}
+
+[nz-menu] {
+    line-height: 45px;
+}
+
+nz-content {
+    padding: 0 50px;
+    height: calc(100vh - 45px);
+}
+
+nz-footer {
+    text-align: center;
+}
+
+nz-header {
+    height: 45px;
+    line-height: 45px;
+}
+
+.log-selection {
+    float: right;
+    height: 31px;
+}
+
+.log-selection nz-select {
+    display: inline-block;
+    width: 200px;
+}
+
+.log-selection ul {
+    display: inline-block;
+    margin-right: 15px;
+}
