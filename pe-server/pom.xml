@@ -8,7 +8,6 @@
     <module>analysis</module>
     <module>common</module>
     <module>services</module>
-    <module>query</module>
   </modules>
   <groupId>org.processexplorer</groupId>
   <artifactId>server</artifactId>
