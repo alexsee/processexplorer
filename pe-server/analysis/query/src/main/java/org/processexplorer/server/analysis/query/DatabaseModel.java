@@ -47,6 +47,7 @@ public class DatabaseModel {
     public DbColumn caseDurationCol;
     public DbColumn caseVariantIdCol;
     public DbColumn caseVariantCol;
+    public DbColumn caseResourceVariantCol;
 
     // events table
     public DbTable eventTable;
@@ -98,6 +99,7 @@ public class DatabaseModel {
         caseDurationCol = caseTable.addColumn("total_duration", "interval", null);
         caseVariantIdCol = caseTable.addColumn("variant_id", "integer", null);
         caseVariantCol = caseTable.addColumn("variant", "text", null);
+        caseResourceVariantCol = caseTable.addColumn("resource_variant", "text", null);
 
         // events table
         eventTable = schema.addTable(getEventsTableName(logName));

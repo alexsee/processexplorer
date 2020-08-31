@@ -112,8 +112,6 @@ public class XLog2Database {
                 prepInsertTrace.add(tracePrep);
 
                 // obtain events for trace
-                int e = 0;
-
                 for (var event : trace) {
                     var timestamp = (Date) XLogUtils.getAttributeValue(event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
                     var eventPrep = new Object[5 + eventAttributes.size()];
@@ -133,7 +131,6 @@ public class XLog2Database {
                     }
 
                     prepInsertEvent.add(eventPrep);
-                    e++;
                 }
 
                 // execute buffer?
@@ -178,6 +175,7 @@ public class XLog2Database {
         sql.print("COUNT(DISTINCT %s) AS %s,", "resource", "num_users");
         sql.print("CAST(%s AS interval) AS %s,", "age(MAX(timestamp), MIN(timestamp))", "total_duration");
         sql.print("CONCAT(':', STRING_AGG(CAST(event AS VARCHAR(5)), '::' ORDER BY timestamp, lifecycle, event), ':') AS variant,");
+        sql.print("CONCAT(':', STRING_AGG(CAST(resource AS VARCHAR(255)), '::' ORDER BY timestamp, lifecycle, resource), ':') AS resource_variant,");
         sql.print("HASHTEXT(STRING_AGG(CAST(event AS VARCHAR(5)), '::' ORDER BY timestamp, lifecycle, event)) AS variant_id");
         sql.print("FROM %s AS log", db.eventTable.getTableNameSQL());
         sql.print("GROUP BY case_id");

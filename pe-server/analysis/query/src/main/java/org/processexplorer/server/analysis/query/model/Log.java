@@ -35,6 +35,8 @@ public class Log {
 
     private List<Activity> activities;
 
+    private List<String> resources;
+
     private List<ColumnMetaData> caseAttributes;
 
     private List<ColumnMetaData> eventAttributes;
@@ -93,5 +95,13 @@ public class Log {
 
     public void setEventAttributes(List<ColumnMetaData> eventAttributes) {
         this.eventAttributes = eventAttributes;
+    }
+
+    public List<String> getResources() {
+        return resources;
+    }
+
+    public void setResources(List<String> resources) {
+        this.resources = resources;
     }
 }

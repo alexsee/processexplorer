@@ -34,7 +34,8 @@ import org.processexplorer.server.analysis.query.DatabaseModel;
         @JsonSubTypes.Type(value = ComboCondition.class, name = "combo"),
         @JsonSubTypes.Type(value = NotCondition.class, name = "not"),
         @JsonSubTypes.Type(value = ReworkCondition.class, name = "rework"),
-        @JsonSubTypes.Type(value = DurationCondition.class, name = "duration")
+        @JsonSubTypes.Type(value = DurationCondition.class, name = "duration"),
+        @JsonSubTypes.Type(value = ResourcePathCondition.class, name = "resourcepath")
 })
 public abstract class Condition {
 

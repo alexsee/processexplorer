@@ -89,6 +89,13 @@ public class QueryService {
 
         var activities = jdbcTemplate.query(sqlActivities.toString(), new ActivityRowMapper());
 
+        // get resources
+        var sqlResources = new SelectQuery(true)
+                .addColumns(db.eventResourceCol)
+                .addOrdering(db.eventResourceCol, OrderObject.Dir.ASCENDING);
+
+        var resources = jdbcTemplate.queryForList(sqlResources.toString(), String.class);
+
         // get number of events
         var sqlNumEvents = new SelectQuery()
                 .addAliasedColumn(FunctionCall.count().addColumnParams(db.eventCaseIdCol), "num_events")
@@ -114,6 +121,7 @@ public class QueryService {
         result.setLogName(logName);
         result.setNumActivities(activities.size());
         result.setActivities(activities);
+        result.setResources(resources);
         result.setNumEvents(numEvents);
         result.setNumTraces(numTraces);
 
