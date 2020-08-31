@@ -7,6 +7,7 @@ export class EventLogStatistics {
     numEvents: number;
     numActivities: number;
     activities: Activity[];
+    resources: string[];
     caseAttributes: ColumnMetaData[];
     eventAttributes: ColumnMetaData[];
 }

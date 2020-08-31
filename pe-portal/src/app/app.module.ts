@@ -42,6 +42,7 @@ import { PredictionNavigationComponent } from './modules/predictions/prediction-
 import { BasicAuthHttpInterceptorService } from './shared/basic-auth-http-interceptor.service';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthenticationService } from './shared/authentication.service';
+import { ResourcePathConditionComponent } from './analysis/conditions/resource-path-condition/resource-path-condition.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { AuthenticationService } from './shared/authentication.service';
 
     ConditionListComponent,
     PathConditionComponent,
+    ResourcePathConditionComponent,
     VariantConditionComponent,
     ClusterConditionComponent,
     ReworkConditionComponent,

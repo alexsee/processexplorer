@@ -15,6 +15,7 @@ import { Recommendation } from 'src/app/analysis/models/recommendation';
 import { ReworkConditionComponent } from 'src/app/analysis/conditions/rework-condition/rework-condition.component';
 import { DurationConditionComponent } from 'src/app/analysis/conditions/duration-condition/duration-condition.component';
 import { LogService } from 'src/app/log/shared/log.service';
+import { ResourcePathConditionComponent } from 'src/app/analysis/conditions/resource-path-condition/resource-path-condition.component';
 
 @Component({
   selector: 'app-analysis-module',
@@ -75,6 +76,9 @@ export class AnalysisComponent implements OnInit {
     switch (conditionType) {
       case 'path':
         this.conditions.push(new Condition(PathConditionComponent, { }));
+        break;
+      case 'resourcepath':
+        this.conditions.push(new Condition(ResourcePathConditionComponent, { }));
         break;
       case 'attribute':
         this.conditions.push(new Condition(AttributeConditionComponent, { }));
