@@ -23,7 +23,9 @@ After you have checked out the repository, to build the project, run `mvn instal
 
 ### Run
 
-`cd services/web/`
-`mvn spring-boot:run`
+```
+cd services/web/
+mvn spring-boot:run
+```
 
 The server will run under `http://localhost:8080`.
