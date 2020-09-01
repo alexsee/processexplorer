@@ -13,6 +13,17 @@ Alternatively, you can use docker to run the database:
 docker run --name processexplorer_db -e POSTGRES_PASSWORD=test123 -e POSTGRES_DB=processexplorer -d -p5432:5432 postgres
 ```  
 
-## Development server
+## Maven-Based Build
 
-Run `mvn spring-boot:run` for a development server. The server will run under `http://localhost:8080`.
+If you are already running a local Postgres, you need to create a database `processexplorer` and modify the `src/main/resources/application.properties` configuration file.
+
+### Build
+
+After you have checked out the repository, to build the project, run `mvn install` in the base directory.
+
+### Run
+
+`cd services/web/`
+`mvn spring-boot:run`
+
+The server will run under `http://localhost:8080`.
