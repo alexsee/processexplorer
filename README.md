@@ -30,16 +30,24 @@ The database must be created beforehand.
 
 **Build**
 
-You can build the **pe-server** using your favorite development tool or via command line with ``mvn clean package``.
+You can build the **pe-server** using your favorite development tool or via command line with 
+```
+mvn install
+mvn clean package
+```
 This should grab all the needed dependencies and build the project.
 
-You can build the **pe-portal** using the command line via ``npm install`` and ``ng build``.
+You can build the **pe-portal** using the command line via 
+```
+npm install
+ng build
+```
 
 ### Run the project
 To run the entire ProcessExplorer, you'll need to run two projects:
 
-* **pe-server**: ``mvn spring-boot:run``
-* **pe-portal**: ``ng serve``
+* **pe-server**
+* **pe-portal**
 
 You can then open a browser window with ``http://localhost:4200/``
 
