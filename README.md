@@ -33,7 +33,6 @@ The database must be created beforehand.
 You can build the **pe-server** using your favorite development tool or via command line with 
 ```
 mvn install
-mvn clean package
 ```
 This should grab all the needed dependencies and build the project.
 
