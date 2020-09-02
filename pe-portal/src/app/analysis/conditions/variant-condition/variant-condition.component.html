@@ -1,24 +1,19 @@
-<nz-card nzTitle="Variant selection" 
-    nzSize="small"
-    [nzExtra]="moreTemplate">
-    <span *ngIf="data.variantIds">
-        Variant: <b>{{data.variantIds}}</b>
-    </span>
-    <span *ngIf="!data.variantIds">
-        Variant selection
-    </span>
-</nz-card>
-
-<ng-template #moreTemplate>
-    <a nz-popover
+<div class="filter-container">
+    <div class="filter-info-container" 
+        nz-popover
         nzPopoverTitle="Variant selection"
         nzPopoverTrigger="click"
-        [nzPopoverContent]="contentTemplate">Edit</a>
-        
-    <nz-divider nzType="vertical"></nz-divider>
-
-    <a (click)="doDelete()">Delete</a>
-</ng-template>
+        nzPopoverPlacement="bottomLeft"
+        [nzPopoverContent]="contentTemplate">
+        <div class="label">Variant selection</div>
+        <div class="details">
+            {{data.variantIds}}
+        </div>
+    </div>
+    <div class="filter-options">
+        <button nz-button nzShape="circle" nzType="dashed" (click)="doDelete()"><i nz-icon nzType="delete"></i></button>
+    </div>
+</div>
 
 <ng-template #contentTemplate>
     <form nz-form class="cluster-form">

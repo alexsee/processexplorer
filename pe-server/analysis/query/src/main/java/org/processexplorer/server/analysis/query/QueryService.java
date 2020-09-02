@@ -454,6 +454,7 @@ public class QueryService {
             // obtain meta data for selected column
             var metaData = new ColumnMetaData(selection.getName(), "", selection.getAlias());
             metaData.setCodes(selection.getCodes(eventLogAnnotationRepository, query.getLogName()));
+            metaData.setGroup(selection.isGroup());
             result.getMetaData().add(metaData);
 
             if (selection.isGroup()) {

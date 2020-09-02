@@ -1,3 +1,58 @@
 .duration-form {
     width: 500px
 }
+
+.filter-container {
+    height: 100%;
+    min-width: 160px;
+    max-width: 350px;
+
+    overflow: hidden;
+    border-left: 1pt solid rgb(244, 244, 244);
+
+    display: grid;
+    grid-template-areas: "container options";
+    grid-template-columns: auto min-content;
+}
+
+.filter-container:hover {
+    background-color: rgb(244, 244, 244)
+}
+
+.filter-info-container {
+    grid-area: container;
+
+    cursor: pointer;
+    height: 100%;
+    overflow: hidden;
+
+    margin-left: 10px;
+    margin-right: 10px;
+    white-space: nowrap;
+
+    display: grid;
+    grid-template-areas: "label options"
+        "details options";
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr min-content;
+}
+
+.filter-info-container .label {
+    grid-area: label;
+    font-size: 14px;
+    padding: 2px 10px 0px 0px;
+    font-weight: 600;
+}
+
+.filter-info-container .details {
+    grid-area: details;
+    font-size: 12px;
+    padding-top: 3px;
+}
+
+.filter-options {
+    grid-area: options;
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}

@@ -6,6 +6,7 @@ import { LogAnnotationComponent } from './modules/general/log-annotation/log-ann
 import { LogUploadComponent } from './modules/general/log-upload/log-upload.component';
 import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts.component';
 import { ArtifactSettingsComponent } from './modules/process-mining/artifact-settings/artifact-settings.component';
+import { DashboardComponent } from './modules/process-mining/dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: '', component: LogComponent },
@@ -18,6 +19,8 @@ const routes: Routes = [
   { path: 'logs', component: LogComponent },
   { path: 'logs/upload', component: LogUploadComponent },
   { path: 'logs/annotations/:logName', component: LogAnnotationComponent },
+
+  { path: 'dashboard', component: DashboardComponent }
 ];
 
 @NgModule({

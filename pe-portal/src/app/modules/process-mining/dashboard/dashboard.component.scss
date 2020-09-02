@@ -1,0 +1,13 @@
+.container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: "chart options";
+}
+
+.chart {
+    grid-area: chart;
+}
+
+.options {
+    grid-area: options;
+}

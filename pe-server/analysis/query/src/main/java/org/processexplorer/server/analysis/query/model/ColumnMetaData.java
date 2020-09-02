@@ -30,6 +30,8 @@ public class ColumnMetaData {
 
     private String columnType;
 
+    private boolean isGroup;
+
     private List<EventAttributeCodes> codes;
 
     public ColumnMetaData() {
@@ -78,5 +80,13 @@ public class ColumnMetaData {
 
     public void setCodes(List<EventAttributeCodes> codes) {
         this.codes = codes;
+    }
+
+    public boolean isGroup() {
+        return isGroup;
+    }
+
+    public void setGroup(boolean group) {
+        isGroup = group;
     }
 }
