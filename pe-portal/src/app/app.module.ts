@@ -36,6 +36,7 @@ import { ArtifactSettingsFieldComponent } from './modules/process-mining/artifac
 import { DurationConditionComponent } from './analysis/conditions/duration-condition/duration-condition.component';
 import { ResourcePathConditionComponent } from './analysis/conditions/resource-path-condition/resource-path-condition.component';
 import { DashboardComponent } from './modules/process-mining/dashboard/dashboard.component';
+import { ChartComponent } from './analysis/components/chart/chart.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { DashboardComponent } from './modules/process-mining/dashboard/dashboard
     ArtifactSettingsComponent,
     ArtifactSettingsFieldComponent,
     DashboardComponent,
+    ChartComponent,
   ],
   imports: [
     BrowserModule,
