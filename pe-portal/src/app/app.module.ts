@@ -12,6 +12,7 @@ import { AnalysisComponent } from './modules/process-mining/analysis/analysis.co
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 
 import { HighchartsChartModule } from 'highcharts-angular';
+import { GridsterModule } from 'angular-gridster2';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
@@ -78,7 +79,8 @@ import { ChartComponent } from './analysis/components/chart/chart.component';
     NgZorroAntdModule,
     HighchartsChartModule,
 
-    FormsModule
+    FormsModule,
+    GridsterModule
   ],
   providers: [
     {

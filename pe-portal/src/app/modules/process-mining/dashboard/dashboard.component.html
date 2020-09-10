@@ -20,9 +20,32 @@
     </div>
 
     <div class="grid">
+        <gridster class="chart" [options]="gridOptions">
+            <gridster-item [item]="item" *ngFor="let item of dashboard; index as idx">
+                <app-chart
+                    #chart
+                    [logName]="logName"
+                    [context]="context"
+                    [conditions]="conditions"
 
-        <div class="container">
-            <div class="chart">
+                    [options]="item.options"
+                    [measures]="item.measures"
+                    [dimensions]="item.dimensions"
+                ></app-chart>
+                <button (click)="doEdit(idx)">Edit</button>
+            </gridster-item>
+        </gridster>
+        <div class="options">
+            <ng-container [ngTemplateOutlet]="optionsTemplate"></ng-container>
+        </div>
+
+        <!-- <div class="container"> -->
+            
+
+            <!-- <div>
+                
+
+
                 <app-chart
                     #chart
                     [logName]="logName"
@@ -34,106 +57,11 @@
                     [dimensions]="dimensions"
                     style="width: 100%; height: 320px; display: block;"
                 ></app-chart>
-            </div>
-            <div class="options">
 
-                <div nz-form>
-                    <nz-form-item>
-                        <nz-form-label [nzSpan]="6">Title</nz-form-label>
-                        <nz-form-control [nzSpan]="18">
-                            <input nz-input [(ngModel)]="options.title" placeholder="Enter a title" />
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <nz-form-label [nzSpan]="6">Chart type</nz-form-label>
-                        <nz-form-control [nzSpan]="18">
-                            <nz-select [(ngModel)]="options.type">
-                                <nz-option nzValue="column" nzLabel="Bar chart" nzCustomContent><i nz-icon nzType="bar-chart" nzTheme="outline"></i> Bar chart</nz-option>
-                                <nz-option nzValue="area" nzLabel="Area chart" nzCustomContent><i nz-icon nzType="area-chart" nzTheme="outline"></i> Area chart</nz-option>
-                                <nz-option nzValue="line" nzLabel="Line chart" nzCustomContent><i nz-icon nzType="line-chart" nzTheme="outline"></i> Line chart</nz-option>
-                                <nz-option nzValue="spline" nzLabel="Spline chart" nzCustomContent><i nz-icon nzType="spline-chart" nzTheme="outline"></i> Spline chart</nz-option>
-                            </nz-select>
-                        </nz-form-control>
-                    </nz-form-item>
-
-                    <h3>Dimensions</h3>
-                    <nz-form-item *ngFor="let dimension of dimensions">
-                        <nz-form-control [nzSpan]="24">
-                            <div nz-row [nzGutter]="8">
-                                <div nz-col [nzSpan]="18">
-                                    <nz-select [(ngModel)]="dimension.attributeName">
-                                        <nz-option *ngFor="let attribute of context.caseAttributes" [nzValue]="attribute.columnName" [nzLabel]="attribute.columnName"></nz-option>
-                                    </nz-select>
-                                </div>
-                                <div nz-col [nzSpan]="4">
-                                    <button nz-button nzType="danger" nzShape="circle" (click)="doDeleteDimension(dimension)"><i nz-icon nzType="delete"></i></button>
-                                </div>
-                            </div>
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <a (click)="doAddDimension()"><i nz-icon nzType="plus" nzTheme="outline"></i> Add dimension</a>
-                    </nz-form-item>
-
-                    <h3>Measures</h3>
-                    <nz-form-item *ngFor="let measure of measures">
-                        <nz-form-control [nzSpan]="24">
-                            <div nz-row [nzGutter]="8">
-                                <div nz-col [nzSpan]="18">
-                                    <nz-select [(ngModel)]="measure.type">
-                                        <nz-option nzValue="count_cases" nzLabel="Number of cases"></nz-option>
-                                        <nz-option nzValue="count_variants" nzLabel="Number of variants"></nz-option>
-                                    </nz-select>
-                                </div>
-                                <div nz-col [nzSpan]="4">
-                                    <button nz-button nzType="default" nzShape="circle" (click)="doOpenMeasureOptions(measure)"><i nz-icon nzType="edit"></i></button>
-                                    <button nz-button nzType="danger" nzShape="circle" (click)="doDeleteMeasure(measure)"><i nz-icon nzType="delete"></i></button>
-                                </div>
-                            </div>
-                        </nz-form-control>
-                    </nz-form-item>
-                    <nz-form-item>
-                        <a (click)="doAddMeasure()"><i nz-icon nzType="plus" nzTheme="outline"></i> Add measure</a>
-                    </nz-form-item>
-                </div>
-
-            </div>
-        </div>
-
-        <nz-drawer [nzClosable]="true" *ngIf="selectedMeasure" 
-            [nzVisible]="selectedMeasure" 
-            nzPlacement="right" 
-            [nzTitle]="'Measure: ' + (selectedMeasure.title ? selectedMeasure.title : selectedMeasure.type)" 
-            nzWidth="700px"
-            (nzOnClose)="doCloseMeasureOptions()">
-            <div nz-form>
-                <nz-form-item>
-                    <nz-form-label [nzSpan]="4">Display name</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                        <input nz-input [(ngModel)]="selectedMeasure.title" placeholder="Enter a title" />
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSpan]="4">Alternative series type</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                        <nz-select [(ngModel)]="selectedMeasure.chartType">
-                            <nz-option nzValue="column" nzLabel="Bar chart" nzCustomContent><i nz-icon nzType="bar-chart" nzTheme="outline"></i> Column</nz-option>
-                            <nz-option nzValue="area" nzLabel="Area chart" nzCustomContent><i nz-icon nzType="area-chart" nzTheme="outline"></i> Area</nz-option>
-                            <nz-option nzValue="line" nzLabel="Line chart" nzCustomContent><i nz-icon nzType="line-chart" nzTheme="outline"></i> Line</nz-option>
-                        </nz-select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSpan]="4">Y-Axis</nz-form-label>
-                    <nz-form-control [nzSpan]="14">
-                        <nz-select [(ngModel)]="selectedMeasure.yAxis">
-                            <nz-option nzValue="primary" nzLabel="Primary"></nz-option>
-                            <nz-option nzValue="secondary" nzLabel="Secondary"></nz-option>
-                        </nz-select>
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-        </nz-drawer>
+                <button (click)="doEdit()"></button>
+            </div> -->
+            
+        <!-- </div> -->
 
     </div>
 </div>

@@ -13,13 +13,15 @@ import { DurationConditionComponent } from '../conditions/duration-condition/dur
   selector: 'app-condition-list',
   template: `
               <div class="condition-query-list">
-                <div class="condition-query-item" *ngFor="let condition of conditions">
-                  <app-condition-single
-                    [condition]="condition"
-                    [context]="context"
-                    (delete)="onDelete(condition)">
-                  </app-condition-single>
-                </div>
+                <ng-container *ngFor="let condition of conditions">
+                  <div class="condition-query-item">
+                    <app-condition-single
+                      [condition]="condition"
+                      [context]="context"
+                      (delete)="onDelete(condition)">
+                    </app-condition-single>
+                  </div>
+                </ng-container>
                 <div class="filter-buttons">
                   <button nz-button nz-dropdown [nzDropdownMenu]="menu">Add Selection</button>
                   <nz-dropdown-menu #menu="nzDropdownMenu">

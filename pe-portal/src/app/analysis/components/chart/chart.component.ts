@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Input, TemplateRef } from '@angular/core';
 import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 import { Condition } from '../../models/condition.model';
 import * as Highcharts from 'highcharts';
@@ -12,6 +12,7 @@ import { QueryConvertService } from '../../shared/query-convert.service';
 })
 export class ChartComponent implements OnInit {
   @ViewChild('chart', {static: true}) public chartContainer: ElementRef;
+  @ViewChild('optionsTemplate', {static: true}) public optionsTemplate: TemplateRef<any>;
 
   // input parameters
   @Input() public logName: string;
@@ -27,12 +28,18 @@ export class ChartComponent implements OnInit {
   public chartOptions: Highcharts.Options;
   public updateFromInput = false;
 
+  public selectedMeasure: any;
+
   constructor(
     private queryService: QueryService,
     private queryConvertService: QueryConvertService
   ) { }
 
   ngOnInit(): void {
+  }
+
+  doResize(): void {
+    this.updateFromInput = true;
   }
 
   doUpdate(): void {
@@ -133,6 +140,34 @@ export class ChartComponent implements OnInit {
       };
       this.updateFromInput = true;
     });
+  }
+
+  doAddMeasure(): void {
+    this.measures.push({});
+  }
+
+  doDeleteMeasure(measure): void {
+    this.measures.splice(this.measures.indexOf(measure), 1);
+  }
+
+  doAddDimension(): void {
+    this.dimensions.push({});
+  }
+
+  doDeleteDimension(dimension): void {
+    this.dimensions.splice(this.dimensions.indexOf(dimension), 1);
+  }
+
+  doOpenMeasureOptions(measure): void {
+    this.selectedMeasure = measure;
+  }
+
+  doCloseMeasureOptions(): void {
+    this.selectedMeasure = null;
+  }
+
+  getOptionsTemplate(): TemplateRef<any> {
+    return this.optionsTemplate;
   }
 
 }

@@ -1,17 +1,11 @@
-.container {
+.dashboard {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-areas: "chart options";
+    grid-template-areas: "conditions"
+        "grid";
+    grid-template-rows: 48px auto;
+    grid-template-columns: 1fr;
+    height: 100%;
 }
-
-.chart {
-    grid-area: chart;
-}
-
-.options {
-    grid-area: options;
-}
-
 
 .dashboard-conditions {
     grid-area: conditions;
@@ -50,6 +44,22 @@
 
 .dashboard-conditions .actions {
     grid-area: actions;
+}
+
+.grid {
+    grid-area: grid;
+
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-areas: "chart options";
+}
+
+.chart {
+    grid-area: chart;
+}
+
+.options {
+    grid-area: options;
 }
 
 .stat-item {
