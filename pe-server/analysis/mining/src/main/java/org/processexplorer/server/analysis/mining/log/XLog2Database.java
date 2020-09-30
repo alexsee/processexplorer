@@ -223,7 +223,8 @@ public class XLog2Database {
             if (!attr.getKey().equals(XConceptExtension.KEY_NAME) &&
                     !attr.getKey().equals(XOrganizationalExtension.KEY_RESOURCE) &&
                     !attr.getKey().equals(XTimeExtension.KEY_TIMESTAMP) &&
-                    !attr.getKey().equals(XLifecycleExtension.KEY_TRANSITION)) {
+                    !attr.getKey().equals(XLifecycleExtension.KEY_TRANSITION) &&
+                    !attr.getKey().equals("resource")) {
                 attributes.add(attr);
             }
         }
