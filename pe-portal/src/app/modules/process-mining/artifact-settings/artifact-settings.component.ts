@@ -5,7 +5,7 @@ import { ArtifactService } from 'src/app/analysis/shared/artifact.service';
 import { QueryService } from 'src/app/analysis/shared/query.service';
 import { ArtifactConfiguration } from 'src/app/analysis/models/artifact-configuration.model';
 import { forkJoin } from 'rxjs';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Artifact } from 'src/app/analysis/models/artifact.model';
 
 @Component({
