@@ -176,7 +176,8 @@ public class XLog2Database {
         sql.print("CAST(%s AS interval) AS %s,", "age(MAX(timestamp), MIN(timestamp))", "total_duration");
         sql.print("CONCAT(':', STRING_AGG(CAST(event AS VARCHAR(5)), '::' ORDER BY timestamp, lifecycle, event), ':') AS variant,");
         sql.print("CONCAT(':', STRING_AGG(CAST(resource AS VARCHAR(255)), '::' ORDER BY timestamp, lifecycle, resource), ':') AS resource_variant,");
-        sql.print("HASHTEXT(STRING_AGG(CAST(event AS VARCHAR(5)), '::' ORDER BY timestamp, lifecycle, event)) AS variant_id");
+        sql.print("HASHTEXT(STRING_AGG(CAST(event AS VARCHAR(5)), '::' ORDER BY timestamp, lifecycle, event)) AS variant_id,");
+        sql.print("HASHTEXT(STRING_AGG(CAST(resource AS VARCHAR(255)), '::' ORDER BY timestamp, lifecycle, resource)) AS resource_variant_id");
         sql.print("FROM %s AS log", db.eventTable.getTableNameSQL());
         sql.print("GROUP BY case_id");
 
