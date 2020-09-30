@@ -163,11 +163,11 @@ public class DatabaseModel {
         }
 
         SQL += "UNION ALL " +
-                "SELECT DISTINCT ON (case_id) " +
+                "(SELECT DISTINCT ON (case_id) " +
                 "case_id, " +
                 nullSource + " as source, " +
                 perspective + " as target, " +
-                "null as source_timestamp, " +
+                "CAST(null as timestamp) as source_timestamp, " +
                 "timestamp as target_timestamp " +
                 "FROM " + this.eventTable.getTableNameSQL() + " ";
 
@@ -175,7 +175,7 @@ public class DatabaseModel {
             SQL += "WHERE " + perspective + " IN (" + String.join(", ", filter) + ") ";
         }
 
-        SQL += "ORDER BY source_timestamp, source) ";
+        SQL += "ORDER BY case_id, target_timestamp, source)) ";
 
         return SQL;
     }
