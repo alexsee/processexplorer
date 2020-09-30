@@ -48,6 +48,7 @@ public class DatabaseModel {
     public DbColumn caseVariantIdCol;
     public DbColumn caseVariantCol;
     public DbColumn caseResourceVariantCol;
+    public DbColumn caseResourceVariantIdCol;
 
     // events table
     public DbTable eventTable;
@@ -100,6 +101,7 @@ public class DatabaseModel {
         caseVariantIdCol = caseTable.addColumn("variant_id", "integer", null);
         caseVariantCol = caseTable.addColumn("variant", "text", null);
         caseResourceVariantCol = caseTable.addColumn("resource_variant", "text", null);
+        caseResourceVariantIdCol = caseTable.addColumn("resource_variant_id", "integer", null);
 
         // events table
         eventTable = schema.addTable(getEventsTableName(logName));

@@ -20,6 +20,7 @@ package org.processexplorer.server.analysis.query;
 
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;
+import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
 import org.processexplorer.server.analysis.query.codes.EventAttributeCodes;
 import org.processexplorer.server.analysis.query.condition.Condition;
 import org.processexplorer.server.analysis.query.db.PostgresFunctionCall;
@@ -161,18 +162,17 @@ public class QueryService {
     /**
      * Returns all existing paths of a loaded event log with corresponding occurrence and variant id.
      *
-     * @param logName
+     * @param db
      * @param conditions
      * @return
      */
-    public List<Variant> getAllPathsSimple(String logName, List<org.processexplorer.server.analysis.query.condition.Condition> conditions) {
-        var db = new DatabaseModel(logName);
+    public List<Variant> getAllPathsSimple(DatabaseModel db, DbColumn variantId, List<org.processexplorer.server.analysis.query.condition.Condition> conditions) {
 
         var sql = new SelectQuery()
-                .addColumns(db.caseVariantIdCol)
-                .addAliasedColumn(FunctionCall.count().addColumnParams(db.caseVariantIdCol), "occurrence")
+                .addAliasedColumn(variantId, "variant_id")
+                .addAliasedColumn(FunctionCall.count().addColumnParams(variantId), "occurrence")
                 .addJoins(SelectQuery.JoinType.INNER, db.caseCaseAttributeJoin)
-                .addGroupings(db.caseVariantIdCol)
+                .addGroupings(variantId)
                 .addCustomOrdering("occurrence", OrderObject.Dir.DESCENDING);
 
         for (var rule : conditions) {
@@ -194,7 +194,7 @@ public class QueryService {
     public ProcessMapResult getProcessMap(ProcessMapQuery query) {
         var db = new DatabaseModel(query.getLogName());
 
-        var sql = getGraphEdgeQuery(query.getLogName(), query.getConditions());
+        var sql = getGraphEdgeQuery(query.getLogName(), db.caseVariantIdCol, query.getConditions());
         var sqlT = db.getGraphTable("event", "-1", "-2", query.getActivityFilter()) + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
                 .addJoins(SelectQuery.JoinType.LEFT_OUTER, db.graphCaseJoin, db.graphCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
@@ -207,7 +207,7 @@ public class QueryService {
 
         var result = new ProcessMapResult();
         result.setProcessMap(graph);
-        result.setVariants(getAllPathsSimple(query.getLogName(), query.getConditions()));
+        result.setVariants(getAllPathsSimple(db, db.caseVariantIdCol, query.getConditions()));
 
         return result;
     }
@@ -221,7 +221,7 @@ public class QueryService {
     public SocialNetworkResult getSocialNetworkGraph(ProcessMapQuery query) {
         var db = new DatabaseModel(query.getLogName());
 
-        var sql = getGraphEdgeQuery(query.getLogName(), query.getConditions());
+        var sql = getGraphEdgeQuery(query.getLogName(), db.caseResourceVariantIdCol, query.getConditions());
         var sqlT = db.getGraphTable("resource", "'start'", "'end'") + sql.addGroupings(db.graphSourceCol, db.graphTargetCol)
                 .addJoins(SelectQuery.JoinType.INNER, db.graphCaseJoin, db.graphCaseAttributeJoin)
                 .addCustomOrdering(new CustomSql("occurrence"), OrderObject.Dir.DESCENDING)
@@ -234,7 +234,7 @@ public class QueryService {
 
         var result = new SocialNetworkResult();
         result.setSocialNetwork(graph);
-        result.setVariants(getAllPathsSimple(query.getLogName(), query.getConditions()));
+        result.setVariants(getAllPathsSimple(db, db.caseResourceVariantIdCol, query.getConditions()));
 
         return result;
     }
@@ -575,7 +575,7 @@ public class QueryService {
      * @param conditions
      * @return
      */
-    private SelectQuery getGraphEdgeQuery(String logName, List<Condition> conditions) {
+    private SelectQuery getGraphEdgeQuery(String logName, DbColumn variant, List<Condition> conditions) {
         var db = new DatabaseModel(logName);
 
         var sql = new SelectQuery()
@@ -584,7 +584,7 @@ public class QueryService {
                 .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.min().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "min_duration")
                 .addAliasedColumn(new ExtractExpression(PgExtractDatePart.EPOCH, FunctionCall.max().addCustomParams(PostgresFunctionCall.age().addCustomParams(db.graphTargetTimestampCol, db.graphSourceTimestampCol))), "max_duration")
                 .addAliasedColumn(FunctionCall.countAll(), "occurrence")
-                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + db.caseVariantIdCol.getColumnNameSQL() + " as text), ',')"), "variants");
+                .addAliasedColumn(new CustomSql("string_agg(distinct cast(" + variant.getColumnNameSQL() + " as text), ',')"), "variants");
 
         // add conditions
         addConditionsToSql(sql, db, conditions);
