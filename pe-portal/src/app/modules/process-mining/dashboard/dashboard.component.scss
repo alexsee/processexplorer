@@ -79,3 +79,20 @@
     font-weight: 600;
     text-align: right;
 }
+
+.widget {
+    height: 100%;
+    width: 100%;
+}
+
+.button-bar {
+    display: none;
+
+    position: absolute;
+    left: 50px;
+    top: 20px;
+}
+
+gridster-item:hover .button-bar {
+    display: block;
+}

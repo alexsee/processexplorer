@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, TemplateRef, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef, QueryList, ViewChildren, ViewContainerRef } from '@angular/core';
 import { LogService } from 'src/app/log/shared/log.service';
 import { QueryService } from 'src/app/analysis/shared/query.service';
 import { QueryConvertService } from 'src/app/analysis/shared/query-convert.service';
@@ -15,7 +15,7 @@ import { GridsterConfig, GridsterItem, GridType, CompactType } from 'angular-gri
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChildren('chart') public chartContainer: QueryList<ChartComponent>;
+  @ViewChildren('chart', { read: ChartComponent }) public chartContainer: QueryList<ChartComponent>;
 
   public logName: string;
   public context: EventLogStatistics;
@@ -33,21 +33,11 @@ export class DashboardComponent implements OnInit {
     private queryConvertService: QueryConvertService,
     private storageService: LocalStorageService) { }
 
-  itemChange(item, itemComponent) {
-    console.info('itemChanged', item, itemComponent);
-  }
-
-  itemResize(item, itemComponent) {
-    console.info('itemResized', item, itemComponent);
-
-    if (this.chartContainer) {
-      this.chartContainer.forEach(chart => chart.doResize());
-    }
-  }
-
   ngOnInit(): void {
+    const that = this;
+
     this.gridOptions = {
-      gridType: GridType.Fit,
+      gridType: GridType.Fixed,
       compactType: CompactType.None,
       margin: 10,
       draggable: {
@@ -56,8 +46,11 @@ export class DashboardComponent implements OnInit {
       resizable: {
         enabled: true,
       },
-      itemChangeCallback: this.itemChange,
-      itemResizeCallback: this.itemResize,
+      itemResizeCallback: (item, itemComponent) => {
+        if (that.chartContainer) {
+          that.chartContainer.forEach(chart => chart.doResize());
+        }
+      },
     };
 
     this.dashboard = [

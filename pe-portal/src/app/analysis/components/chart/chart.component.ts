@@ -30,16 +30,24 @@ export class ChartComponent implements OnInit {
 
   public selectedMeasure: any;
 
+  private chart: Highcharts.Chart;
+
   constructor(
     private queryService: QueryService,
     private queryConvertService: QueryConvertService
   ) { }
 
+  updateChartInstance(chart: Highcharts.Chart) {
+    this.chart = chart;
+  }
+
   ngOnInit(): void {
   }
 
   doResize(): void {
-    this.updateFromInput = true;
+    if (this.chart) {
+      this.chart.reflow();
+    }
   }
 
   doUpdate(): void {
