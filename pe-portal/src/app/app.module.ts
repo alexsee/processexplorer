@@ -37,6 +37,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 
@@ -66,7 +67,11 @@ import { ArtifactSettingsFieldComponent } from './modules/process-mining/artifac
 import { DurationConditionComponent } from './analysis/conditions/duration-condition/duration-condition.component';
 import { ResourcePathConditionComponent } from './analysis/conditions/resource-path-condition/resource-path-condition.component';
 import { DashboardComponent } from './modules/process-mining/dashboard/dashboard.component';
-import { ChartComponent } from './analysis/components/chart/chart.component';
+
+import { WidgetChartComponent } from './analysis/components/chart/chart.component';
+import { WidgetHostComponent } from './analysis/components/widget/widget-host.component';
+import { WidgetDirective } from './analysis/components/widget.directive';
+import { WidgetProcessMapComponent } from './analysis/components/process-map/process-map.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +102,11 @@ import { ChartComponent } from './analysis/components/chart/chart.component';
     ArtifactSettingsComponent,
     ArtifactSettingsFieldComponent,
     DashboardComponent,
-    ChartComponent,
+
+    WidgetHostComponent,
+    WidgetDirective,
+    WidgetChartComponent,
+    WidgetProcessMapComponent
   ],
   imports: [
     BrowserModule,
@@ -133,6 +142,7 @@ import { ChartComponent } from './analysis/components/chart/chart.component';
     NzInputNumberModule,
     NzEmptyModule,
     NzMessageModule,
+    NzSwitchModule,
 
     HighchartsChartModule,
 

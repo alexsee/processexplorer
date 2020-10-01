@@ -3,11 +3,14 @@ import { LogService } from 'src/app/log/shared/log.service';
 import { QueryService } from 'src/app/analysis/shared/query.service';
 import { QueryConvertService } from 'src/app/analysis/shared/query-convert.service';
 import { LocalStorageService } from 'src/app/shared/storage.service';
-import * as Highcharts from 'highcharts';
 import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 import { Condition } from 'src/app/analysis/models/condition.model';
-import { ChartComponent } from 'src/app/analysis/components/chart/chart.component';
+import { WidgetChartComponent } from 'src/app/analysis/components/chart/chart.component';
 import { GridsterConfig, GridsterItem, GridType, CompactType } from 'angular-gridster2';
+import { WidgetHostComponent } from 'src/app/analysis/components/widget/widget-host.component';
+import { DashboardService } from 'src/app/analysis/shared/dashboard.service';
+import { EventLogDashboard } from 'src/app/log/models/eventlog-dashboard.model';
+import { WidgetProcessMapComponent } from 'src/app/analysis/components/process-map/process-map.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +18,7 @@ import { GridsterConfig, GridsterItem, GridType, CompactType } from 'angular-gri
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChildren('chart', { read: ChartComponent }) public chartContainer: QueryList<ChartComponent>;
+  @ViewChildren('widget', { read: WidgetHostComponent }) public chartContainer: QueryList<WidgetHostComponent>;
 
   public logName: string;
   public context: EventLogStatistics;
@@ -26,11 +29,15 @@ export class DashboardComponent implements OnInit {
   public dashboard: Array<GridsterItem>;
 
   public optionsTemplate: TemplateRef<any>;
+  public editMode = false;
+
+  private dashboardOptions: EventLogDashboard;
 
   constructor(
     private logService: LogService,
     private queryService: QueryService,
     private queryConvertService: QueryConvertService,
+    private dashboardService: DashboardService,
     private storageService: LocalStorageService) { }
 
   ngOnInit(): void {
@@ -53,11 +60,7 @@ export class DashboardComponent implements OnInit {
       },
     };
 
-    this.dashboard = [
-      {cols: 2, rows: 1, y: 0, x: 0, options: {}, dimensions: [], measures: []},
-      {cols: 2, rows: 2, y: 0, x: 2, options: {}, dimensions: [], measures: []}
-    ];
-
+    // load context
     this.logService.currentLog.subscribe(eventLog => {
       if (eventLog === null) {
         return;
@@ -66,7 +69,37 @@ export class DashboardComponent implements OnInit {
       this.logName = eventLog.logName;
       this.queryService.getStatistics(this.logName, this.queryConvertService.convertToQuery(this.conditions))
         .subscribe(statistics => this.context = statistics);
+
+      // load dashboard pages
+      this.dashboard = [];
+
+      this.dashboardService.getDashboards(this.logName).subscribe(x => {
+        // load first
+        if (x.length === 0) {
+          this.dashboardOptions = {
+            id: 0,
+            content: null,
+            creationDate: new Date(),
+            modifiedDate: new Date(),
+            logName: this.logName,
+            page: 1
+          };
+          return;
+        }
+
+        this.dashboardService.getDashboard(x[0]).subscribe(dashboard => {
+          this.dashboardOptions = dashboard;
+          this.dashboard = this.dashboardService.parseDashboard(dashboard.content);
+
+          this.chartContainer.forEach(chart => chart.doUpdate());
+        });
+      });
     });
+
+    // this.dashboard = [
+    //   {cols: 2, rows: 1, y: 0, x: 0, widget: { type: ChartComponent, options: { options: {}, dimensions: [], measures: []}}},
+    //   {cols: 2, rows: 2, y: 0, x: 2, widget: { type: ChartComponent, options: { options: {}, dimensions: [], measures: []}}}
+    // ];
   }
 
   doEdit(item): void {
@@ -75,6 +108,22 @@ export class DashboardComponent implements OnInit {
 
   doUpdate(): void {
     this.chartContainer.forEach(chart => chart.doUpdate());
+
+    // save dashboard
+    this.dashboardOptions.content = this.dashboardService.stringifyDashboard(this.dashboard);
+    this.dashboardService.save(this.dashboardOptions).subscribe(x => this.dashboardOptions = x);
+  }
+
+  doAddWidget(type: string): void {
+    if (type === 'process_map') {
+      this.dashboard.push({cols: 2, rows: 1, x: 0, y: 0, widget: {
+        type: WidgetProcessMapComponent, options: { options: {}, dimensions: [], measures: []}}
+      });
+    } else if (type === 'chart') {
+      this.dashboard.push({cols: 2, rows: 1, x: 0, y: 0, widget: {
+        type: WidgetChartComponent, options: { options: {}, dimensions: [], measures: []}}
+      });
+    }
   }
 
 }

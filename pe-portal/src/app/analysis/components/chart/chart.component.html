@@ -15,13 +15,13 @@
         <nz-form-item>
             <nz-form-label [nzSpan]="6">Title</nz-form-label>
             <nz-form-control [nzSpan]="18">
-                <input nz-input [(ngModel)]="options.title" placeholder="Enter a title" />
+                <input nz-input [(ngModel)]="widget.options.options.title" placeholder="Enter a title" />
             </nz-form-control>
         </nz-form-item>
         <nz-form-item>
             <nz-form-label [nzSpan]="6">Chart type</nz-form-label>
             <nz-form-control [nzSpan]="18">
-                <nz-select [(ngModel)]="options.type">
+                <nz-select [(ngModel)]="widget.options.options.type">
                     <nz-option nzValue="column" nzLabel="Bar chart" nzCustomContent><i nz-icon nzType="bar-chart" nzTheme="outline"></i> Bar chart</nz-option>
                     <nz-option nzValue="area" nzLabel="Area chart" nzCustomContent><i nz-icon nzType="area-chart" nzTheme="outline"></i> Area chart</nz-option>
                     <nz-option nzValue="line" nzLabel="Line chart" nzCustomContent><i nz-icon nzType="line-chart" nzTheme="outline"></i> Line chart</nz-option>
@@ -31,7 +31,7 @@
         </nz-form-item>
 
         <h3>Dimensions</h3>
-        <nz-form-item *ngFor="let dimension of dimensions">
+        <nz-form-item *ngFor="let dimension of widget.options.dimensions">
             <nz-form-control [nzSpan]="24">
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="18">
@@ -50,7 +50,7 @@
         </nz-form-item>
 
         <h3>Measures</h3>
-        <nz-form-item *ngFor="let measure of measures">
+        <nz-form-item *ngFor="let measure of widget.options.measures">
             <nz-form-control [nzSpan]="24">
                 <div nz-row [nzGutter]="8">
                     <div nz-col [nzSpan]="18">

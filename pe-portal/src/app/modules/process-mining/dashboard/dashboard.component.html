@@ -1,5 +1,16 @@
 <div class="dashboard">
     <div class="dashboard-conditions">
+        <div class="edit-buttons">
+            <nz-switch nzSize="small" [(ngModel)]="editMode"></nz-switch>
+
+            <button nz-button nz-dropdown [nzDropdownMenu]="menu">Add Widget</button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                    <li nz-menu-item (click)="doAddWidget('process_map')">Process Map</li>
+                    <li nz-menu-item (click)="doAddWidget('chart')">Chart</li>
+                </ul>
+            </nz-dropdown-menu>
+        </div>
         <div class="statistics" *ngIf="context">
             <div class="stat-item">
                 <div class="value">{{context.numTraces | number}}</div>
@@ -19,27 +30,24 @@
         </div>
     </div>
 
-    <div class="grid">
+    <div class="grid" [ngClass]="{ 'edit-mode': editMode }">
         <gridster class="chart" [options]="gridOptions">
             <gridster-item [item]="item" *ngFor="let item of dashboard; index as idx">
                 <div class="widget" nz-popover [nzPopoverContent]="editTemplate">
-                    <app-chart
-                        #chart
-                        [logName]="logName"
+                    <app-widget-host
+                        #widget
                         [context]="context"
+                        [widget]="item.widget"
                         [conditions]="conditions"
-
-                        [options]="item.options"
-                        [measures]="item.measures"
-                        [dimensions]="item.dimensions"
-                    ></app-chart>
+                    >
+                    </app-widget-host>
                 </div>
                 <ng-template #editTemplate>
                     <button (click)="doEdit(idx)">Edit</button>
                 </ng-template>
             </gridster-item>
         </gridster>
-        <div class="options">
+        <div class="options" *ngIf="editMode">
             <ng-container [ngTemplateOutlet]="optionsTemplate"></ng-container>
         </div>
     </div>

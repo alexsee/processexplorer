@@ -4,24 +4,24 @@ import { Condition } from '../../models/condition.model';
 import * as Highcharts from 'highcharts';
 import { QueryService } from '../../shared/query.service';
 import { QueryConvertService } from '../../shared/query-convert.service';
+import { WidgetComponent } from '../widget.component';
+import { Widget } from '../../models/widget.model';
+import { WidgetHostComponent } from '../widget/widget-host.component';
 
 @Component({
-  selector: 'app-chart',
+  selector: 'app-widget-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss']
 })
-export class ChartComponent implements OnInit {
+export class WidgetChartComponent implements OnInit, WidgetComponent {
   @ViewChild('chart', {static: true}) public chartContainer: ElementRef;
   @ViewChild('optionsTemplate', {static: true}) public optionsTemplate: TemplateRef<any>;
 
   // input parameters
-  @Input() public logName: string;
   @Input() public context: EventLogStatistics;
   @Input() public conditions: Condition[];
-
-  @Input() public options: any = {};
-  @Input() public dimensions: any[] = [];
-  @Input() public measures: any[] = [];
+  @Input() public widget: Widget;
+  @Input() public parent: WidgetHostComponent;
 
   // internal chart variables
   public Highcharts: typeof Highcharts = Highcharts;
@@ -54,17 +54,18 @@ export class ChartComponent implements OnInit {
     const selections = [];
 
     // push dimensions
-    this.dimensions.forEach(dim => selections.push({
+    this.widget.options.dimensions.forEach(dim => selections.push({
       type: 'case_attribute',
       attributeName: dim.attributeName
     }));
 
     // push measures
-    this.measures.forEach(measure => selections.push({
+    this.widget.options.measures.forEach(measure => selections.push({
       type: measure.type
     }));
 
-    this.queryService.getDrillDown(this.logName, selections, this.queryConvertService.convertToQuery(this.conditions)).subscribe(result => {
+    this.queryService.getDrillDown(this.context.logName, selections, this.queryConvertService.convertToQuery(this.conditions))
+    .subscribe(result => {
       const series = [];
       const yAxis = [];
 
@@ -76,7 +77,7 @@ export class ChartComponent implements OnInit {
         const column = result.metaData[i];
 
         if (column.group) {
-          const measure = this.measures[i - this.dimensions.length];
+          const measure = this.widget.options.measures[i - this.widget.options.dimensions.length];
 
           // create new series
           const dataset = [];
@@ -87,7 +88,7 @@ export class ChartComponent implements OnInit {
           series.push({
             data: dataset,
             name: measure.title ? measure.title : column.columnName,
-            type: measure.chartType ? measure.chartType : this.options.type,
+            type: measure.chartType ? measure.chartType : this.widget.options.options.type,
             showInLegend: true,
             yAxis: measure.yAxis ? (measure.yAxis === 'primary' ? 0 : 1) : 0
           });
@@ -135,10 +136,10 @@ export class ChartComponent implements OnInit {
       // generate chart in container
       this.chartOptions = {
         title: {
-          text: this.options.title
+          text: this.widget.options.options.title
         },
         chart: {
-          type: this.options.type,
+          type: this.widget.options.options.type,
         },
         series,
         xAxis: {
@@ -151,19 +152,19 @@ export class ChartComponent implements OnInit {
   }
 
   doAddMeasure(): void {
-    this.measures.push({});
+    this.widget.options.measures.push({});
   }
 
   doDeleteMeasure(measure): void {
-    this.measures.splice(this.measures.indexOf(measure), 1);
+    this.widget.options.measures.splice(this.widget.options.measures.indexOf(measure), 1);
   }
 
   doAddDimension(): void {
-    this.dimensions.push({});
+    this.widget.options.dimensions.push({});
   }
 
   doDeleteDimension(dimension): void {
-    this.dimensions.splice(this.dimensions.indexOf(dimension), 1);
+    this.widget.options.dimensions.splice(this.widget.options.dimensions.indexOf(dimension), 1);
   }
 
   doOpenMeasureOptions(measure): void {

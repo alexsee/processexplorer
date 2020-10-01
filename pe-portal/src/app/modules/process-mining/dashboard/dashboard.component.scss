@@ -5,6 +5,8 @@
     grid-template-rows: 48px auto;
     grid-template-columns: 1fr;
     height: 100%;
+
+    margin: 0 -50px;
 }
 
 .dashboard-conditions {
@@ -12,9 +14,9 @@
 
     background: #fff;
     display: grid;
-    grid-template-columns: max-content auto min-content;
+    grid-template-columns: max-content auto min-content min-content;
     grid-template-rows: 1fr;
-    grid-template-areas: "actions buttons statistics";
+    grid-template-areas: "actions buttons edit-buttons statistics";
     height: 100%;
     overflow: hidden;
 
@@ -46,16 +48,30 @@
     grid-area: actions;
 }
 
+.dashboard-conditions .edit-buttons {
+    grid-area: edit-buttons;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
 .grid {
     grid-area: grid;
 
     display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 1fr;
+    grid-template-areas: "chart";
+}
+
+.edit-mode {
     grid-template-columns: 3fr 1fr;
     grid-template-areas: "chart options";
 }
 
 .chart {
     grid-area: chart;
+    background: rgb(234, 234, 234);
 }
 
 .options {
