@@ -44,18 +44,20 @@ export class DashboardComponent implements OnInit {
     const that = this;
 
     this.gridOptions = {
-      gridType: GridType.Fixed,
+      gridType: GridType.Fit,
       compactType: CompactType.None,
       margin: 10,
       draggable: {
-        enabled: true,
+        enabled: false,
       },
       resizable: {
-        enabled: true,
+        enabled: false,
       },
       itemResizeCallback: (item, itemComponent) => {
         if (that.chartContainer) {
-          that.chartContainer.forEach(chart => chart.doResize());
+          setTimeout(x => {
+            that.chartContainer.forEach(chart => chart.doResize());
+          }, 100);
         }
       },
     };
@@ -95,15 +97,24 @@ export class DashboardComponent implements OnInit {
         });
       });
     });
-
-    // this.dashboard = [
-    //   {cols: 2, rows: 1, y: 0, x: 0, widget: { type: ChartComponent, options: { options: {}, dimensions: [], measures: []}}},
-    //   {cols: 2, rows: 2, y: 0, x: 2, widget: { type: ChartComponent, options: { options: {}, dimensions: [], measures: []}}}
-    // ];
   }
 
   doEdit(item): void {
     this.optionsTemplate = this.chartContainer.toArray()[item].getOptionsTemplate();
+    this.gridOptions.api.resize();
+  }
+
+  doDelete(item): void {
+    this.dashboard.splice(this.dashboard.indexOf(item), 1);
+    this.gridOptions.api.resize();
+  }
+
+  doEditModeChange(): void {
+    this.gridOptions.api.resize();
+
+    this.gridOptions.resizable.enabled = this.editMode;
+    this.gridOptions.draggable.enabled = this.editMode;
+    this.gridOptions.api.optionsChanged();
   }
 
   doUpdate(): void {

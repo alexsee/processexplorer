@@ -1,15 +1,15 @@
 <div class="dashboard">
     <div class="dashboard-conditions">
         <div class="edit-buttons">
-            <nz-switch nzSize="small" [(ngModel)]="editMode"></nz-switch>
-
-            <button nz-button nz-dropdown [nzDropdownMenu]="menu">Add Widget</button>
+            <button nz-button nz-dropdown [nzDropdownMenu]="menu" *ngIf="editMode">Add Widget</button>
             <nz-dropdown-menu #menu="nzDropdownMenu">
                 <ul nz-menu>
                     <li nz-menu-item (click)="doAddWidget('process_map')">Process Map</li>
                     <li nz-menu-item (click)="doAddWidget('chart')">Chart</li>
                 </ul>
             </nz-dropdown-menu>
+
+            <nz-switch nzSize="small" [(ngModel)]="editMode" (ngModelChange)="doEditModeChange()"></nz-switch>
         </div>
         <div class="statistics" *ngIf="context">
             <div class="stat-item">
@@ -30,10 +30,10 @@
         </div>
     </div>
 
-    <div class="grid" [ngClass]="{ 'edit-mode': editMode }">
+    <div class="grid" [ngClass]="{ 'edit-mode': editMode && optionsTemplate }">
         <gridster class="chart" [options]="gridOptions">
             <gridster-item [item]="item" *ngFor="let item of dashboard; index as idx">
-                <div class="widget" nz-popover [nzPopoverContent]="editTemplate">
+                <div class="widget" nz-popover [nzPopoverContent]="editTemplate" [nzPopoverTrigger]="editMode ? 'hover' : null">
                     <app-widget-host
                         #widget
                         [context]="context"
@@ -43,7 +43,8 @@
                     </app-widget-host>
                 </div>
                 <ng-template #editTemplate>
-                    <button (click)="doEdit(idx)">Edit</button>
+                    <button nz-button (click)="doEdit(idx)" nzType="primary" style="margin-right: 5px;"><i nz-icon nzType="edit" nzTheme="outline"></i></button>
+                    <button nz-button (click)="doDelete(idx)" nzDanger><i nz-icon nzType="delete" nzTheme="outline"></i></button>
                 </ng-template>
             </gridster-item>
         </gridster>

@@ -5,8 +5,7 @@
     grid-template-rows: 48px auto;
     grid-template-columns: 1fr;
     height: 100%;
-
-    margin: 0 -50px;
+    width: 100%;
 }
 
 .dashboard-conditions {
@@ -52,7 +51,12 @@
     grid-area: edit-buttons;
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 15px;
+    border-right: 1pt solid rgb(244, 244, 244);
+}
+
+.dashboard-conditions .edit-buttons nz-switch {
+    margin: 0 0 0 10px;
 }
 
 .grid {
@@ -71,7 +75,7 @@
 
 .chart {
     grid-area: chart;
-    background: rgb(234, 234, 234);
+    background: #f0f2f5;
 }
 
 .options {
@@ -99,6 +103,7 @@
 .widget {
     height: 100%;
     width: 100%;
+    padding: 5px;
 }
 
 .button-bar {
