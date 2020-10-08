@@ -1,3 +1,15 @@
+.condition-query-list {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
 .condition-query-item {
-    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.filter-buttons {
+    margin-left: 10px;
 }

@@ -1,0 +1,119 @@
+.dashboard {
+    display: grid;
+    grid-template-areas: "conditions"
+        "grid";
+    grid-template-rows: 48px auto;
+    grid-template-columns: 1fr;
+    height: 100%;
+    width: 100%;
+}
+
+.dashboard-conditions {
+    grid-area: conditions;
+
+    background: #fff;
+    display: grid;
+    grid-template-columns: max-content auto min-content min-content;
+    grid-template-rows: 1fr;
+    grid-template-areas: "actions buttons edit-buttons statistics";
+    height: 100%;
+    overflow: hidden;
+
+    border-bottom: 1pt solid rgb(244, 244, 244);
+}
+
+.dashboard-conditions .buttons {
+    grid-area: buttons;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.dashboard-conditions .buttons button {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.dashboard-conditions .buttons button:first-child {
+    margin-left: 0;
+}
+
+.dashboard-conditions .statistics {
+    grid-area: statistics;
+    display: flex;
+}
+
+.dashboard-conditions .actions {
+    grid-area: actions;
+}
+
+.dashboard-conditions .edit-buttons {
+    grid-area: edit-buttons;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-right: 1pt solid rgb(244, 244, 244);
+}
+
+.dashboard-conditions .edit-buttons nz-switch {
+    margin: 0 0 0 10px;
+}
+
+.grid {
+    grid-area: grid;
+
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 1fr;
+    grid-template-areas: "chart";
+}
+
+.edit-mode {
+    grid-template-columns: 3fr 1fr;
+    grid-template-areas: "chart options";
+}
+
+.chart {
+    grid-area: chart;
+    background: #f0f2f5;
+}
+
+.options {
+    grid-area: options;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.stat-item .label {
+    font-size: 12px;
+}
+
+.stat-item .value {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.widget {
+    height: 100%;
+    width: 100%;
+    padding: 5px;
+}
+
+.button-bar {
+    display: none;
+
+    position: absolute;
+    left: 50px;
+    top: 20px;
+}
+
+gridster-item:hover .button-bar {
+    display: block;
+}

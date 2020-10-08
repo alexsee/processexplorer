@@ -11,6 +11,7 @@
         </div>
         <ul nz-menu nzTheme="dark" nzMode="horizontal" *ngIf="isLoggedIn">
             <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'analysis']" nzMatchRouter>Explore</li>
+            <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'dashboard']" nzMatchRouter>Dashboard</li>
             <li nz-menu-item *ngIf="selectedEventLog" [routerLink]="['/', 'artifacts']" nzMatchRouter>Artifacts</li>
         </ul>
     </nz-header>

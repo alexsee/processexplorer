@@ -1,32 +1,25 @@
-<nz-card nzTitle="Duration selection" 
-    nzSize="small"
-    [nzExtra]="moreTemplate">
-    <div *ngIf="data.minDuration && data.maxDuration">
-        <b>&ge; {{data.minDuration}} {{data.unit}} and &le; {{data.maxDuration}} {{data.unit}}</b>
-    </div>
-    <div *ngIf="data.minDuration && !data.maxDuration">
-        <b>Longer or equal than {{data.minDuration}} {{data.unit}}</b>
-    </div>
-    <div *ngIf="!data.minDuration && data.maxDuration">
-        <b>Less or equal than {{data.maxDuration}} {{data.unit}}</b>
-    </div>
-    <div>
-        <span *ngIf="data.from > -1">{{context.activities[data.from].name}}</span><span *ngIf="data.from == -1">Process start</span>
-        -
-        <span *ngIf="data.to > -2">{{context.activities[data.to].name}}</span><span *ngIf="data.to == -2">Process end</span>
-    </div>
-</nz-card>
-
-<ng-template #moreTemplate>
-    <a nz-popover
+<div class="filter-container">
+    <div class="filter-info-container" 
+        nz-popover
         nzPopoverTitle="Duration selection"
         nzPopoverTrigger="click"
-        [nzPopoverContent]="contentTemplate">Edit</a>
+        nzPopoverPlacement="bottomLeft"
+        [nzPopoverContent]="contentTemplate">
+        <div class="label" *ngIf="!data.minDuration && !data.maxDuration">Duration</div>
+        <div class="label" *ngIf="data.minDuration && !data.maxDuration">Longer or equal than {{data.minDuration}} {{data.unit}}</div>
+        <div class="label" *ngIf="!data.minDuration && data.maxDuration">Less or equal than {{data.maxDuration}} {{data.unit}}</div>
+        <div class="label" *ngIf="data.minDuration && data.maxDuration">&ge; {{data.minDuration}} {{data.unit}} and &le; {{data.maxDuration}} {{data.unit}}</div>
         
-    <nz-divider nzType="vertical"></nz-divider>
-
-    <a (click)="doDelete()">Delete</a>
-</ng-template>
+        <div class="details">
+            <span *ngIf="data.from > -1">{{context.activities[data.from].name}}</span><span *ngIf="data.from == -1">Process start</span>
+            -
+            <span *ngIf="data.to > -2">{{context.activities[data.to].name}}</span><span *ngIf="data.to == -2">Process end</span>
+        </div>
+    </div>
+    <div class="filter-options">
+        <button nz-button nzShape="circle" nzType="dashed" (click)="doDelete()"><i nz-icon nzType="delete"></i></button>
+    </div>
+</div>
 
 <ng-template #contentTemplate>
     <form nz-form class="duration-form" >

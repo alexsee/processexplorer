@@ -5,6 +5,7 @@
     grid-template-areas: "breadcrumb"
         "content";
     height: 100%;
+    padding: 0 50px;
 }
 
 nz-breadcrumb {
@@ -21,30 +22,31 @@ nz-breadcrumb {
 
 .process-explorer-dashboard {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: "conditions map insights";
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 48px 1fr;
+    grid-template-areas: "conditions conditions"
+        "map insights";
     height: 100%;
-}
-
-.process-explorer-dashboard > div {
-    padding: 30px;
 }
 
 .process-explorer-conditions {
     grid-area: conditions;
 
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas: "statistics"
-                         "actions";
+    grid-template-columns: max-content auto min-content;
+    grid-template-rows: 1fr;
+    grid-template-areas: "actions buttons statistics";
     height: 100%;
     overflow: hidden;
+
+    border-bottom: 1pt solid rgb(244, 244, 244);
 }
 
 .process-explorer-conditions .buttons {
-    margin-bottom: 10px;
+    grid-area: buttons;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
 }
 
 .process-explorer-conditions .buttons button {
@@ -58,6 +60,7 @@ nz-breadcrumb {
 
 .process-explorer-conditions .statistics {
     grid-area: statistics;
+    display: flex;
 }
 
 .process-explorer-conditions .actions {
@@ -66,8 +69,7 @@ nz-breadcrumb {
 
 .process-explorer-map {
     grid-area: map;
-    border-left: 1px solid lightgray;
-    border-right: 1px solid lightgray;   
+    padding: 30px;
 }
 
 .process-explorer-insights {
@@ -78,4 +80,22 @@ nz-breadcrumb {
 
 .process-explorer-recommendations {
     overflow-y: scroll;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.stat-item .label {
+    font-size: 12px;
+}
+
+.stat-item .value {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
 }

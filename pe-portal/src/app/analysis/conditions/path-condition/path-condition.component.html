@@ -1,42 +1,28 @@
-<nz-card nzTitle="Path flow selection" 
-    nzSize="small"
-    [nzExtra]="moreTemplate">
-    <span *ngIf="data.conditionType == 'START_END'">
-        <span *ngIf="data.start">Starts with <b>{{context.activities[data.start].name}}</b>&nbsp;</span>
-        <span *ngIf="data.end">Ends with <b>{{context.activities[data.end].name}}</b></span>
-    </span>
-    <span *ngIf="data.conditionType == 'NO_START_END'">
-        <span *ngIf="data.start">Starts not with <b>{{context.activities[data.start].name}}</b>&nbsp;</span>
-        <span *ngIf="data.end">Ends not with <b>{{context.activities[data.end].name}}</b></span>
-    </span>
-    <span *ngIf="data.conditionType == 'RESPONSE'">
-        <b>Eventually followed by</b><br>
-        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
-    </span>
-    <span *ngIf="data.conditionType == 'DIRECT_RESPONSE'">
-        <b>Directly followed by</b><br>
-        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
-    </span>
-    <span *ngIf="data.conditionType == 'NO_RESPONSE'">
-        <b>Never followed by</b><br>
-        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
-    </span>
-    <span *ngIf="data.conditionType == 'NO_DIRECT_RESPONSE'">
-        <b>Never directly followed by</b><br>
-        {{context.activities[data.start].name}} - {{context.activities[data.end].name}}
-    </span>
-</nz-card>
-
-<ng-template #moreTemplate>
-    <a nz-popover
+<div class="filter-container">
+    <div class="filter-info-container" 
+        nz-popover
         nzPopoverTitle="Path flow selection"
         nzPopoverTrigger="click"
-        [nzPopoverContent]="contentTemplate">Edit</a>
-        
-    <nz-divider nzType="vertical"></nz-divider>
+        nzPopoverPlacement="bottomLeft"
+        [nzPopoverContent]="contentTemplate">
+        <div class="label" *ngIf="!data.conditionType">Path flow selection</div>
 
-    <a (click)="doDelete()">Delete</a>
-</ng-template>
+        <div class="label" *ngIf="data.conditionType == 'START_END'">Case starts/ends with</div>
+        <div class="label" *ngIf="data.conditionType == 'NO_START_END'">Case starts/ends not with</div>
+        <div class="label" *ngIf="data.conditionType == 'RESPONSE'">Eventually followed by</div>
+        <div class="label" *ngIf="data.conditionType == 'DIRECT_RESPONSE'">Directly followed by</div>
+        <div class="label" *ngIf="data.conditionType == 'NO_RESPONSE'">Never followed by</div>
+        <div class="label" *ngIf="data.conditionType == 'NO_DIRECT_RESPONSE'">Never directly followed by</div>
+        
+        <div class="details">
+            <span *ngIf="data.start">{{context.activities[data.start].name}}</span>
+            <span *ngIf="data.end">{{context.activities[data.end].name}}</span>
+        </div>
+    </div>
+    <div class="filter-options">
+        <button nz-button nzShape="circle" nzType="dashed" (click)="doDelete()"><i nz-icon nzType="delete"></i></button>
+    </div>
+</div>
 
 <ng-template #contentTemplate>
     <form nz-form class="path-form">

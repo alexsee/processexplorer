@@ -1,24 +1,20 @@
-<nz-card nzTitle="Attribute selection" 
-    nzSize="small"
-    [nzExtra]="moreTemplate">
-    <span *ngIf="data.attribute">
-        <b>{{data.attribute}}</b> {{data.binaryType}} <b>{{data.values}}</b>
-    </span>
-    <span *ngIf="!data.attribute">
-        Attribute selection
-    </span>
-</nz-card>
-
-<ng-template #moreTemplate>
-    <a nz-popover
+<div class="filter-container">
+    <div class="filter-info-container" 
+        nz-popover
         nzPopoverTitle="Attribute selection"
         nzPopoverTrigger="click"
-        [nzPopoverContent]="contentTemplate">Edit</a>
-        
-    <nz-divider nzType="vertical"></nz-divider>
-
-    <a (click)="doDelete()">Delete</a>
-</ng-template>
+        nzPopoverPlacement="bottomLeft"
+        [nzPopoverContent]="contentTemplate">
+        <div class="label" *ngIf="!data.attribute">Attribute selection</div>
+        <div class="label" *ngIf="data.attribute">{{data.attribute}}</div>
+        <div class="details">
+            {{data.binaryType}} <b>{{data.values}}</b>
+        </div>
+    </div>
+    <div class="filter-options">
+        <button nz-button nzShape="circle" nzType="dashed" (click)="doDelete()"><i nz-icon [nzType]="'delete'" [nzTheme]="'outline'"></i></button>
+    </div>
+</div>
 
 <ng-template #contentTemplate>
     <form nz-form class="attribute-form">

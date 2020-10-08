@@ -4,9 +4,9 @@
     "process-map"
     "navigation";
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 55px;
+  grid-template-rows: 1fr max-content;
   height: 100%;
-  widows: 100%;
+  width: 100%;
 }
 
 .d3-process-map {
@@ -17,8 +17,8 @@
   grid-area: navigation;
 
   display: grid;
-  grid-template-areas: "options sample social-network activity-filter"
-    "variant-slider variant-slider variant-slider variant-slider";
+  grid-template-areas: "variant-slider variant-slider variant-slider variant-slider"
+    "options sample social-network activity-filter";
   grid-template-columns: 1fr 1fr .5fr .5fr;
   grid-template-rows: 1fr 1fr;
 
