@@ -1,0 +1,64 @@
+<div class="module">
+    <nz-breadcrumb>
+        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Robotic Process Automation</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Prediction Models</nz-breadcrumb-item>
+    </nz-breadcrumb>
+
+    <app-prediction-navigation>
+        <nz-page-header [nzGhost]="false">
+            <nz-page-header-title>Trained Predictive Models</nz-page-header-title>
+            <nz-page-header-extra>
+                <button nz-button routerLink="/models/train" nzType="primary">Train model</button>
+            </nz-page-header-extra>
+        </nz-page-header>
+
+        <div class="inner-content">
+            <nz-table #basicTable [nzData]="models">
+                <thead>
+                    <tr>
+                        <th>Model Name</th>
+                        <th>Status</th>
+                        <th>Creation Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let model of basicTable.data">
+                    <td>
+                        <span *ngIf="model.state == 'TRAINED'">
+                            <a [routerLink]="['/models', model.modelId]">{{model.modelName}} </a>
+                            <nz-tag *ngIf="model.use">Default</nz-tag>
+                        </span>
+                        <span *ngIf="model.state != 'TRAINED'">
+                            {{model.modelName}}
+                        </span>
+                    </td>
+                    <td>
+                        <span *ngIf="model.state == 'PROCESSING'">
+                            <nz-spin nzSimple></nz-spin>
+                        </span>
+                        <span *ngIf="model.state == 'TRAINED'">
+                            <i nz-icon nzType="check-circle" nzTheme="outline"></i> Trained
+                        </span>
+                        <span *ngIf="model.state == 'ERROR'">
+                            <i nz-icon nzType="close-circle" nzTheme="outline"></i> Error during training
+                        </span>
+                    </td>
+                    <td>{{model.creationDate | date:"dd. MMM yyyy HH:mm"}}</td>
+                    <td>
+                        <span *ngIf="model.state != 'PROCESSING'">
+                            <a nz-popconfirm
+                                nzPopconfirmTitle="Are you sure delete this model?"
+                                nzPopconfirmPlacement="bottom"
+                                (nzOnConfirm)="doDelete(model)">Delete</a>
+                            <nz-divider nzType="vertical"></nz-divider>
+                            <a (click)="doSetDefault(model)">Set Default</a>
+                        </span>
+                    </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </app-prediction-navigation>
+</div>

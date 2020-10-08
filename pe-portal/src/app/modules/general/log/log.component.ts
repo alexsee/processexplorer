@@ -7,6 +7,7 @@ import { LogService } from 'src/app/log/shared/log.service';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Subscription } from 'rxjs';
 import { Message } from '@stomp/stompjs';
+import { PredictionService } from '../../predictions/prediction.service';
 
 @Component({
   selector: 'app-log',
@@ -23,6 +24,7 @@ export class LogComponent implements OnInit, OnDestroy {
     private nzMessageService: NzMessageService,
     private logService: LogService,
     private analysisService: AnalysisService,
+    private predictionService: PredictionService,
     private rxStompService: RxStompService
   ) { }
 
@@ -93,5 +95,14 @@ export class LogComponent implements OnInit, OnDestroy {
         this.nzMessageService.error('An error occurred during the clustering of <b>' + log.logName + '</b>.');
         log.processing = false;
       });
+  }
+
+  doEnableCaseManagement(log: EventLog) {
+    log.processing = true;
+    this.predictionService.enableCaseManagement(log.logName).subscribe(x => {
+      this.nzMessageService.info('Case management activated for <b>' + log.logName + '</b>.');
+      log.processing = false;
+      this.loadList();
+    });
   }
 }

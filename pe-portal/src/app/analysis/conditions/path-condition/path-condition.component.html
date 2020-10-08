@@ -15,8 +15,8 @@
         <div class="label" *ngIf="data.conditionType == 'NO_DIRECT_RESPONSE'">Never directly followed by</div>
         
         <div class="details">
-            <span *ngIf="data.start">{{context.activities[data.start].name}}</span>
-            <span *ngIf="data.end">{{context.activities[data.end].name}}</span>
+            <span *ngIf="data.start !== undefined">{{context.activities[data.start].name}}</span>
+            <span *ngIf="data.end !== undefined">{{context.activities[data.end].name}}</span>
         </div>
     </div>
     <div class="filter-options">

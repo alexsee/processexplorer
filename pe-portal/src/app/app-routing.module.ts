@@ -7,6 +7,10 @@ import { LogUploadComponent } from './modules/general/log-upload/log-upload.comp
 import { ArtifactsComponent } from './modules/process-mining/artifacts/artifacts.component';
 import { ArtifactSettingsComponent } from './modules/process-mining/artifact-settings/artifact-settings.component';
 import { DashboardComponent } from './modules/process-mining/dashboard/dashboard.component';
+import { PredictionModelListComponent } from './modules/predictions/model-list/model-list.component';
+import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
+import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
+import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
 
 const routes: Routes = [
   { path: '', component: LogComponent },
@@ -20,7 +24,13 @@ const routes: Routes = [
   { path: 'logs/upload', component: LogUploadComponent },
   { path: 'logs/annotations/:logName', component: LogAnnotationComponent },
 
-  { path: 'dashboard', component: DashboardComponent }
+  { path: 'dashboard', component: DashboardComponent },
+
+  { path: 'models', component: PredictionModelListComponent },
+  { path: 'models/train', component: TrainModelComponent },
+  { path: 'models/:id', component: ModelDetailComponent },
+
+  { path: 'cases/open', component: OpenCasesListComponent }
 ];
 
 @NgModule({

@@ -1,0 +1,51 @@
+.module {
+    height: 100%;
+    padding: 0 50px;
+}
+  
+nz-breadcrumb {
+    margin: 16px 0;
+}
+
+.inner-layout {
+    padding: 24px 0;
+    background: #fff;
+}
+
+.inner-content {
+    background: #fff;
+    padding: 0 24px;
+    min-height: 700px;
+    display: grid;
+    grid-template-areas: "cases single-case";
+    grid-template-columns: 2fr 1fr;
+}
+
+.cases {
+    grid-area: cases;
+}
+
+.single-case {
+    grid-area: single-case;
+    margin-left: 25px;
+}
+
+.single-case h3 {
+    margin-top: 15px;
+}
+
+.single-case h3:first-child {
+    margin-top: 0;
+}
+
+.error {
+    color: darkred;
+}
+
+tr.case {
+    cursor: pointer;
+}
+
+tr.selected {
+    background-color: lightyellow;
+}

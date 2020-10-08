@@ -38,6 +38,8 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzTimelineModule } from 'ng-zorro-antd/timeline';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 
@@ -72,6 +74,11 @@ import { WidgetChartComponent } from './analysis/components/chart/chart.componen
 import { WidgetHostComponent } from './analysis/components/widget/widget-host.component';
 import { WidgetDirective } from './analysis/components/widget.directive';
 import { WidgetProcessMapComponent } from './analysis/components/process-map/process-map.component';
+import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
+import { PredictionModelListComponent } from './modules/predictions/model-list/model-list.component';
+import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
+import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
+import { PredictionNavigationComponent } from './modules/predictions/prediction-navigation/prediction-navigation.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +113,13 @@ import { WidgetProcessMapComponent } from './analysis/components/process-map/pro
     WidgetHostComponent,
     WidgetDirective,
     WidgetChartComponent,
-    WidgetProcessMapComponent
+    WidgetProcessMapComponent,
+
+    ModelDetailComponent,
+    TrainModelComponent,
+    PredictionModelListComponent,
+    OpenCasesListComponent,
+    PredictionNavigationComponent
   ],
   imports: [
     BrowserModule,
@@ -143,6 +156,8 @@ import { WidgetProcessMapComponent } from './analysis/components/process-map/pro
     NzEmptyModule,
     NzMessageModule,
     NzSwitchModule,
+    NzTimelineModule,
+    NzDescriptionsModule,
 
     HighchartsChartModule,
 

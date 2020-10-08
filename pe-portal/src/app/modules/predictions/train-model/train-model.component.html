@@ -1,0 +1,57 @@
+<div class="module">
+    <nz-breadcrumb>
+        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Robotic Process Automation</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Train Model</nz-breadcrumb-item>
+    </nz-breadcrumb>
+
+    <app-prediction-navigation>
+        <nz-page-header [nzGhost]="false">
+            <nz-page-header-title>Train new model</nz-page-header-title>
+            <nz-page-header-extra>
+                <button nz-button nzType="primary" (click)="doTrain()">Train</button>
+            </nz-page-header-extra>
+        </nz-page-header>
+
+        <div class="inner-content">
+            <form nz-form>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6">Event Log Name</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <span><b>{{trainingConfiguration.logName}}</b></span>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6">Model Name</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <input nz-input name="modelName" placeholder="Name of the learned model" [(ngModel)]="trainingConfiguration.modelName" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6">Algorithm</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <span>TODO</span>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6">Batch Size</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <nz-input-number name="batchSize" placeholder="Batch size" [(ngModel)]="trainingConfiguration.batchSize"></nz-input-number>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6">Epochs</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <nz-input-number name="epochs" placeholder="Number of training epochs" [(ngModel)]="trainingConfiguration.epochs"></nz-input-number>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6">Where Conditions</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <input nz-input name="whereCondition" placeholder="Where Condition" [(ngModel)]="trainingConfiguration.whereCondition" />
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </div>
+    </app-prediction-navigation>
+</div>
