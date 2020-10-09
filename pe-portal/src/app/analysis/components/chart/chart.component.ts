@@ -27,6 +27,7 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
   public Highcharts: typeof Highcharts = Highcharts;
   public chartOptions: Highcharts.Options;
   public updateFromInput = false;
+  public empty = true;
 
   public selectedMeasure: any;
 
@@ -71,6 +72,12 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
 
       const labCols = [];
       const labels = [];
+
+      // empty?
+      if (result.data.length === 0) {
+        this.empty = true;
+        return;
+      }
 
       // fetch non-grouped columns
       for (let i = 0; i < selections.length; i++) {
@@ -147,7 +154,10 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
         },
         yAxis
       };
+      this.empty = false;
       this.updateFromInput = true;
+    }, err => {
+      this.empty = true;
     });
   }
 

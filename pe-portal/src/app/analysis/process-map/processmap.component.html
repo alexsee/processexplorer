@@ -1,36 +1,37 @@
 <div class="process-map-container">
-    <div class="d3-process-map">
-        <svg width="100%" height="100%" id="chart" #processmap>
-            <g />
-        </svg>
-    </div>
+  <div class="d3-process-map">
+    <nz-empty *ngIf="empty"></nz-empty>
+    <svg width="100%" height="100%" id="chart" #processmap>
+        <g />
+    </svg>
+  </div>
 
-    <div class="navigation">
-        <nz-select class="options" [(ngModel)]="settings.mode" nzPlaceHolder="Choose" (ngModelChange)="onSettingsChange()">
-            <nz-option nzValue="duration" nzLabel="Duration"></nz-option>
-            <nz-option nzValue="occurrence" nzLabel="Occurrence"></nz-option>
-        </nz-select>
+  <div class="navigation" *ngIf="!empty">
+    <nz-select class="options" [(ngModel)]="settings.mode" nzPlaceHolder="Choose" (ngModelChange)="onSettingsChange()">
+        <nz-option nzValue="duration" nzLabel="Duration"></nz-option>
+        <nz-option nzValue="occurrence" nzLabel="Occurrence"></nz-option>
+    </nz-select>
 
-        <nz-slider class="variant-slider" [(ngModel)]="variant" [(nzMin)]="minVariant" [(nzMax)]="maxVariant" (nzOnAfterChange)="onSettingsChange()"></nz-slider>
+    <nz-slider class="variant-slider" [(ngModel)]="variant" [(nzMin)]="minVariant" [(nzMax)]="maxVariant" (nzOnAfterChange)="onSettingsChange()"></nz-slider>
 
-        <button class="social-network" nz-button (click)="toggleGraph()" [nzType]="toggleSocialNetwork ? 'primary' : ''"><i nz-icon nzType="team"></i>Toogle Social Network</button>
-        <button class="activity-filter" nz-button (click)="doActivityFilter()">Activities</button>
-    </div>
+    <button class="social-network" nz-button (click)="toggleGraph()" [nzType]="toggleSocialNetwork ? 'primary' : ''"><i nz-icon nzType="team"></i>Toogle Social Network</button>
+    <button class="activity-filter" nz-button (click)="doActivityFilter()">Activities</button>
+  </div>
 
-    <nz-modal [(nzVisible)]="isActivityFilterModal" nzTitle="Activity Filter" (nzOnCancel)="doCancel()" (nzOnOk)="doFilter()" *ngIf="context">
-        <nz-table #rowSelectionTable nzShowSizeChanger [nzFrontPagination]="false" [nzScroll]="{ y: '400px' }" nzSize="small" [nzData]="context.activities">
-            <thead>
-              <tr>
-                <th [nzSelections]="selectedActivities" nzWidth="30px"></th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of rowSelectionTable.data">
-                <td [nzChecked]="selectedActivities.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
-                <td>{{ data.name }}</td>
-              </tr>
-            </tbody>
-          </nz-table>
-    </nz-modal>
+  <nz-modal [(nzVisible)]="isActivityFilterModal" nzTitle="Activity Filter" (nzOnCancel)="doCancel()" (nzOnOk)="doFilter()" *ngIf="context">
+      <nz-table #rowSelectionTable nzShowSizeChanger [nzFrontPagination]="false" [nzScroll]="{ y: '400px' }" nzSize="small" [nzData]="context.activities">
+          <thead>
+            <tr>
+              <th [nzSelections]="selectedActivities" nzWidth="30px"></th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of rowSelectionTable.data">
+              <td [nzChecked]="selectedActivities.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+              <td>{{ data.name }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+  </nz-modal>
 </div>

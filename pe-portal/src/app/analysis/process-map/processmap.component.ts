@@ -27,6 +27,7 @@ export class ProcessMapComponent implements OnInit, OnChanges {
   public isActivityFilterModal = false;
   public selectedActivities = new Set<number>();
 
+  public empty = true;
   public data: ProcessMap;
   public socialNetwork: SocialNetwork;
   public settings: ProcessMapSettings;
@@ -92,6 +93,8 @@ export class ProcessMapComponent implements OnInit, OnChanges {
 
           // compute process map
           this.createProcessMap();
+        }, err => {
+          this.empty = true;
         });
     } else {
       this.queryService.getSocialNetworkGraph(this.logName, this.queryConvertService.convertToQuery(this.conditions))
@@ -108,6 +111,8 @@ export class ProcessMapComponent implements OnInit, OnChanges {
 
           // compute process map
           this.createSocialNetwork();
+        }, err => {
+          this.empty = true;
         });
     }
   }
@@ -155,10 +160,7 @@ export class ProcessMapComponent implements OnInit, OnChanges {
   }
 
   createProcessMap() {
-    if (this.data.edges.length === 0) {
-      return;
-    }
-
+    this.empty = this.data.edges.length === 0;
     const selectedVariant = this.variants.slice(0, this.variant + 1);
 
     // generate graph
@@ -228,10 +230,7 @@ export class ProcessMapComponent implements OnInit, OnChanges {
   }
 
   createSocialNetwork() {
-    if (this.socialNetwork.edges.length === 0) {
-      return;
-    }
-
+    this.empty = this.socialNetwork.edges.length === 0;
     const selectedVariant = this.variants.slice(0, this.variant + 1);
 
     // generate graph

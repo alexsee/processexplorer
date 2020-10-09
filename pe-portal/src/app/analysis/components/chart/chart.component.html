@@ -1,6 +1,7 @@
 <div class="chart" style="width: 100%; height: 100%; display: block;">
+    <nz-empty *ngIf="empty"></nz-empty>
     <highcharts-chart
-        *ngIf="chartOptions"
+        *ngIf="chartOptions && !empty"
         [Highcharts]="Highcharts"
         [(update)]="updateFromInput"
         [oneToOne]="true"
