@@ -11,9 +11,9 @@
         <div class="label" *ngIf="data.minDuration && data.maxDuration">&ge; {{data.minDuration}} {{data.unit}} and &le; {{data.maxDuration}} {{data.unit}}</div>
         
         <div class="details">
-            <span *ngIf="data.from > -1">{{context.activities[data.from].name}}</span><span *ngIf="data.from == -1">Process start</span>
+            <span *ngIf="data.from > -1">{{context.activities[data.from].name}}</span><span *ngIf="data.from == -1 || data.from == null">Process start</span>
             -
-            <span *ngIf="data.to > -2">{{context.activities[data.to].name}}</span><span *ngIf="data.to == -2">Process end</span>
+            <span *ngIf="data.to > -2">{{context.activities[data.to].name}}</span><span *ngIf="data.to == -2 || data.to == null">Process end</span>
         </div>
     </div>
     <div class="filter-options">

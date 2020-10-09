@@ -58,16 +58,16 @@ public class DurationCondition extends Condition {
 
         var innerSQL = "(select a.case_id from " + db.eventTable.getTableNameSQL() + " as a, " + db.eventTable.getTableNameSQL() + " as b " +
                 "where a.case_id = b.case_id " +
-                "and a.source_event = " + activityFrom + " " +
-                "and b.target_event = " + activityTo + " ";
+                (activityFrom == -1 ? "" : "and a.event = " + activityFrom + " ") +
+                (activityTo == -2 ? "": "and b.event = " + activityTo + " ");
         innerSQL += "group by a.case_id ";
         innerSQL += "having ";
 
         if (minDuration != null) {
-            innerSQL += "age(max(b.source_timestamp), min(a.target_timestamp)) >= interval '" + getDuration(minDuration) + "' ";
+            innerSQL += "age(max(b.timestamp), min(a.timestamp)) >= interval '" + getDuration(minDuration) + "' ";
         }
         if (maxDuration != null) {
-            innerSQL += ((minDuration != null) ? "and " : "") + "age(max(b.source_timestamp), min(a.target_timestamp)) <= interval '" + getDuration(maxDuration) + "' ";
+            innerSQL += ((minDuration != null) ? "and " : "") + "age(max(b.timestamp), min(a.timestamp)) <= interval '" + getDuration(maxDuration) + "' ";
         }
 
         innerSQL += ")";
