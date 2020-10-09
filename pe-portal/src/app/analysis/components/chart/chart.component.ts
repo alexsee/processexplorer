@@ -61,9 +61,7 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
     }));
 
     // push measures
-    this.widget.options.measures.forEach(measure => selections.push({
-      type: measure.type
-    }));
+    this.widget.options.measures.forEach(measure => selections.push(measure));
 
     this.queryService.getDrillDown(this.context.logName, selections, this.queryConvertService.convertToQuery(this.conditions))
     .subscribe(result => {
@@ -92,13 +90,27 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
             dataset.push(data[result.metaData.indexOf(column)]);
           });
 
-          series.push({
+          const serie = {
             data: dataset,
             name: measure.title ? measure.title : column.columnName,
             type: measure.chartType ? measure.chartType : this.widget.options.options.type,
             showInLegend: true,
             yAxis: measure.yAxis ? (measure.yAxis === 'primary' ? 0 : 1) : 0
-          });
+          };
+
+          // if (column.columnType === 'time') {
+          //   serie.tooltip = {
+          //     formatter: function () {
+          //         const time = this.y / 1000;
+          //         const hours1 = time / 3600;
+          //         const mins1 = (time % 3600) / 60;
+
+          //         return (hours1 < 10 ? '0' + hours1 : hours1) + ':' + (mins1 < 10 ? '0' + mins1 : mins1);
+          //     }
+          //   };
+          // }
+
+          series.push(serie);
         } else {
           labCols.push(column);
         }

@@ -58,6 +58,7 @@
                         <nz-select [(ngModel)]="measure.type">
                             <nz-option nzValue="count_cases" nzLabel="Number of cases"></nz-option>
                             <nz-option nzValue="count_variants" nzLabel="Number of variants"></nz-option>
+                            <nz-option nzValue="case_duration" nzLabel="Case duration"></nz-option>
                         </nz-select>
                     </div>
                     <div nz-col [nzSpan]="4">
@@ -102,6 +103,15 @@
                 <nz-select [(ngModel)]="selectedMeasure.yAxis">
                     <nz-option nzValue="primary" nzLabel="Primary"></nz-option>
                     <nz-option nzValue="secondary" nzLabel="Secondary"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="4">Sorting</nz-form-label>
+            <nz-form-control [nzSpan]="14">
+                <nz-select [(ngModel)]="selectedMeasure.ordering">
+                    <nz-option nzValue="ASC" nzLabel="Ascending"></nz-option>
+                    <nz-option nzValue="DESC" nzLabel="Descending"></nz-option>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>

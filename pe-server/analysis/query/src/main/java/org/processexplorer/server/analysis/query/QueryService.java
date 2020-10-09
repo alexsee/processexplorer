@@ -452,7 +452,7 @@ public class QueryService {
             sql = sql.addAliasedColumn(selection.getSelection(db), "expr" + i);
 
             // obtain meta data for selected column
-            var metaData = new ColumnMetaData(selection.getName(), "", selection.getAlias());
+            var metaData = new ColumnMetaData(selection.getName(), selection.getType(), selection.getAlias());
             metaData.setCodes(selection.getCodes(eventLogAnnotationRepository, query.getLogName()));
             metaData.setGroup(selection.isGroup());
             result.getMetaData().add(metaData);

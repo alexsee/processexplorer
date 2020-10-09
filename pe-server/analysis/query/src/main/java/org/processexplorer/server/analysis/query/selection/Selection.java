@@ -30,7 +30,8 @@ import java.util.List;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CaseAttributeSelection.class, name = "case_attribute"),
         @JsonSubTypes.Type(value = CountCasesSelection.class, name = "count_cases"),
-        @JsonSubTypes.Type(value = CountVariantsSelection.class, name = "count_variants")
+        @JsonSubTypes.Type(value = CountVariantsSelection.class, name = "count_variants"),
+        @JsonSubTypes.Type(value = DurationSelection.class, name = "case_duration")
 })
 public abstract class Selection {
 
@@ -63,4 +64,6 @@ public abstract class Selection {
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+    public String getType() { return ""; }
 }
