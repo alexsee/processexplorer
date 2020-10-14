@@ -74,6 +74,21 @@
     </div>
 </ng-template>
 
+<ng-template #sensitivityTemplate>
+    <div class="loader" *ngIf="loadSensitivities">
+        <nz-spin nzSimple></nz-spin>
+    </div>
+    <div *ngIf="sensitivities">
+        <div *ngFor="let item of sensitivities | keyvalue">
+            <h1>{{item.key}}</h1>
+            <div *ngFor="let sensitivity of item.value">
+                <h2>{{sensitivity.variation}}</h2>
+                <p>{{sensitivity.distance | number}}</p>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
 <nz-drawer [nzClosable]="true" *ngIf="selectedMeasure" 
     [nzVisible]="selectedMeasure" 
     nzPlacement="right" 

@@ -2,7 +2,7 @@
     display: grid;
     grid-template-areas: "conditions"
         "grid";
-    grid-template-rows: 48px auto;
+    grid-template-rows: 48px calc(100vh - 48px - 45px);
     grid-template-columns: 1fr;
     height: 100%;
     width: 100%;
@@ -80,6 +80,18 @@
 
 .options {
     grid-area: options;
+    padding: 10px 10px 10px 0;
+    overflow: hidden;
+}
+
+.options .options-dialog {
+    background-color: white;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.options .options-dialog .content {
+    padding: 30px;
 }
 
 .stat-item {

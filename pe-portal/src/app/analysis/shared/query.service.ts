@@ -11,6 +11,7 @@ import { DrillDownResult } from '../models/results/drill-down-result.model';
 import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 import { SocialNetworkResult } from '../models/results/social-network-result.model';
 import { Case } from '../models/case.model';
+import { SensitivityValue } from '../models/sensitivity-value.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -63,6 +64,13 @@ export class QueryService {
   getDrillDown(logName: string, selections: any[], conditions: Condition[]): Observable<DrillDownResult> {
     return this.http.post<DrillDownResult>(
       environment.serviceUrl + '/query/drill_down',
+      { logName, selections, conditions }
+    );
+  }
+
+  getSensitivity(logName: string, selections: any[], conditions: Condition[]): Observable<Map<string, SensitivityValue[]>> {
+    return this.http.post<Map<string, SensitivityValue[]>>(
+      environment.serviceUrl + '/query/sensitivity_analysis',
       { logName, selections, conditions }
     );
   }

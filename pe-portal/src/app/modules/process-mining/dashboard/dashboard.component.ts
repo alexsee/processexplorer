@@ -109,6 +109,11 @@ export class DashboardComponent implements OnInit {
     this.gridOptions.api.resize();
   }
 
+  doSensitivityAnalysis(item): void {
+    this.optionsTemplate = this.chartContainer.toArray()[item].getSensitivityTemplate();
+    this.gridOptions.api.resize();
+  }
+
   doEditModeChange(): void {
     this.gridOptions.api.resize();
 

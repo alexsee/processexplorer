@@ -44,12 +44,18 @@
                 </div>
                 <ng-template #editTemplate>
                     <button nz-button (click)="doEdit(idx)" nzType="primary" style="margin-right: 5px;"><i nz-icon nzType="edit" nzTheme="outline"></i></button>
+                    <button nz-button (click)="doSensitivityAnalysis(idx)" *ngIf="conditions.length > 0" style="margin-right: 5px;"><i nz-icon nzType="security-scan" nzTheme="outline"></i></button>
+
                     <button nz-button (click)="doDelete(idx)" nzDanger><i nz-icon nzType="delete" nzTheme="outline"></i></button>
                 </ng-template>
             </gridster-item>
         </gridster>
         <div class="options" *ngIf="editMode">
-            <ng-container [ngTemplateOutlet]="optionsTemplate"></ng-container>
+            <div class="options-dialog">
+                <div class="content">
+                    <ng-container [ngTemplateOutlet]="optionsTemplate"></ng-container>
+                </div>
+            </div>
         </div>
     </div>
 </div>
