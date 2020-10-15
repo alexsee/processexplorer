@@ -19,6 +19,7 @@
 package org.processexplorer.webservice.controller;
 
 import org.processexplorer.server.analysis.ml.simulation.SensitivityAnalysis;
+import org.processexplorer.server.analysis.ml.simulation.SensitivityResult;
 import org.processexplorer.server.analysis.ml.simulation.SensitivityValue;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.Condition;
@@ -90,7 +91,7 @@ public class QueryController {
     }
 
     @PostMapping("/query/sensitivity_analysis")
-    public ResponseEntity<Map<String, List<SensitivityValue>>> getDrillDownExtended(@RequestBody DrillDownQuery query) {
+    public ResponseEntity<Map<String, SensitivityResult>> getDrillDownExtended(@RequestBody DrillDownQuery query) {
         return ResponseEntity.ok(sensitivityAnalysis.simulate(query));
     }
 

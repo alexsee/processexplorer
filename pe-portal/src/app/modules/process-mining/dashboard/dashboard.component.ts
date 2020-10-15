@@ -72,6 +72,14 @@ export class DashboardComponent implements OnInit {
       this.queryService.getStatistics(this.logName, this.queryConvertService.convertToQuery(this.conditions))
         .subscribe(statistics => this.context = statistics);
 
+      // load queries from local storage
+      if (window.history.state !== undefined && window.history.state.conditions !== undefined) {
+        this.conditions = this.queryConvertService.convertFromQuery(window.history.state.conditions);
+      } else {
+        const query = this.storageService.readQueryConditions(this.logName);
+        this.conditions = this.queryConvertService.convertFromQuery(query);
+      }
+
       // load dashboard pages
       this.dashboard = [];
 
@@ -128,6 +136,9 @@ export class DashboardComponent implements OnInit {
     // save dashboard
     this.dashboardOptions.content = this.dashboardService.stringifyDashboard(this.dashboard);
     this.dashboardService.save(this.dashboardOptions).subscribe(x => this.dashboardOptions = x);
+
+    // store queries to local storage
+    this.storageService.writeQueryConditions(this.logName, this.queryConvertService.convertToQuery(this.conditions));
   }
 
   doAddWidget(type: string): void {

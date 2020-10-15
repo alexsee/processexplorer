@@ -12,6 +12,7 @@
 </div>
 
 <ng-template #optionsTemplate>
+    <h1>Configure Chart</h1>
     <div nz-form>
         <nz-form-item>
             <nz-form-label [nzSpan]="6">Title</nz-form-label>
@@ -40,7 +41,7 @@
                             <nz-option *ngFor="let attribute of context.caseAttributes" [nzValue]="attribute.columnName" [nzLabel]="attribute.columnName"></nz-option>
                         </nz-select>
                     </div>
-                    <div nz-col [nzSpan]="4">
+                    <div nz-col [nzSpan]="6" class="button-bar">
                         <button nz-button nzType="danger" nzShape="circle" (click)="doDeleteDimension(dimension)"><i nz-icon nzType="delete"></i></button>
                     </div>
                 </div>
@@ -61,7 +62,7 @@
                             <nz-option nzValue="case_duration" nzLabel="Case duration"></nz-option>
                         </nz-select>
                     </div>
-                    <div nz-col [nzSpan]="4">
+                    <div nz-col [nzSpan]="6" class="button-bar">
                         <button nz-button nzType="default" nzShape="circle" (click)="doOpenMeasureOptions(measure)"><i nz-icon nzType="edit"></i></button>
                         <button nz-button nzType="danger" nzShape="circle" (click)="doDeleteMeasure(measure)"><i nz-icon nzType="delete"></i></button>
                     </div>
@@ -79,12 +80,15 @@
         <nz-spin nzSimple></nz-spin>
     </div>
     <div *ngIf="sensitivities">
+        <h1>Sensitivity Analysis</h1>
+
         <div *ngFor="let item of sensitivities | keyvalue">
-            <h1>{{item.key}}</h1>
-            <div *ngFor="let sensitivity of item.value">
-                <h2>{{sensitivity.variation}}</h2>
-                <p>{{sensitivity.distance | number}}</p>
-            </div>
+            <h2>{{item.key}}</h2>
+
+            <nz-timeline>
+                <nz-timeline-item><b>{{item.value.start.variation}}</b><br/>Difference: {{item.value.start.distance | number}}</nz-timeline-item>
+                <nz-timeline-item><b>{{item.value.end.variation}}</b><br/>Difference: {{item.value.end.distance | number}}</nz-timeline-item>
+            </nz-timeline>
         </div>
     </div>
 </ng-template>

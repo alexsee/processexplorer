@@ -50,7 +50,7 @@
                 </ng-template>
             </gridster-item>
         </gridster>
-        <div class="options" *ngIf="editMode">
+        <div class="options" *ngIf="editMode && optionsTemplate">
             <div class="options-dialog">
                 <div class="content">
                     <ng-container [ngTemplateOutlet]="optionsTemplate"></ng-container>

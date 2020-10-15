@@ -10,8 +10,8 @@
 
 .dashboard-conditions {
     grid-area: conditions;
-
     background: #fff;
+    
     display: grid;
     grid-template-columns: max-content auto min-content min-content;
     grid-template-rows: 1fr;
@@ -69,7 +69,7 @@
 }
 
 .edit-mode {
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: auto 400px;
     grid-template-areas: "chart options";
 }
 

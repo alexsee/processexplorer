@@ -12,6 +12,7 @@ import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model
 import { SocialNetworkResult } from '../models/results/social-network-result.model';
 import { Case } from '../models/case.model';
 import { SensitivityValue } from '../models/sensitivity-value.model';
+import { SensitivityResult } from '../models/sensitivity-result.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -68,8 +69,8 @@ export class QueryService {
     );
   }
 
-  getSensitivity(logName: string, selections: any[], conditions: Condition[]): Observable<Map<string, SensitivityValue[]>> {
-    return this.http.post<Map<string, SensitivityValue[]>>(
+  getSensitivity(logName: string, selections: any[], conditions: Condition[]): Observable<Map<string, SensitivityResult>> {
+    return this.http.post<Map<string, SensitivityResult>>(
       environment.serviceUrl + '/query/sensitivity_analysis',
       { logName, selections, conditions }
     );

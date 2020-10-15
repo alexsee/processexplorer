@@ -1,44 +1,30 @@
-<div class="module">
-<div class="inner-content">
-  <div class="process-explorer-dashboard">
-    <div class="process-explorer-conditions">
-      <div class="statistics" *ngIf="context">
-        <div class="stat-item">
-          <div class="value">{{context.numTraces | number}}</div>
-          <div class="label">Cases selected</div>
-        </div>
-        <div class="stat-item">
-          <div class="value">{{context.numEvents | number}}</div>
-          <div class="label">Events selected</div>
-        </div>
+<div class="process-explorer-dashboard">
+  <div class="process-explorer-conditions">
+    <div class="statistics" *ngIf="context">
+      <div class="stat-item">
+        <div class="value">{{context.numTraces | number}}</div>
+        <div class="label">Cases selected</div>
       </div>
-
-      <div class="actions">
-        <app-condition-list [context]="context" [conditions]="conditions"></app-condition-list>
-        <!-- <nz-tabset>
-          <nz-tab nzTitle="Filter">
-            
-          </nz-tab>
-          <nz-tab nzTitle="Recommendations">
-            <div class="process-explorer-recommendations">
-              <app-recommendation-list [logName]="logName" [conditions]="conditions" (apply)="onApplyRecommendation($event)"></app-recommendation-list>
-            </div>
-          </nz-tab>
-        </nz-tabset> -->
+      <div class="stat-item">
+        <div class="value">{{context.numEvents | number}}</div>
+        <div class="label">Events selected</div>
       </div>
-      <div class="buttons">
-        <button nz-button nzType="primary" (click)="onUpdate()">Update</button>
-      </div>
-
     </div>
 
-    <div class="process-explorer-map">
-      <app-processmap [context]="context" [conditions]="conditions" [logName]="logName"></app-processmap>
+    <div class="actions">
+      <app-condition-list [context]="context" [conditions]="conditions"></app-condition-list>
+    </div>
+    <div class="buttons">
+      <button nz-button nzType="primary" (click)="onUpdate()">Update</button>
     </div>
 
-    <div class="process-explorer-insights">
-      <app-insight-list [context]="context" [conditions]="conditions" [logName]="logName"></app-insight-list>
-    </div>
   </div>
-</div>
+
+  <div class="process-explorer-map">
+    <app-processmap [context]="context" [conditions]="conditions" [logName]="logName"></app-processmap>
+  </div>
+
+  <div class="process-explorer-insights">
+    <app-insight-list [context]="context" [conditions]="conditions" [logName]="logName"></app-insight-list>
+  </div>
 </div>

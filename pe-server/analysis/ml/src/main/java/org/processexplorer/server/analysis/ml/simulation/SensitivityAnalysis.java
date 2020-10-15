@@ -3,6 +3,7 @@ package org.processexplorer.server.analysis.ml.simulation;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.Condition;
 import org.processexplorer.server.analysis.query.condition.DurationCondition;
+import org.processexplorer.server.analysis.query.condition.ReworkCondition;
 import org.processexplorer.server.analysis.query.request.DrillDownQuery;
 import org.processexplorer.server.analysis.query.result.DrillDownResult;
 import org.processexplorer.server.analysis.query.selection.Selection;
@@ -28,7 +29,7 @@ public class SensitivityAnalysis {
         this.queryService = queryService;
     }
 
-    public Map<String, List<SensitivityValue>> simulate(DrillDownQuery q) {
+    public Map<String, SensitivityResult> simulate(DrillDownQuery q) {
         var selections = new ArrayList<Selection>();
         selections.addAll(q.getSelections());
 
@@ -50,20 +51,19 @@ public class SensitivityAnalysis {
         var currentKeysR = getStringArray(currentResult.getData(), idxs);
 
         // sensitivity
-        var result = new HashMap<String, List<SensitivityValue>>();
+        var result = new HashMap<String, SensitivityResult>();
 
         for (var selection : selections) {
             if (!selection.isGroup())
                 continue;
 
-            result.put(selection.getName(), variateCondition(selection, conditions.get(0), query, currentResult, idxs, currentKeysR));
+            result.put(selection.getName(), variateCondition(selection, query.getConditions().get(0), query, currentResult, idxs, currentKeysR));
         }
 
         return result;
     }
 
     private double evaluate(Selection selection, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
-        // random sampling
         var result = queryService.getDrillDown(query);
 
         var keys = new TreeSet<>(currentKeysR);
@@ -75,23 +75,30 @@ public class SensitivityAnalysis {
         return JensenShannonDivergence(norm(currentDoubleR), norm(doubleR));
     }
 
-    private List<SensitivityValue> variateCondition(Selection selection, Condition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+    private SensitivityResult variateCondition(Selection selection, Condition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
         if (condition instanceof DurationCondition) {
-            return variateCondition(selection, (DurationCondition) condition, query, currentResult, idxs, currentKeysR);
+            return variateDurationCondition(selection, (DurationCondition) condition, query, currentResult, idxs, currentKeysR);
+        } else if (condition instanceof ReworkCondition) {
+            return variateReworkCondition(selection, (ReworkCondition) condition, query, currentResult, idxs, currentKeysR);
         }
 
         return null;
     }
 
-    private List<SensitivityValue> variateCondition(Selection selection, DurationCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+    private SensitivityResult variateDurationCondition(Selection selection, DurationCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
         var result = new ArrayList<SensitivityValue>();
 
-        var diff = (condition.getMaxDuration() - condition.getMinDuration());
-        var start = condition.getMaxDuration() - diff;
-        var end = condition.getMaxDuration() + diff;
+        var beforeMinDuration = condition.getMinDuration();
+        var beforeMaxDuration = condition.getMaxDuration();
+
+        var diff = (condition.getMaxDuration() != null && condition.getMinDuration() != null) ?
+                (condition.getMaxDuration() - condition.getMinDuration()) :
+                (condition.getMaxDuration() == null ? condition.getMinDuration() : condition.getMaxDuration());
+        var start = Math.max(1, condition.getMaxDuration() == null ? condition.getMinDuration() - diff : condition.getMaxDuration() - diff);
+        var end = Math.max(1, condition.getMaxDuration() == null ? condition.getMinDuration() + diff : condition.getMaxDuration() + diff);
 
         for (long i = start; i < end; i++) {
-            condition.setMinDuration(Math.max(1, i - diff));
+            condition.setMinDuration(Math.max(0, i - diff));
             condition.setMaxDuration(i);
 
             // store values
@@ -102,6 +109,45 @@ public class SensitivityAnalysis {
             result.add(value);
         }
 
+        condition.setMinDuration(beforeMinDuration);
+        condition.setMaxDuration(beforeMaxDuration);
+
+        return getResult(result);
+    }
+
+    private SensitivityResult variateReworkCondition(Selection selection, ReworkCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+        var result = new ArrayList<SensitivityValue>();
+
+        var diff = (condition.getMax() - condition.getMin());
+        var start = condition.getMin() - diff;
+        var end = condition.getMax() + diff;
+
+        for (int i = start; i < end; i++) {
+            condition.setMin(Math.max(2, i - diff));
+            condition.setMax(i);
+
+            // store values
+            var value = new SensitivityValue();
+            value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
+            value.setVariation("Rework - start: " + condition.getMin() + "; end: " + condition.getMax());
+
+            result.add(value);
+        }
+
+        return getResult(result);
+    }
+
+    private SensitivityResult getResult(List<SensitivityValue> values) {
+        var result = new SensitivityResult();
+        for (var sensitivity : values) {
+            if (sensitivity.getDistance() < .1 && result.getStart() == null) {
+                result.setStart(sensitivity);
+            }
+
+            if (sensitivity.getDistance() < .1) {
+                result.setEnd(sensitivity);
+            }
+        }
         return result;
     }
 
@@ -110,8 +156,6 @@ public class SensitivityAnalysis {
 
         for (int i = 0; i < obj.size(); i++) {
             var array = (Object[]) obj.get(i);
-            var key = (Object[]) obj.get(i);
-
             var item = Double.parseDouble(array[index].toString());
 
             var value = new StringBuilder();

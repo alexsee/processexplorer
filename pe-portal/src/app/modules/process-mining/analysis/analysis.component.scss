@@ -1,25 +1,3 @@
-.module {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas: "breadcrumb"
-        "content";
-    height: 100%;
-    padding: 0 50px;
-}
-
-nz-breadcrumb {
-    grid-area: breadcrumb;
-    margin: 16px 0;
-}
-
-.inner-content {
-    background: #fff;
-    padding: 0;
-    grid-area: content;
-    overflow: hidden;
-}
-
 .process-explorer-dashboard {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -31,6 +9,7 @@ nz-breadcrumb {
 
 .process-explorer-conditions {
     grid-area: conditions;
+    background: #fff;
 
     display: grid;
     grid-template-columns: max-content auto min-content;
@@ -69,12 +48,16 @@ nz-breadcrumb {
 
 .process-explorer-map {
     grid-area: map;
-    padding: 30px;
+    padding: 10px;
+    margin: 10px 0 10px 10px;
+    background-color: white;
 }
 
 .process-explorer-insights {
     grid-area: insights;
-    padding: 20px !important;
+    padding: 10px !important;
+    margin: 10px;
+    background-color: white;
     overflow-y: hidden;
 }
 

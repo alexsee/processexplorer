@@ -7,7 +7,7 @@ import { QueryConvertService } from '../../shared/query-convert.service';
 import { WidgetComponent } from '../widget.component';
 import { Widget } from '../../models/widget.model';
 import { WidgetHostComponent } from '../widget/widget-host.component';
-import { SensitivityValue } from '../../models/sensitivity-value.model';
+import { SensitivityResult } from '../../models/sensitivity-result.model';
 
 @Component({
   selector: 'app-widget-chart',
@@ -37,7 +37,7 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
 
   // sensitivity analysis
   public loadSensitivities = false;
-  public sensitivities: Map<string, SensitivityValue[]>;
+  public sensitivities: Map<string, SensitivityResult>;
 
   constructor(
     private queryService: QueryService,
@@ -216,6 +216,10 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
     });
 
     return this.sensitivityTemplate;
+  }
+
+  isNaN(value): boolean {
+    return value === 'NaN';
   }
 
 }
