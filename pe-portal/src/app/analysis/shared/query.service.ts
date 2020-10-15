@@ -69,8 +69,8 @@ export class QueryService {
     );
   }
 
-  getSensitivity(logName: string, selections: any[], conditions: Condition[]): Observable<Map<string, SensitivityResult>> {
-    return this.http.post<Map<string, SensitivityResult>>(
+  getSensitivity(logName: string, selections: any[], conditions: Condition[]): Observable<Map<string, SensitivityValue[]>> {
+    return this.http.post<Map<string, SensitivityValue[]>>(
       environment.serviceUrl + '/query/sensitivity_analysis',
       { logName, selections, conditions }
     );

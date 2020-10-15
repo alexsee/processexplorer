@@ -86,8 +86,7 @@
             <h2>{{item.key}}</h2>
 
             <nz-timeline>
-                <nz-timeline-item><b>{{item.value.start.variation}}</b><br/>Difference: {{item.value.start.distance | number}}</nz-timeline-item>
-                <nz-timeline-item><b>{{item.value.end.variation}}</b><br/>Difference: {{item.value.end.distance | number}}</nz-timeline-item>
+                <nz-timeline-item *ngFor="let entry of item.value"><b>{{entry.variation}}</b><br/><span *ngIf="!isNaN(entry.distance)">Difference: {{entry.distance | number}}</span></nz-timeline-item>
             </nz-timeline>
         </div>
     </div>

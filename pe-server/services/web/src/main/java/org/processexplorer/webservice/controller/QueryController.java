@@ -91,7 +91,7 @@ public class QueryController {
     }
 
     @PostMapping("/query/sensitivity_analysis")
-    public ResponseEntity<Map<String, SensitivityResult>> getDrillDownExtended(@RequestBody DrillDownQuery query) {
+    public ResponseEntity<Map<String, List<SensitivityValue>>> getDrillDownExtended(@RequestBody DrillDownQuery query) {
         return ResponseEntity.ok(sensitivityAnalysis.simulate(query));
     }
 

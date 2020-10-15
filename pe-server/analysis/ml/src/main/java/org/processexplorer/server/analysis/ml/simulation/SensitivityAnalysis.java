@@ -29,7 +29,7 @@ public class SensitivityAnalysis {
         this.queryService = queryService;
     }
 
-    public Map<String, SensitivityResult> simulate(DrillDownQuery q) {
+    public Map<String, List<SensitivityValue>> simulate(DrillDownQuery q) {
         var selections = new ArrayList<Selection>();
         selections.addAll(q.getSelections());
 
@@ -51,13 +51,13 @@ public class SensitivityAnalysis {
         var currentKeysR = getStringArray(currentResult.getData(), idxs);
 
         // sensitivity
-        var result = new HashMap<String, SensitivityResult>();
+        var result = new HashMap<String, List<SensitivityValue>>();
 
         for (var selection : selections) {
             if (!selection.isGroup())
                 continue;
 
-            result.put(selection.getName(), variateCondition(selection, query.getConditions().get(0), query, currentResult, idxs, currentKeysR));
+            result.putAll(variateCondition(selection, query.getConditions().get(0), query, currentResult, idxs, currentKeysR));
         }
 
         return result;
@@ -75,31 +75,32 @@ public class SensitivityAnalysis {
         return JensenShannonDivergence(norm(currentDoubleR), norm(doubleR));
     }
 
-    private SensitivityResult variateCondition(Selection selection, Condition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+    private Map<String, List<SensitivityValue>> variateCondition(Selection selection, Condition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+        var result = new HashMap<String, List<SensitivityValue>>();
+
         if (condition instanceof DurationCondition) {
-            return variateDurationCondition(selection, (DurationCondition) condition, query, currentResult, idxs, currentKeysR);
+            var cond = (DurationCondition) condition;
+
+            if (cond.getMinDuration() != null)
+                result.put(selection.getName() + " (start)", variateDurationMinCondition(selection, cond, query, currentResult, idxs, currentKeysR));
+            if (cond.getMaxDuration() != null)
+                result.put(selection.getName() + " (end)", variateDurationMaxCondition(selection, cond, query, currentResult, idxs, currentKeysR));
         } else if (condition instanceof ReworkCondition) {
-            return variateReworkCondition(selection, (ReworkCondition) condition, query, currentResult, idxs, currentKeysR);
+            result.put(selection.getName(), variateReworkMinCondition(selection, (ReworkCondition) condition, query, currentResult, idxs, currentKeysR));
+            result.put(selection.getName(), variateReworkMaxCondition(selection, (ReworkCondition) condition, query, currentResult, idxs, currentKeysR));
         }
 
-        return null;
+        return result;
     }
 
-    private SensitivityResult variateDurationCondition(Selection selection, DurationCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+    private List<SensitivityValue> variateDurationMinCondition(Selection selection, DurationCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
         var result = new ArrayList<SensitivityValue>();
-
         var beforeMinDuration = condition.getMinDuration();
-        var beforeMaxDuration = condition.getMaxDuration();
 
-        var diff = (condition.getMaxDuration() != null && condition.getMinDuration() != null) ?
-                (condition.getMaxDuration() - condition.getMinDuration()) :
-                (condition.getMaxDuration() == null ? condition.getMinDuration() : condition.getMaxDuration());
-        var start = Math.max(1, condition.getMaxDuration() == null ? condition.getMinDuration() - diff : condition.getMaxDuration() - diff);
-        var end = Math.max(1, condition.getMaxDuration() == null ? condition.getMinDuration() + diff : condition.getMaxDuration() + diff);
-
-        for (long i = start; i < end; i++) {
-            condition.setMinDuration(Math.max(0, i - diff));
-            condition.setMaxDuration(i);
+        // vary start
+        var start = Math.max(0, condition.getMinDuration() - 5);
+        for (long i = start; i < Math.min(start + 10, (condition.getMaxDuration() == null ? Integer.MAX_VALUE : condition.getMaxDuration())); i++) {
+            condition.setMinDuration(i);
 
             // store values
             var value = new SensitivityValue();
@@ -110,20 +111,59 @@ public class SensitivityAnalysis {
         }
 
         condition.setMinDuration(beforeMinDuration);
-        condition.setMaxDuration(beforeMaxDuration);
-
-        return getResult(result);
+        return result;
     }
 
-    private SensitivityResult variateReworkCondition(Selection selection, ReworkCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+    private List<SensitivityValue> variateDurationMaxCondition(Selection selection, DurationCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
         var result = new ArrayList<SensitivityValue>();
+        var beforeMaxDuration = condition.getMaxDuration();
 
-        var diff = (condition.getMax() - condition.getMin());
-        var start = condition.getMin() - diff;
-        var end = condition.getMax() + diff;
+        // vary end
+        var end = Math.max(1, condition.getMaxDuration() - 5);
+        for (long i = Math.max(condition.getMinDuration() == null ? 1 : condition.getMinDuration(), end); i < end + 10; i++) {
+            condition.setMaxDuration(i);
 
-        for (int i = start; i < end; i++) {
-            condition.setMin(Math.max(2, i - diff));
+            // store values
+            var value = new SensitivityValue();
+            value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
+            value.setVariation("Duration - start: " + condition.getMinDuration() + "; end: " + condition.getMaxDuration());
+
+            result.add(value);
+        }
+
+        condition.setMaxDuration(beforeMaxDuration);
+
+        return result;
+    }
+
+    private List<SensitivityValue> variateReworkMinCondition(Selection selection, ReworkCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+        var result = new ArrayList<SensitivityValue>();
+        var beforeMinDuration = condition.getMin();
+
+        // vary min
+        var start = Math.max(0, condition.getMin() - 5);
+        for (int i = start; i < Math.min(start + 10, condition.getMax()); i++) {
+            condition.setMin(i);
+
+            // store values
+            var value = new SensitivityValue();
+            value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
+            value.setVariation("Rework - start: " + condition.getMin() + "; end: " + condition.getMax());
+
+            result.add(value);
+        }
+
+        condition.setMin(beforeMinDuration);
+        return result;
+    }
+
+    private List<SensitivityValue> variateReworkMaxCondition(Selection selection, ReworkCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+        var result = new ArrayList<SensitivityValue>();
+        var beforeMaxDuration = condition.getMax();
+
+        // vary end
+        var end = Math.max(1, condition.getMax() - 5);
+        for (int i = Math.max(1, end); i < end + 10; i++) {
             condition.setMax(i);
 
             // store values
@@ -134,7 +174,8 @@ public class SensitivityAnalysis {
             result.add(value);
         }
 
-        return getResult(result);
+        condition.setMax(beforeMaxDuration);
+        return result;
     }
 
     private SensitivityResult getResult(List<SensitivityValue> values) {

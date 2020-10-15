@@ -8,6 +8,7 @@ import { WidgetComponent } from '../widget.component';
 import { Widget } from '../../models/widget.model';
 import { WidgetHostComponent } from '../widget/widget-host.component';
 import { SensitivityResult } from '../../models/sensitivity-result.model';
+import { SensitivityValue } from '../../models/sensitivity-value.model';
 
 @Component({
   selector: 'app-widget-chart',
@@ -37,7 +38,7 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
 
   // sensitivity analysis
   public loadSensitivities = false;
-  public sensitivities: Map<string, SensitivityResult>;
+  public sensitivities: Map<string, SensitivityValue[]>;
 
   constructor(
     private queryService: QueryService,
