@@ -18,9 +18,9 @@
 
 package org.processexplorer.server.analysis.query.condition;
 
-import com.healthmarketscience.sqlbuilder.BinaryCondition;
-import com.healthmarketscience.sqlbuilder.InCondition;
 import com.healthmarketscience.sqlbuilder.NotCondition;
+import com.healthmarketscience.sqlbuilder.*;
+import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 
 /**
@@ -34,9 +34,15 @@ public class AttributeCondition extends Condition {
 
     private Object[] values;
 
+    private Long from;
+
+    private Long to;
+
     public enum BinaryType {
         EQUAL_TO,
-        NOT_EQUAL_TO
+        NOT_EQUAL_TO,
+        RANGE,
+        INTERVAL_RANGE
     }
 
     public AttributeCondition() {
@@ -50,20 +56,41 @@ public class AttributeCondition extends Condition {
 
     @Override
     public com.healthmarketscience.sqlbuilder.Condition getCondition(DatabaseModel db) {
+        DbColumn column = null;
 
-        if (values == null) {
+        // case duration filter
+        if (attribute.equals("c_duration")) {
+            column = db.caseDurationCol;
+        } else if (attribute.equals("c_starttime")) {
+            column = db.caseStartTimeCol;
+        } else if (attribute.equals("c_endtime")) {
+            column = db.caseEndTimeCol;
+        } else if (attribute.equals("c_id")) {
+            column = db.caseCaseIdCol;
+        }
+
+        // case attribute
+        if (column == null) {
+            column = db.caseAttributeTable.addColumn("\"" + attribute + "\"");
+        }
+
+        if (values.length == 1) {
             switch (binaryType) {
                 case EQUAL_TO:
-                    return (new BinaryCondition(BinaryCondition.Op.EQUAL_TO, db.caseAttributeTable.addColumn("\"" + attribute + "\""), values));
+                    return (new BinaryCondition(BinaryCondition.Op.EQUAL_TO, column, values[0]));
                 case NOT_EQUAL_TO:
-                    return (new NotCondition(new BinaryCondition(BinaryCondition.Op.NOT_EQUAL_TO, db.caseAttributeTable.addColumn("\"" + attribute + "\""), values)));
+                    return (new NotCondition(new BinaryCondition(BinaryCondition.Op.NOT_EQUAL_TO, column, values[0])));
             }
         } else {
             switch (binaryType) {
                 case EQUAL_TO:
-                    return (new InCondition(db.caseAttributeTable.addColumn("\"" + attribute + "\""), values));
+                    return (new InCondition(column, values));
                 case NOT_EQUAL_TO:
-                    return (new NotCondition(new InCondition(db.caseAttributeTable.addColumn("\"" + attribute + "\""), values)));
+                    return (new NotCondition(new InCondition(column, values)));
+                case RANGE:
+                    return new BetweenCondition(column, from, to);
+                case INTERVAL_RANGE:
+                    return new BetweenCondition(column, new CustomSql("interval '" + from + "'"), new CustomSql("interval '" + to + "'"));
             }
         }
 
@@ -92,6 +119,22 @@ public class AttributeCondition extends Condition {
 
     public void setValues(Object[] values) {
         this.values = values;
+    }
+
+    public Long getFrom() {
+        return from;
+    }
+
+    public void setFrom(Long from) {
+        this.from = from;
+    }
+
+    public Long getTo() {
+        return to;
+    }
+
+    public void setTo(Long to) {
+        this.to = to;
     }
 
 }

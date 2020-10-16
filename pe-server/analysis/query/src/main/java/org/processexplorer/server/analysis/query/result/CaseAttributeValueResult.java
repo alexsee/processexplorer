@@ -24,9 +24,18 @@ public class CaseAttributeValueResult {
 
     private String attributeName;
 
-    private boolean categorical;
+    private String type;
 
     private List<String> values;
+
+    public CaseAttributeValueResult() {
+
+    }
+
+    public CaseAttributeValueResult(String attributeName, String type) {
+        this.attributeName = attributeName;
+        this.type = type;
+    }
 
     public String getAttributeName() {
         return attributeName;
@@ -36,19 +45,19 @@ public class CaseAttributeValueResult {
         this.attributeName = attributeName;
     }
 
-    public boolean isCategorical() {
-        return categorical;
-    }
-
-    public void setCategorical(boolean categorical) {
-        this.categorical = categorical;
-    }
-
     public List<String> getValues() {
         return values;
     }
 
     public void setValues(List<String> values) {
         this.values = values;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

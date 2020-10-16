@@ -391,6 +391,16 @@ public class QueryService {
     public CaseAttributeValueResult getCaseAttributeValues(CaseAttributeValueQuery query) {
         var db = new DatabaseModel(query.getLogName());
 
+        // integrated attributes
+        if (query.getAttributeName().equals("c_duration")) {
+            return new CaseAttributeValueResult("c_duration", "duration");
+        } else if (query.getAttributeName().equals("c_starttime") || query.getAttributeName().equals("c_endtime")) {
+            return new CaseAttributeValueResult(query.getAttributeName(), "datetime");
+        } else if (query.getAttributeName().equals("c_id")) {
+            return new CaseAttributeValueResult(query.getAttributeName(), "values");
+        }
+
+        // case attribute
         var sql = new SelectQuery(true)
                 .addAliasedColumn(db.caseAttributeTable.addColumn("\"" + query.getAttributeName() + "\""), "attr")
                 .addFromTable(db.caseTable);
@@ -406,10 +416,10 @@ public class QueryService {
         result.setAttributeName(query.getAttributeName());
 
         if (values.size() > 500) {
-            result.setCategorical(false);
+            result.setType("value");
         } else {
             result.setValues(values);
-            result.setCategorical(true);
+            result.setType("list");
         }
 
         return result;
