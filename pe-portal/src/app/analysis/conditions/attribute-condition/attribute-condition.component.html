@@ -63,7 +63,7 @@
                 </nz-form-control>
             </nz-form-item>
         
-            <nz-form-item *ngIf="options.type == 'range'">
+            <nz-form-item *ngIf="data.binaryType == 'range'">
                 <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
                 <nz-form-control [nzSm]="9">
                     <nz-input-number name="from" [(ngModel)]="data.from"></nz-input-number>

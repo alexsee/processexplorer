@@ -275,6 +275,7 @@ public class QueryService {
         columns.remove("case_id");
         columns.remove("original_case_id");
         columns.remove("concept:name");
+        columns.remove("prediction");
 
         return columns;
     }

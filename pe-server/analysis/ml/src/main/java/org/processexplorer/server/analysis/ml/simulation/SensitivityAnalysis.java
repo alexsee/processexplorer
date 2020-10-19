@@ -1,6 +1,7 @@
 package org.processexplorer.server.analysis.ml.simulation;
 
 import org.processexplorer.server.analysis.query.QueryService;
+import org.processexplorer.server.analysis.query.condition.AttributeCondition;
 import org.processexplorer.server.analysis.query.condition.Condition;
 import org.processexplorer.server.analysis.query.condition.DurationCondition;
 import org.processexplorer.server.analysis.query.condition.ReworkCondition;
@@ -88,7 +89,57 @@ public class SensitivityAnalysis {
         } else if (condition instanceof ReworkCondition) {
             result.put(selection.getName(), variateReworkMinCondition(selection, (ReworkCondition) condition, query, currentResult, idxs, currentKeysR));
             result.put(selection.getName(), variateReworkMaxCondition(selection, (ReworkCondition) condition, query, currentResult, idxs, currentKeysR));
+        } else if (condition instanceof AttributeCondition) {
+            var cond = (AttributeCondition) condition;
+
+            if (cond.getBinaryType().equals(AttributeCondition.BinaryType.INTERVAL_RANGE)) {
+                result.put(selection.getName() + " (from)", variateAttributeFromCondition(selection, cond, query, currentResult, idxs, currentKeysR));
+                result.put(selection.getName() + " (to)", variateAttributeToCondition(selection, cond, query, currentResult, idxs, currentKeysR));
+            }
         }
+
+        return result;
+    }
+
+    private List<SensitivityValue> variateAttributeFromCondition(Selection selection, AttributeCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+        var result = new ArrayList<SensitivityValue>();
+        var beforeFrom = condition.getFrom();
+
+        // vary start
+        var start = Math.max(0, condition.getFrom() - 10);
+        for (long i = start; i < Math.min(start + 20, (condition.getTo() == null ? Integer.MAX_VALUE : condition.getTo())); i++) {
+            condition.setFrom(i);
+
+            // store values
+            var value = new SensitivityValue();
+            value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
+            value.setVariation("Attribute - start: " + condition.getFrom() + "; end: " + condition.getTo());
+
+            result.add(value);
+        }
+
+        condition.setFrom(beforeFrom);
+        return result;
+    }
+
+    private List<SensitivityValue> variateAttributeToCondition(Selection selection, AttributeCondition condition, DrillDownQuery query, DrillDownResult currentResult, List<Integer> idxs, List<String> currentKeysR) {
+        var result = new ArrayList<SensitivityValue>();
+        var beforeMaxDuration = condition.getTo();
+
+        // vary end
+        var end = Math.max(1, condition.getTo() - 10);
+        for (long i = Math.max(condition.getFrom() == null ? 1 : condition.getFrom(), end); i < end + 20; i++) {
+            condition.setTo(i);
+
+            // store values
+            var value = new SensitivityValue();
+            value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
+            value.setVariation("Attribute - start: " + condition.getFrom() + "; end: " + condition.getTo());
+
+            result.add(value);
+        }
+
+        condition.setTo(beforeMaxDuration);
 
         return result;
     }
