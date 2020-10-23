@@ -9,6 +9,8 @@ public class SensitivityValue {
 
     private String variation;
 
+    private double value;
+
     public double getDistance() {
         return distance;
     }
@@ -31,5 +33,13 @@ public class SensitivityValue {
                 "distance=" + distance +
                 ", variation='" + variation + '\'' +
                 '}';
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
     }
 }

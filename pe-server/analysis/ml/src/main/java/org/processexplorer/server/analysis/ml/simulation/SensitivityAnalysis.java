@@ -114,6 +114,7 @@ public class SensitivityAnalysis {
             var value = new SensitivityValue();
             value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
             value.setVariation("Attribute - start: " + condition.getFrom() + "; end: " + condition.getTo());
+            value.setValue(i);
 
             result.add(value);
         }
@@ -135,6 +136,7 @@ public class SensitivityAnalysis {
             var value = new SensitivityValue();
             value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
             value.setVariation("Attribute - start: " + condition.getFrom() + "; end: " + condition.getTo());
+            value.setValue(i);
 
             result.add(value);
         }
@@ -157,6 +159,7 @@ public class SensitivityAnalysis {
             var value = new SensitivityValue();
             value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
             value.setVariation("Duration - start: " + condition.getMinDuration() + "; end: " + condition.getMaxDuration());
+            value.setValue(i);
 
             result.add(value);
         }
@@ -178,6 +181,7 @@ public class SensitivityAnalysis {
             var value = new SensitivityValue();
             value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
             value.setVariation("Duration - start: " + condition.getMinDuration() + "; end: " + condition.getMaxDuration());
+            value.setValue(i);
 
             result.add(value);
         }
@@ -200,6 +204,7 @@ public class SensitivityAnalysis {
             var value = new SensitivityValue();
             value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
             value.setVariation("Rework - start: " + condition.getMin() + "; end: " + condition.getMax());
+            value.setValue(i);
 
             result.add(value);
         }
@@ -221,6 +226,7 @@ public class SensitivityAnalysis {
             var value = new SensitivityValue();
             value.setDistance(evaluate(selection, query, currentResult, idxs, currentKeysR));
             value.setVariation("Rework - start: " + condition.getMin() + "; end: " + condition.getMax());
+            value.setValue(i);
 
             result.add(value);
         }

@@ -90,7 +90,7 @@ public class AttributeCondition extends Condition {
                 case RANGE:
                     return new BetweenCondition(column, from, to);
                 case INTERVAL_RANGE:
-                    return new BetweenCondition(column, new CustomSql("interval '" + from + "'"), new CustomSql("interval '" + to + "'"));
+                    return new BetweenCondition(column, new CustomSql("interval '" + from + " days'"), new CustomSql("interval '" + to + " days'"));
             }
         }
 

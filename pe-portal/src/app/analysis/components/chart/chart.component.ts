@@ -39,6 +39,7 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
   // sensitivity analysis
   public loadSensitivities = false;
   public sensitivities: Map<string, SensitivityValue[]>;
+  public sensitivityCharts: Highcharts.Options[];
 
   constructor(
     private queryService: QueryService,
@@ -198,6 +199,8 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
 
   getSensitivityTemplate(): TemplateRef<any> {
     this.loadSensitivities = true;
+    this.sensitivities = null;
+    this.sensitivityCharts = [];
 
     const selections = [];
 
@@ -213,6 +216,35 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
     this.queryService.getSensitivity(this.context.logName, selections, this.queryConvertService.convertToQuery(this.conditions))
     .subscribe(result => {
       this.sensitivities = result;
+
+      // prepare sensitivity chart
+      for (const key in result) {
+        if (result.hasOwnProperty(key)) {
+          const data = [];
+          const labels = [];
+
+          result[key].forEach(item => {
+            data.push(item.distance);
+            labels.push(item.value);
+          });
+
+          const sensitivityChart: Highcharts.Options = {
+            title: {
+              text: this.widget.options.options.title
+            },
+            chart: {
+              type: this.widget.options.options.type,
+            },
+            series: [{ name: key, type: 'line', data }],
+            xAxis: {
+              categories: labels
+            }
+          };
+
+          this.sensitivityCharts.push(sensitivityChart);
+        }
+      }
+
       this.loadSensitivities = false;
     });
 

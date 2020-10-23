@@ -25,6 +25,7 @@
             <nz-form-control [nzSpan]="18">
                 <nz-select [(ngModel)]="widget.options.options.type">
                     <nz-option nzValue="column" nzLabel="Bar chart" nzCustomContent><i nz-icon nzType="bar-chart" nzTheme="outline"></i> Bar chart</nz-option>
+                    <nz-option nzValue="bar" nzLabel="Vertical Bar chart" nzCustomContent><i nz-icon nzType="bar-chart" nzTheme="outline"></i> Vertical Bar chart</nz-option>
                     <nz-option nzValue="area" nzLabel="Area chart" nzCustomContent><i nz-icon nzType="area-chart" nzTheme="outline"></i> Area chart</nz-option>
                     <nz-option nzValue="line" nzLabel="Line chart" nzCustomContent><i nz-icon nzType="line-chart" nzTheme="outline"></i> Line chart</nz-option>
                     <nz-option nzValue="spline" nzLabel="Spline chart" nzCustomContent><i nz-icon nzType="line-chart" nzTheme="outline"></i> Spline chart</nz-option>
@@ -82,8 +83,20 @@
     <div *ngIf="sensitivities">
         <h1>Sensitivity Analysis</h1>
 
+        <h2>Charts</h2>
+        <div *ngFor="let sensitivityChart of sensitivityCharts">
+            <highcharts-chart
+                *ngIf="sensitivityChart"
+                [Highcharts]="Highcharts"
+                [oneToOne]="true"
+                [options]="sensitivityChart"
+                style="width: 100%; height: 300px; display: block;">
+            </highcharts-chart>
+        </div>
+
+        <h2>Details</h2>
         <div *ngFor="let item of sensitivities | keyvalue">
-            <h2>{{item.key}}</h2>
+            <h3>{{item.key}}</h3>
 
             <nz-timeline>
                 <nz-timeline-item *ngFor="let entry of item.value"><b>{{entry.variation}}</b><br/><span *ngIf="!isNaN(entry.distance)">Difference: {{entry.distance | number}}</span></nz-timeline-item>
