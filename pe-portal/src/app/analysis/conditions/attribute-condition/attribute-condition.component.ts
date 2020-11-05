@@ -36,8 +36,10 @@ export class AttributeConditionComponent implements OnInit, ConditionComponent {
           this.options = response;
           this.data.values = [];
 
-          if (response.type === 'duration' || response.type === 'datetime') {
+          if (response.type === 'duration') {
             this.data.binaryType = 'INTERVAL_RANGE';
+          } else if (response.type === 'datetime') {
+            this.data.binaryType = 'RANGE';
           } else {
             this.data.binaryType = 'EQUAL_TO';
           }

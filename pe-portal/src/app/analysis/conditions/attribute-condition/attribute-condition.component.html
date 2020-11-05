@@ -78,10 +78,10 @@
             <nz-form-item>
                 <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
                 <nz-form-control [nzSm]="9">
-                    <nz-input-number name="from" [(ngModel)]="data.from"></nz-input-number>
+                    <input name="from" [(ngModel)]="data.stringFrom" />
                 </nz-form-control>
                 <nz-form-control [nzSm]="9">
-                    <nz-input-number name="to" [(ngModel)]="data.to"></nz-input-number>
+                    <input name="to" [(ngModel)]="data.stringTo" />
                 </nz-form-control>
             </nz-form-item>
         </ng-template>
