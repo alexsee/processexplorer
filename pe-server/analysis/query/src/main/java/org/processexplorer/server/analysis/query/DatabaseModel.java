@@ -177,7 +177,7 @@ public class DatabaseModel {
             SQL += "WHERE " + perspective + " IN (" + String.join(", ", filter) + ") ";
         }
 
-        SQL += "ORDER BY case_id, target_timestamp, source)) ";
+        SQL += "ORDER BY case_id, target_timestamp, target)) ";
 
         return SQL;
     }

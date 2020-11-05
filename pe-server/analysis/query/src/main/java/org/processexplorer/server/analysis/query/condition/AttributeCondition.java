@@ -38,6 +38,10 @@ public class AttributeCondition extends Condition {
 
     private Long to;
 
+    private String stringFrom;
+
+    private String stringTo;
+
     public enum BinaryType {
         EQUAL_TO,
         NOT_EQUAL_TO,
@@ -88,7 +92,7 @@ public class AttributeCondition extends Condition {
                 case NOT_EQUAL_TO:
                     return (new NotCondition(new InCondition(column, values)));
                 case RANGE:
-                    return new BetweenCondition(column, from, to);
+                    return new BetweenCondition(column, from == null ? stringFrom : from, to == null ? stringTo : to);
                 case INTERVAL_RANGE:
                     return new BetweenCondition(column, new CustomSql("interval '" + from + " days'"), new CustomSql("interval '" + to + " days'"));
             }
@@ -135,6 +139,22 @@ public class AttributeCondition extends Condition {
 
     public void setTo(Long to) {
         this.to = to;
+    }
+
+    public String getStringFrom() {
+        return stringFrom;
+    }
+
+    public void setStringFrom(String stringFrom) {
+        this.stringFrom = stringFrom;
+    }
+
+    public String getStringTo() {
+        return stringTo;
+    }
+
+    public void setStringTo(String stringTo) {
+        this.stringTo = stringTo;
     }
 
 }
