@@ -8,24 +8,24 @@ services:
       POSTGRES_PASSWORD: test123
       POSTGRES_DB: openpmdb
 
-  webportal:
-    container_name: webportal
+  portal:
+    container_name: portal
     build:
-      context: webportal/
+      context: pe-portal/
       dockerfile: Dockerfile
     volumes:
-      - webportal/:/app
+      - pe-portal/:/app
       - /app/node_modules
     ports:
       - 4200:4200
 
-  webservice:
-    container_name: webservice
+  server:
+    container_name: pe-server
     build:
-      context: webservice/
+      context: pe-server/
       dockerfile: Dockerfile
     volumes:
-      - webservice/:/app
+      - pe-server/:/app
     ports:
       - 8080:8080
     environment:
@@ -36,5 +36,5 @@ services:
       - postgresql
 
 volumes:
-  webportal: {}
-  webservice: {}
+  pe-portal: {}
+  pe-server: {}
