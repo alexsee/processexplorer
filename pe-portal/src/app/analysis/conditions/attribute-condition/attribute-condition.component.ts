@@ -34,7 +34,7 @@ export class AttributeConditionComponent implements OnInit, ConditionComponent {
       this.queryService.getCaseAttributeValues(this.context.logName, this.data.attribute, [])
         .subscribe(response => {
           this.options = response;
-          this.data.values = this.data.values.filter(value => this.options.values.includes(value));
+          this.data.values = this.data === undefined ? [] : this.data.values.filter(value => this.options.values.includes(value));
 
           if (response.type === 'duration') {
             this.data.binaryType = 'INTERVAL_RANGE';
