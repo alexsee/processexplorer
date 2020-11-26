@@ -18,6 +18,9 @@
 
 package org.processexplorer.webservice.controller;
 
+import org.processexplorer.server.analysis.ml.simulation.SensitivityAnalysis;
+import org.processexplorer.server.analysis.ml.simulation.SensitivityResult;
+import org.processexplorer.server.analysis.ml.simulation.SensitivityValue;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.Condition;
 import org.processexplorer.server.analysis.query.model.Case;
@@ -35,6 +38,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alexander Seeliger on 23.09.2019.
@@ -43,10 +47,12 @@ import java.util.List;
 public class QueryController {
 
     private final QueryService queryService;
+    private final SensitivityAnalysis sensitivityAnalysis;
 
     @Autowired
-    public QueryController(QueryService queryService) {
+    public QueryController(QueryService queryService, SensitivityAnalysis sensitivityAnalysis) {
         this.queryService = queryService;
+        this.sensitivityAnalysis = sensitivityAnalysis;
     }
 
     @GetMapping("/query/statistics")
@@ -82,6 +88,11 @@ public class QueryController {
     @PostMapping("/query/drill_down")
     public ResponseEntity<DrillDownResult> getDrillDown(@RequestBody DrillDownQuery query) {
         return ResponseEntity.ok(queryService.getDrillDown(query));
+    }
+
+    @PostMapping("/query/sensitivity_analysis")
+    public ResponseEntity<Map<String, List<SensitivityValue>>> getDrillDownExtended(@RequestBody DrillDownQuery query) {
+        return ResponseEntity.ok(sensitivityAnalysis.simulate(query));
     }
 
     @GetMapping("/query/case")

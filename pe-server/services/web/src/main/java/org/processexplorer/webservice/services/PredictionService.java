@@ -154,6 +154,9 @@ public class PredictionService {
         try {
             var client = WebClient.builder()
                     .baseUrl(properties.getAprilBaseUri())
+                    .codecs(codecs ->
+                        codecs.defaultCodecs().maxInMemorySize(20 * 1024 * 1024)
+                    )
                     .build();
 
             var result = client.post().uri("/predict")

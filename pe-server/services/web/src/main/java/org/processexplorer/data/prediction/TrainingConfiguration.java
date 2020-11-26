@@ -33,6 +33,8 @@ public class TrainingConfiguration {
 
     private String whereCondition;
 
+    private String[] caseAttributes;
+
     public String getLogName() {
         return logName;
     }
@@ -71,5 +73,13 @@ public class TrainingConfiguration {
 
     public void setWhereCondition(String whereCondition) {
         this.whereCondition = whereCondition;
+    }
+
+    public String[] getCaseAttributes() {
+        return caseAttributes;
+    }
+
+    public void setCaseAttributes(String[] caseAttributes) {
+        this.caseAttributes = caseAttributes;
     }
 }

@@ -70,4 +70,8 @@ export class WidgetHostComponent implements OnInit, OnChanges {
     return (this.componentRef.instance as WidgetComponent).getOptionsTemplate();
   }
 
+  getSensitivityTemplate(): TemplateRef<any> {
+    return (this.componentRef.instance as WidgetComponent).getSensitivityTemplate();
+  }
+
 }

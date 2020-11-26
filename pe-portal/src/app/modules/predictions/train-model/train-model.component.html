@@ -46,6 +46,14 @@
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
+                    <nz-form-label [nzSpan]="6">Case Attributes</nz-form-label>
+                    <nz-form-control [nzSpan]="14">
+                        <nz-select name="attribute" [(ngModel)]="trainingConfiguration.caseAttributes" nzPlaceHolder="Choose" nzMode="multiple">
+                            <nz-option *ngFor="let attribute of context.caseAttributes" [nzValue]="attribute.columnName" [nzLabel]="attribute.columnName"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
                     <nz-form-label [nzSpan]="6">Where Conditions</nz-form-label>
                     <nz-form-control [nzSpan]="14">
                         <input nz-input name="whereCondition" placeholder="Where Condition" [(ngModel)]="trainingConfiguration.whereCondition" />

@@ -5,7 +5,7 @@ FROM openjdk:13-jdk-alpine
 WORKDIR /app
 
 # add app
-COPY ./target/webservice-*.jar /app/app.jar
+COPY ./services/web/target/web-*.jar /app/app.jar
 
 VOLUME /var/lib/processexplorer/
 

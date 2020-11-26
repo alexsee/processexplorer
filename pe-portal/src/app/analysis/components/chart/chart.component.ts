@@ -7,6 +7,8 @@ import { QueryConvertService } from '../../shared/query-convert.service';
 import { WidgetComponent } from '../widget.component';
 import { Widget } from '../../models/widget.model';
 import { WidgetHostComponent } from '../widget/widget-host.component';
+import { SensitivityResult } from '../../models/sensitivity-result.model';
+import { SensitivityValue } from '../../models/sensitivity-value.model';
 
 @Component({
   selector: 'app-widget-chart',
@@ -16,6 +18,7 @@ import { WidgetHostComponent } from '../widget/widget-host.component';
 export class WidgetChartComponent implements OnInit, WidgetComponent {
   @ViewChild('chart', {static: true}) public chartContainer: ElementRef;
   @ViewChild('optionsTemplate', {static: true}) public optionsTemplate: TemplateRef<any>;
+  @ViewChild('sensitivityTemplate', {static: true}) public sensitivityTemplate: TemplateRef<any>;
 
   // input parameters
   @Input() public context: EventLogStatistics;
@@ -32,6 +35,11 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
   public selectedMeasure: any;
 
   private chart: Highcharts.Chart;
+
+  // sensitivity analysis
+  public loadSensitivities = false;
+  public sensitivities: Map<string, SensitivityValue[]>;
+  public sensitivityCharts: Highcharts.Options[];
 
   constructor(
     private queryService: QueryService,
@@ -97,18 +105,6 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
             showInLegend: true,
             yAxis: measure.yAxis ? (measure.yAxis === 'primary' ? 0 : 1) : 0
           };
-
-          // if (column.columnType === 'time') {
-          //   serie.tooltip = {
-          //     formatter: function () {
-          //         const time = this.y / 1000;
-          //         const hours1 = time / 3600;
-          //         const mins1 = (time % 3600) / 60;
-
-          //         return (hours1 < 10 ? '0' + hours1 : hours1) + ':' + (mins1 < 10 ? '0' + mins1 : mins1);
-          //     }
-          //   };
-          // }
 
           series.push(serie);
         } else {
@@ -199,6 +195,64 @@ export class WidgetChartComponent implements OnInit, WidgetComponent {
 
   getOptionsTemplate(): TemplateRef<any> {
     return this.optionsTemplate;
+  }
+
+  getSensitivityTemplate(): TemplateRef<any> {
+    this.loadSensitivities = true;
+    this.sensitivities = null;
+    this.sensitivityCharts = [];
+
+    const selections = [];
+
+    // push dimensions
+    this.widget.options.dimensions.forEach(dim => selections.push({
+      type: 'case_attribute',
+      attributeName: dim.attributeName
+    }));
+
+    // push measures
+    this.widget.options.measures.forEach(measure => selections.push(measure));
+
+    this.queryService.getSensitivity(this.context.logName, selections, this.queryConvertService.convertToQuery(this.conditions))
+    .subscribe(result => {
+      this.sensitivities = result;
+
+      // prepare sensitivity chart
+      for (const key in result) {
+        if (result.hasOwnProperty(key)) {
+          const data = [];
+          const labels = [];
+
+          result[key].forEach(item => {
+            data.push(item.distance);
+            labels.push(item.value);
+          });
+
+          const sensitivityChart: Highcharts.Options = {
+            title: {
+              text: this.widget.options.options.title
+            },
+            chart: {
+              type: this.widget.options.options.type,
+            },
+            series: [{ name: key, type: 'line', data }],
+            xAxis: {
+              categories: labels
+            }
+          };
+
+          this.sensitivityCharts.push(sensitivityChart);
+        }
+      }
+
+      this.loadSensitivities = false;
+    });
+
+    return this.sensitivityTemplate;
+  }
+
+  isNaN(value): boolean {
+    return value === 'NaN';
   }
 
 }

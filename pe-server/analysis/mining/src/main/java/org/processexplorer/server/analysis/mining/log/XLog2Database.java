@@ -29,7 +29,10 @@ import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
-import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeContinuous;
+import org.deckfour.xes.model.XAttributeTimestamp;
+import org.deckfour.xes.model.XLog;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.common.utils.OutputBuilder;
 import org.slf4j.Logger;
@@ -195,7 +198,7 @@ public class XLog2Database {
 
         eventAttributes.forEach(x -> {
             if (x instanceof XAttributeContinuous) {
-                db.eventTable.addColumn("\"" + x.getKey() + "\"", "integer", null, null);
+                db.eventTable.addColumn("\"" + x.getKey() + "\"", "double precision", null, null);
             } else {
                 db.eventTable.addColumn("\"" + x.getKey() + "\"", "varchar", 1024, null);
             }
@@ -253,6 +256,8 @@ public class XLog2Database {
 
             if (attribute instanceof XAttributeTimestamp) {
                 sql.append("\"" + attribute.getKey() + "\" timestamp" + (i < attributes.size() - 1 ? "," : ""));
+            } else if (attribute instanceof XAttributeContinuous) {
+                sql.append("\"" + attribute.getKey() + "\" double precision" + (i < attributes.size() - 1 ? "," : ""));
             } else {
                 sql.append("\"" + attribute.getKey() + "\" VARCHAR(1024)" + (i < attributes.size() - 1 ? "," : ""));
             }

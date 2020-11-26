@@ -37,7 +37,8 @@
                     <td>
                         <nz-tag *ngIf="c.state == 1" nzColor="orange">OPEN</nz-tag>
                     </td>
-                    <td><nz-avatar nzIcon="user" nzSize="small"></nz-avatar> {{c.currentResource}}</td>
+                    <td><nz-avatar nzIcon="user" nzSize="small"></nz-avatar> {{c.currentResource}}<br />
+                        <b>Next: </b>{{c.nextResource}} ({{c.nextResourceScore * 100 | number : '1.1-1'}} %)</td>
                     <td>
                         <b>Next Activity</b><br />
                         {{c.nextActivity}} ({{c.nextActivityScore * 100 | number : '1.1-1'}} %)
@@ -62,7 +63,7 @@
                 <nz-timeline>
                     <nz-timeline-item *ngFor="let event of case.events">
                         {{event.timestamp | date : 'dd.MM.yyyy HH:mm'}} <span>by</span> {{event.resource}}
-                        <br />{{event.activity.name}} 
+                        <br />{{event.activity.name}}
                     </nz-timeline-item>
                 </nz-timeline>
             </div>

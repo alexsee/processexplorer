@@ -1,5 +1,5 @@
 export class CaseAttributeValueResult {
     attributeName: string;
-    categorical: boolean;
+    type: string;
     values: string[];
 }

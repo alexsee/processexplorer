@@ -4,4 +4,5 @@ export class TrainingConfiguration {
     batchSize: number;
     epochs: number;
     whereCondition: string;
+    caseAttributes: string;
 }

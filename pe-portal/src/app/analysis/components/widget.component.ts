@@ -12,6 +12,8 @@ export interface WidgetComponent {
     parent: WidgetHostComponent;
 
     getOptionsTemplate(): TemplateRef<any>;
+    getSensitivityTemplate(): TemplateRef<any>;
+
     doResize();
     doUpdate();
 }

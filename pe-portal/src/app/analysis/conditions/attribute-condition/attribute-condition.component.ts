@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, TemplateRef, ElementRef, ViewContainerRef } from '@angular/core';
 import { ConditionComponent } from '../../condition.component';
 import { CaseAttributeValueResult } from '../../models/results/case-attribute-value-result.model';
 import { QueryService } from '../../shared/query.service';
@@ -17,7 +17,7 @@ export class AttributeConditionComponent implements OnInit, ConditionComponent {
 
   public options: CaseAttributeValueResult = {
     attributeName: '',
-    categorical: false,
+    type: '',
     values: []
   };
 
@@ -32,7 +32,18 @@ export class AttributeConditionComponent implements OnInit, ConditionComponent {
   onSelectionChange() {
     if (this.data.attribute) {
       this.queryService.getCaseAttributeValues(this.context.logName, this.data.attribute, [])
-        .subscribe(response => this.options = response);
+        .subscribe(response => {
+          this.options = response;
+          this.data.values = this.data === undefined ? [] : this.data.values.filter(value => this.options.values.includes(value));
+
+          if (response.type === 'duration') {
+            this.data.binaryType = 'INTERVAL_RANGE';
+          } else if (response.type === 'datetime') {
+            this.data.binaryType = 'RANGE';
+          } else {
+            this.data.binaryType = 'EQUAL_TO';
+          }
+        });
     }
   }
 

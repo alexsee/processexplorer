@@ -22,29 +22,80 @@
             <nz-form-label [nzSm]="6" nzRequired nzFor="attribute">Attribute</nz-form-label>
             <nz-form-control [nzSm]="18" >
                 <nz-select name="attribute" [(ngModel)]="data.attribute" nzPlaceHolder="Choose" (ngModelChange)="onSelectionChange()">
-                    <nz-option *ngFor="let attribute of context.caseAttributes" [nzValue]="attribute.columnName" [nzLabel]="attribute.columnName"></nz-option>
+                    <nz-option-group nzLabel="General">
+                        <nz-option nzValue="c_duration" nzLabel="Case duration"></nz-option>
+                        <nz-option nzValue="c_starttime" nzLabel="Case start time"></nz-option>
+                        <nz-option nzValue="c_endtime" nzLabel="Case end time"></nz-option>
+                        <nz-option nzValue="c_id" nzLabel="Case id"></nz-option>
+                    </nz-option-group>
+                    <nz-option-group nzLabel="Case attributes">
+                        <nz-option *ngFor="let attribute of context.caseAttributes" [nzValue]="attribute.columnName" [nzLabel]="attribute.columnName"></nz-option>
+                    </nz-option-group>
                 </nz-select>
             </nz-form-control>
         </nz-form-item>
 
-        <nz-form-item>
-            <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">Binary Type</nz-form-label>
-            <nz-form-control [nzSm]="18">
-                <nz-select name="binaryType" [(ngModel)]="data.binaryType" nzPlaceHolder="Choose">
-                    <nz-option nzValue="EQUAL_TO" nzLabel="="></nz-option>
-                    <nz-option nzValue="NOT_EQUAL_TO" nzLabel="<>"></nz-option>
-                </nz-select>
-            </nz-form-control>
-        </nz-form-item>
+        <ng-template [ngIf]="options.type == 'list' || options.type == 'values' || options.type == 'range'">
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">Binary Type</nz-form-label>
+                <nz-form-control [nzSm]="18">
+                    <nz-select name="binaryType" [(ngModel)]="data.binaryType" nzPlaceHolder="Choose">
+                        <nz-option nzValue="EQUAL_TO" nzLabel="="></nz-option>
+                        <nz-option nzValue="NOT_EQUAL_TO" nzLabel="<>"></nz-option>
+                        <nz-option nzValue="RANGE" nzLabel="between"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        
+            <nz-form-item *ngIf="options.type == 'list'">
+                <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
+                <nz-form-control [nzSm]="18">
+                    <nz-select name="values" [(ngModel)]="data.values" nzPlaceHolder="Choose" nzMode="multiple">
+                        <nz-option *ngFor="let value of options.values" [nzValue]="value" [nzLabel]="value"></nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+        
+            <nz-form-item *ngIf="options.type == 'values'">
+                <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
+                <nz-form-control [nzSm]="18">
+                    <input nz-input name="value" placeholder="Value" [(ngModel)]="data.values" />
+                </nz-form-control>
+            </nz-form-item>
+        
+            <nz-form-item *ngIf="data.binaryType == 'range'">
+                <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
+                <nz-form-control [nzSm]="9">
+                    <nz-input-number name="from" [(ngModel)]="data.from"></nz-input-number>
+                </nz-form-control>
+                <nz-form-control [nzSm]="9">
+                    <nz-input-number name="to" [(ngModel)]="data.to"></nz-input-number>
+                </nz-form-control>
+            </nz-form-item>
+        </ng-template>
 
-        <nz-form-item *ngIf="options.categorical">
-            <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
-            <nz-form-control [nzSm]="18">
-                <nz-select name="values" [(ngModel)]="data.values" nzPlaceHolder="Choose" nzMode="multiple">
-                    <nz-option *ngFor="let value of options.values" [nzValue]="value" [nzLabel]="value"></nz-option>
-                </nz-select>
-            </nz-form-control>
-        </nz-form-item>
+        <ng-template [ngIf]="options.type == 'datetime'">
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
+                <nz-form-control [nzSm]="9">
+                    <input name="from" [(ngModel)]="data.stringFrom" />
+                </nz-form-control>
+                <nz-form-control [nzSm]="9">
+                    <input name="to" [(ngModel)]="data.stringTo" />
+                </nz-form-control>
+            </nz-form-item>
+        </ng-template>
 
+        <ng-template [ngIf]="options.type == 'duration'">
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" nzRequired nzFor="binaryType">values</nz-form-label>
+                <nz-form-control [nzSm]="9">
+                    <nz-input-number name="from" [(ngModel)]="data.from"></nz-input-number>
+                </nz-form-control>
+                <nz-form-control [nzSm]="9">
+                    <nz-input-number name="to" [(ngModel)]="data.to"></nz-input-number>
+                </nz-form-control>
+            </nz-form-item>
+        </ng-template>
     </form>
 </ng-template>

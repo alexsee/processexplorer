@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { nb_NO } from 'ng-zorro-antd/i18n';
 import { EventLogStatistics } from 'src/app/log/models/eventlog-statistics.model';
 import { Condition } from '../../models/condition.model';
 import { Widget } from '../../models/widget.model';
@@ -34,6 +35,10 @@ export class WidgetProcessMapComponent implements OnInit, WidgetComponent {
     if (this.processmapContainer) {
       this.processmapContainer.update();
     }
+  }
+
+  getSensitivityTemplate(): TemplateRef<any> {
+    return null;
   }
 
   ngOnInit(): void {
