@@ -19,7 +19,6 @@
 package org.processexplorer.server.analysis.ml.clustering;
 
 import com.healthmarketscience.sqlbuilder.AlterTableQuery;
-import com.healthmarketscience.sqlbuilder.QueryPreparer;
 import org.processexplorer.server.analysis.ml.metric.SequenceMetrics;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.analysis.query.QueryService;
@@ -47,13 +46,13 @@ import java.util.concurrent.Future;
 @Service
 public class SimpleTraceClustering {
 
-    private static Logger logger = LoggerFactory.getLogger(SimpleTraceClustering.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleTraceClustering.class);
 
-    private EventLogRepository eventLogRepository;
-    private EventLogFeatureRepository eventLogFeatureRepository;
-    private SimpMessagingTemplate messagingTemplate;
-    private QueryService queryService;
-    private JdbcTemplate jdbcTemplate;
+    private final EventLogRepository eventLogRepository;
+    private final EventLogFeatureRepository eventLogFeatureRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final QueryService queryService;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public SimpleTraceClustering(EventLogRepository eventLogRepository,
