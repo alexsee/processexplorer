@@ -1,9 +1,5 @@
 package org.processmining.plugins.bpmnminer;
 
-/**
- * @author Alexander Seeliger on 28.10.2019.
- */
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

@@ -269,8 +269,10 @@ public class QueryService {
         var db = new DatabaseModel(logName);
 
         var columns = jdbcTemplate.queryForList("SELECT column_name " +
-                "FROM information_schema.columns " +
-                "WHERE table_name = '" + db.caseAttributeTable.getTableNameSQL() + "' AND table_schema = 'public';", String.class);
+                        "FROM information_schema.columns " +
+                        "WHERE table_name = ? AND table_schema = 'public';",
+                String.class,
+                db.caseAttributeTable.getTableNameSQL());
 
         columns.remove("case_id");
         columns.remove("original_case_id");
@@ -311,7 +313,9 @@ public class QueryService {
 
         var columns = jdbcTemplate.queryForList("SELECT column_name " +
                 "FROM information_schema.columns " +
-                "WHERE table_name = '" + db.eventTable.getTableNameSQL() + "' AND table_schema = 'public';", String.class);
+                "WHERE table_name = ? AND table_schema = 'public';",
+                String.class,
+                db.eventTable.getTableNameSQL());
 
         columns.remove("case_id");
         columns.remove("original_case_id");

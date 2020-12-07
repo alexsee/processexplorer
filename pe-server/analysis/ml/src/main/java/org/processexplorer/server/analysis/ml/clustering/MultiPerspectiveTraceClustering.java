@@ -19,9 +19,6 @@
 package org.processexplorer.server.analysis.ml.clustering;
 
 import com.healthmarketscience.sqlbuilder.AlterTableQuery;
-import com.healthmarketscience.sqlbuilder.BinaryCondition;
-import com.healthmarketscience.sqlbuilder.QueryPreparer;
-import com.healthmarketscience.sqlbuilder.UpdateQuery;
 import net.metaopt.swarm.FitnessFunction;
 import net.metaopt.swarm.pso.Particle;
 import net.metaopt.swarm.pso.Swarm;
@@ -68,14 +65,14 @@ import java.util.concurrent.Future;
 @Service
 public class MultiPerspectiveTraceClustering {
 
-    private static Logger logger = LoggerFactory.getLogger(MultiPerspectiveTraceClustering.class);
+    private static final Logger logger = LoggerFactory.getLogger(MultiPerspectiveTraceClustering.class);
 
-    private QueryService queryService;
-    private JdbcTemplate jdbcTemplate;
-    private EventLogRepository eventLogRepository;
-    private EventLogFeatureRepository eventLogFeatureRepository;
-    private SimpMessagingTemplate messagingTemplate;
-    private FrequentItemsetMiner itemsetMiner;
+    private final QueryService queryService;
+    private final JdbcTemplate jdbcTemplate;
+    private final EventLogRepository eventLogRepository;
+    private final EventLogFeatureRepository eventLogFeatureRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final FrequentItemsetMiner itemsetMiner;
 
     private int numParticles = 10;
     private int numIterations = 5;
@@ -174,7 +171,7 @@ public class MultiPerspectiveTraceClustering {
             feature.setFeature("clustering");
             feature.setValues("simple_trace_clustering");
 
-            feature = eventLogFeatureRepository.save(feature);
+            eventLogFeatureRepository.save(feature);
         }
 
         // report processing
@@ -237,7 +234,7 @@ public class MultiPerspectiveTraceClustering {
                 var values = new Itemset();
                 itemset.forEach(x -> values.add(valueMap.get(x)));
 
-                var vars = frequentItemsetListMap.getOrDefault(values, new ArrayList<Variant>());
+                var vars = frequentItemsetListMap.getOrDefault(values, new ArrayList<>());
                 vars.add(variant);
 
                 frequentItemsetListMap.put(values, vars);
@@ -261,7 +258,7 @@ public class MultiPerspectiveTraceClustering {
         frequentItemsetSupport.clear();
 
         // distance matrix
-        logger.info("Calculating distance matrix for " + itemsets.size() + " itemsets...");
+        logger.info("Calculating distance matrix for {} itemsets...", itemsets.size());
         double[][] distanceMatrix = getDistanceMatrix(weight, itemsets, frequentItemsetListMap);
 
         // perform clustering
@@ -283,7 +280,7 @@ public class MultiPerspectiveTraceClustering {
         logger.info("Assign traces to clusters...");
 
         var result = new EventLogClusters(new ArrayList<>(clusters.values()));
-        result.getClusters().removeIf(x -> x.getVariants().size() == 0);
+        result.getClusters().removeIf(x -> x.getVariants().isEmpty());
         result.setMinSupport(minSupport);
         result.setSilhouetteCoefficient(EvaluationUtils.silhouetteCoefficient(distanceMatrix, clusterMap));
 
@@ -406,7 +403,7 @@ public class MultiPerspectiveTraceClustering {
 
         // now we need to evaluate the clusters to calculate the weighted fitness
         double fitness = 0.0D;
-        int traces = 0;
+        double traces = 0;
 
         for (VariantCluster cluster : clusters.getClusters()) {
             // generate selection
@@ -423,10 +420,14 @@ public class MultiPerspectiveTraceClustering {
         }
 
         // calc fitness
-        fitness /= traces;
+        if (traces == 0) {
+            fitness = 1;
+        } else {
+            fitness /= traces;
+        }
 
         return (fitness +
-                ((double) traces / log.getNumTraces()) +
+                (traces / log.getNumTraces()) +
                 clusters.getSilhouetteCoefficient() +
                 (1 - (numClusters / 50))) / 4; // 50 is the max number of clusters to generate
     }
