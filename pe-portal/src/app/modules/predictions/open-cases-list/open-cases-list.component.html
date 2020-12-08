@@ -35,7 +35,9 @@
                         {{c.currentActivity}}
                     </td>
                     <td>
-                        <nz-tag *ngIf="c.state == 1" nzColor="orange">OPEN</nz-tag>
+                        <nz-tag *ngIf="c.state == 1" nzColor="orange">Open</nz-tag>
+                        <nz-tag *ngIf="c.state == 2" nzColor="green">In Progress</nz-tag>
+                        <nz-tag *ngIf="c.state == 3" nzColor="green">Resolved</nz-tag>
                     </td>
                     <td><nz-avatar nzIcon="user" nzSize="small"></nz-avatar> {{c.currentResource}}<br />
                         <b>Next: </b>{{c.nextResource}} ({{c.nextResourceScore * 100 | number : '1.1-1'}} %)</td>
@@ -57,15 +59,36 @@
                     <nz-descriptions-item nzTitle="Original Id">{{case.originalCaseId}}</nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Start">{{case.timestampStart | date : 'dd.MM.yyyy HH:mm'}}</nz-descriptions-item>
                     <nz-descriptions-item nzTitle="Last Event">{{case.timestampEnd | date : 'dd.MM.yyyy HH:mm'}}</nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Status">
+                        <nz-tag *ngIf="case.state == 1" nzColor="orange">Open</nz-tag>
+                        <nz-tag *ngIf="case.state == 2" nzColor="green">In Progress</nz-tag>
+                        <nz-tag *ngIf="case.state == 3" nzColor="green">Resolved</nz-tag>
+                    </nz-descriptions-item>
                 </nz-descriptions>
 
-                <h3>Events</h3>
-                <nz-timeline>
-                    <nz-timeline-item *ngFor="let event of case.events">
-                        {{event.timestamp | date : 'dd.MM.yyyy HH:mm'}} <span>by</span> {{event.resource}}
-                        <br />{{event.activity.name}}
-                    </nz-timeline-item>
-                </nz-timeline>
+                <h3>Actions</h3>
+                <div class="button-group">
+                    <button nz-button [disabled]="case.state != 1" (click)="doTriggerAction(case.caseId, action.id)" *ngFor="let action of automationActions">{{action.actionName}}</button>
+                </div>
+
+                <nz-tabset>
+                    <nz-tab nzTitle="Events">
+                        <nz-timeline>
+                            <nz-timeline-item *ngFor="let event of case.events">
+                                {{event.timestamp | date : 'dd.MM.yyyy HH:mm'}} <span>by</span> {{event.resource}}
+                                <br />{{event.activity.name}}
+                            </nz-timeline-item>
+                        </nz-timeline>
+                    </nz-tab>
+                    <nz-tab nzTitle="Jobs">
+                        <nz-timeline>
+                            <nz-timeline-item *ngFor="let job of automationJobs">
+                                {{job.dateCreated | date : 'dd.MM.yyyy HH:mm'}}
+                                <br />{{job.name}} ({{job.type}})
+                            </nz-timeline-item>
+                        </nz-timeline>
+                    </nz-tab>
+                  </nz-tabset>
             </div>
         </div>
     </app-prediction-navigation>

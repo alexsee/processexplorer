@@ -38,6 +38,8 @@ public class CaseRowMapper implements RowMapper<Case> {
         result.setTimestampEnd(resultSet.getTimestamp("end_time"));
         result.setNumEvents(resultSet.getInt("num_events"));
         result.setNumResources(resultSet.getInt("num_users"));
+        result.setNumResources(resultSet.getInt("num_users"));
+        result.setState(resultSet.getInt("state"));
 
         return result;
     }

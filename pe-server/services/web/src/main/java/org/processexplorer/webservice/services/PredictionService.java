@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthmarketscience.sqlbuilder.AlterTableQuery;
 import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import com.healthmarketscience.sqlbuilder.UpdateQuery;
+import org.processexplorer.data.action.AutomationAction;
 import org.processexplorer.data.prediction.*;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.common.persistence.entity.EventLogFeature;
@@ -45,6 +46,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -62,6 +64,8 @@ public class PredictionService {
 
     private final EventLogFeatureRepository eventLogFeatureRepository;
 
+    private final AutomationService automationService;
+
     private final ApplicationProperties properties;
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -71,10 +75,15 @@ public class PredictionService {
     @Autowired
     public PredictionService(EventLogModelRepository eventLogModelRepository,
                              EventLogRepository eventLogRepository,
-                             EventLogFeatureRepository eventLogFeatureRepository, ApplicationProperties properties, SimpMessagingTemplate messagingTemplate, JdbcTemplate jdbcTemplate) {
+                             EventLogFeatureRepository eventLogFeatureRepository,
+                             AutomationService automationService,
+                             ApplicationProperties properties,
+                             SimpMessagingTemplate messagingTemplate,
+                             JdbcTemplate jdbcTemplate) {
         this.eventLogModelRepository = eventLogModelRepository;
         this.eventLogRepository = eventLogRepository;
         this.eventLogFeatureRepository = eventLogFeatureRepository;
+        this.automationService = automationService;
         this.properties = properties;
         this.messagingTemplate = messagingTemplate;
         this.jdbcTemplate = jdbcTemplate;
@@ -155,7 +164,7 @@ public class PredictionService {
             var client = WebClient.builder()
                     .baseUrl(properties.getAprilBaseUri())
                     .codecs(codecs ->
-                        codecs.defaultCodecs().maxInMemorySize(20 * 1024 * 1024)
+                            codecs.defaultCodecs().maxInMemorySize(20 * 1024 * 1024)
                     )
                     .build();
 
@@ -312,7 +321,7 @@ public class PredictionService {
                         "        ORDER BY t.timestamp DESC, t.event DESC\n" +
                         "        LIMIT 1) AS current_resource\n" +
                         "FROM %s t2, %s t3\n" +
-                        "WHERE (t2.state = 1 AND t2.prediction IS NOT NULL AND t2.case_id = t3.case_id)", db.eventTable.getTableNameSQL(),
+                        "WHERE (t2.state NOT IN (0, 3) AND t2.prediction IS NOT NULL AND t2.case_id = t3.case_id)", db.eventTable.getTableNameSQL(),
                 db.activityTable.getTableNameSQL(), db.eventTable.getTableNameSQL(), db.caseAttributeTable.getTableNameSQL(), db.caseTable.getTableNameSQL());
 
         return jdbcTemplate.query(sqlOutput.toString(), new OpenCaseRowMapper());
@@ -339,5 +348,50 @@ public class PredictionService {
 
         model.get().setUse(true);
         return eventLogModelRepository.save(model.get());
+    }
+
+    public List<AutomationAction> getAutomationActions(String logName, long caseId) {
+        var db = new DatabaseModel(logName);
+
+        var sqlOutput = new OutputBuilder();
+        sqlOutput.print("SELECT t3.*, t2.state, t2.assigned, t2.prediction,\n" +
+                        "       (SELECT a.name\n" +
+                        "        FROM %s t,\n" +
+                        "             %s a\n" +
+                        "        WHERE t.event = a.id\n" +
+                        "          AND t.case_id = t2.case_id\n" +
+                        "        ORDER BY t.timestamp DESC, t.event DESC\n" +
+                        "        LIMIT 1) AS current_event,\n" +
+                        "       (SELECT t.resource\n" +
+                        "        FROM %s t\n" +
+                        "        WHERE t.case_id = t2.case_id\n" +
+                        "        ORDER BY t.timestamp DESC, t.event DESC\n" +
+                        "        LIMIT 1) AS current_resource\n" +
+                        "FROM %s t2, %s t3\n" +
+                        "WHERE (t2.case_id = ? AND t2.prediction IS NOT NULL AND t2.case_id = t3.case_id)", db.eventTable.getTableNameSQL(),
+                db.activityTable.getTableNameSQL(), db.eventTable.getTableNameSQL(), db.caseAttributeTable.getTableNameSQL(), db.caseTable.getTableNameSQL());
+
+        var openCase = jdbcTemplate.queryForObject(sqlOutput.toString(), new OpenCaseRowMapper(), caseId);
+
+        if (openCase == null) {
+            return new ArrayList<>();
+        }
+
+        // obtain automation actions
+        var automations = automationService.getAutomationActions(logName,
+                "last_activity",
+                openCase.getNextActivity());
+        var result = new ArrayList<AutomationAction>();
+
+        for (var automation : automations) {
+            var item = new AutomationAction();
+            item.setId(automation.getId());
+            item.setActionType(automation.getType());
+            item.setActionName(automation.getName());
+
+            result.add(item);
+        }
+
+        return result;
     }
 }
