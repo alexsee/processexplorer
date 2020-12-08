@@ -78,7 +78,7 @@ export class OpenCasesListComponent implements OnInit, OnDestroy {
 
   doTriggerAction(caseId: number, actionId: number) {
     this.predictionService.triggerAutomation(this.logName, caseId, actionId).subscribe(a => {
-      this.queryService.getSingleCase(this.logName, caseId).subscribe(c => this.case = c);
+      this.showSingleCase(caseId);
       this.loadList();
     });
   }
