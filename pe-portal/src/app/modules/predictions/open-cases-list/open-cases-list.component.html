@@ -67,6 +67,7 @@
                 </nz-descriptions>
 
                 <h3>Actions</h3>
+                <p>Follow up actions based on automation prediction:</p>
                 <div class="button-group">
                     <button nz-button [disabled]="case.state != 1" (click)="doTriggerAction(case.caseId, action.id)" *ngFor="let action of automationActions">{{action.actionName}}</button>
                 </div>
