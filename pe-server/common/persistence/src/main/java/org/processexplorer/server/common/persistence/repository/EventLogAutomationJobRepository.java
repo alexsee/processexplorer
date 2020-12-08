@@ -14,4 +14,5 @@ public interface EventLogAutomationJobRepository extends CrudRepository<EventLog
 
     List<EventLogAutomationJob> findAllByLogNameAndCaseId(String logName, Long caseId);
 
+    List<EventLogAutomationJob> findAllByLogName(String logName);
 }

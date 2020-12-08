@@ -76,6 +76,10 @@ public class AutomationService {
         return eventLogAutomationJobRepository.findAllByLogNameAndCaseId(logName, caseId);
     }
 
+    public List<EventLogAutomationJob> getAutomationJobs(String logName) {
+        return eventLogAutomationJobRepository.findAllByLogName(logName);
+    }
+
     public void doJob(EventLogAutomationJob job) {
         if (job.getType().equals("webhook")) {
             var client = WebClient.builder()

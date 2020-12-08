@@ -115,4 +115,9 @@ public class PredictionController {
         return ResponseEntity.ok(automationService.getAutomationJobs(logName, caseId));
     }
 
+    @GetMapping("/automation_jobs_all")
+    public ResponseEntity<List<EventLogAutomationJob>> automationJobs(@RequestParam("logName") String logName) {
+        return ResponseEntity.ok(automationService.getAutomationJobs(logName));
+    }
+
 }

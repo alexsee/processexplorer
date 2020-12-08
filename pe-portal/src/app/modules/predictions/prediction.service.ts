@@ -57,6 +57,11 @@ export class PredictionService {
       logName + '&caseId=' + caseId);
   }
 
+  getAllAutomationJobs(logName: string): Observable<AutomationJob[]> {
+    return this.http.get<AutomationJob[]>(environment.serviceUrl + '/prediction/automation_jobs_all?logName=' +
+      logName);
+  }
+
   triggerAutomation(logName: string, caseId: number, actionId: number): Observable<AutomationJob> {
     return this.http.get<AutomationJob>(environment.serviceUrl + '/prediction/automation_trigger?logName=' +
       logName + '&caseId=' + caseId + '&actionId=' + actionId);

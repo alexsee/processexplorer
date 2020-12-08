@@ -1,0 +1,52 @@
+<div class="module">
+    <nz-breadcrumb>
+        <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+        <nz-breadcrumb-item>{{logName}}</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Robotic Process Automation</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Jobs</nz-breadcrumb-item>
+    </nz-breadcrumb>
+
+    <app-prediction-navigation>
+        <nz-page-header [nzGhost]="false">
+            <nz-page-header-title>Jobs</nz-page-header-title>
+        </nz-page-header>
+
+        <div class="inner-content">
+            <nz-table #basicTable nzSize="small" [nzData]="automationJobs">
+                <thead>
+                    <tr>
+                        <th nzWidth="20px">#</th>
+                        <th nzWidth="80px">Case Id</th>
+                        <th>Job</th>
+                        <th nzWidth="200px">Automation</th>
+                        <th nzWidth="50px">Status</th>
+                        <th nzWidth="150px">Date finished</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of basicTable.data" >
+                    <td>
+                        {{c.id}}
+                    </td>
+                    <td>
+                        {{c.caseId}}
+                    </td>
+                    <td>
+                        {{c.name}}
+                    <td>
+                        {{c.type}}
+                    </td>
+                    <td>
+                        <nz-tag *ngIf="c.status == 'SCHEDULED'" nzColor="orange">Scheduled</nz-tag>
+                        <nz-tag *ngIf="c.status == 'SUCCESS'" nzColor="green">Success</nz-tag>
+                        <nz-tag *ngIf="c.status == 'FAILURE'" nzColor="red">Failure</nz-tag>
+                    </td>
+                    <td>
+                        {{c.dateFinished | date : 'dd.MM.yyyy HH:mm'}}
+                    </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </app-prediction-navigation>
+</div>
