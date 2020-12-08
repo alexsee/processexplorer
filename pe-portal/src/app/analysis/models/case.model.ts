@@ -9,6 +9,7 @@ export class Case {
     numResources: number;
     variantId: number;
     events: Event[];
+    state: number;
 }
 
 export class Event {

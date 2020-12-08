@@ -41,6 +41,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 
@@ -160,6 +161,7 @@ import { PredictionNavigationComponent } from './modules/predictions/prediction-
     NzTimelineModule,
     NzDescriptionsModule,
     NzPopconfirmModule,
+    NzTabsModule,
 
     HighchartsChartModule,
 
