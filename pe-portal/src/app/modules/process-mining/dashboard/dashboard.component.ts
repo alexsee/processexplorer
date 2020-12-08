@@ -22,6 +22,8 @@ export class DashboardComponent implements OnInit {
 
   public logName: string;
   public context: EventLogStatistics;
+  public statistics: EventLogStatistics;
+
   public selections: any[] = [];
   public conditions: Condition[] = [];
 
@@ -69,8 +71,6 @@ export class DashboardComponent implements OnInit {
       }
 
       this.logName = eventLog.logName;
-      this.queryService.getStatistics(this.logName, this.queryConvertService.convertToQuery(this.conditions))
-        .subscribe(statistics => this.context = statistics);
 
       // load queries from local storage
       if (window.history.state !== undefined && window.history.state.conditions !== undefined) {
@@ -79,6 +79,12 @@ export class DashboardComponent implements OnInit {
         const query = this.storageService.readQueryConditions(this.logName);
         this.conditions = this.queryConvertService.convertFromQuery(query);
       }
+
+      this.queryService.getStatistics(this.logName, this.queryConvertService.convertToQuery(this.conditions))
+        .subscribe(statistics => {
+          this.context = statistics;
+          this.statistics = statistics;
+        });
 
       // load dashboard pages
       this.dashboard = [];
@@ -131,6 +137,9 @@ export class DashboardComponent implements OnInit {
   }
 
   doUpdate(): void {
+    this.queryService.getStatistics(this.logName, this.queryConvertService.convertToQuery(this.conditions))
+      .subscribe(statistics => this.statistics = statistics);
+
     this.chartContainer.forEach(chart => chart.doUpdate());
 
     // save dashboard
