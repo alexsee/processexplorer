@@ -1,5 +1,7 @@
 package org.processexplorer.webservice.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.processexplorer.data.action.WebhookPostActionConfiguration;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.common.persistence.entity.EventLogAutomationAction;
 import org.processexplorer.server.common.persistence.entity.EventLogAutomationJob;
@@ -7,8 +9,8 @@ import org.processexplorer.server.common.persistence.entity.EventLogAutomationJo
 import org.processexplorer.server.common.persistence.repository.EventLogAutomationActionRepository;
 import org.processexplorer.server.common.persistence.repository.EventLogAutomationJobRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.sql.Timestamp;
@@ -88,6 +90,26 @@ public class AutomationService {
 
             try {
                 var result = client.get().retrieve().bodyToMono(String.class).block();
+                job.setResult(result);
+                job.setStatus(EventLogAutomationJobStatus.SUCCESS);
+            } catch (Exception ex) {
+                job.setResult(ex.getMessage());
+                job.setStatus(EventLogAutomationJobStatus.FAILURE);
+            }
+
+            job.setDateFinished(new Timestamp(new Date().getTime()));
+            eventLogAutomationJobRepository.save(job);
+        } else if (job.getType().equals("webhook_post")) {
+            var objectMapper = new ObjectMapper();
+            try {
+                var config = objectMapper.readValue(job.getConfiguration(), WebhookPostActionConfiguration.class);
+                var client = WebClient.builder()
+                        .baseUrl(config.getUrl())
+                        .build();
+
+                var result = client.post()
+                        .body(BodyInserters.fromValue(config.getRequestBody()))
+                        .retrieve().bodyToMono(String.class).block();
                 job.setResult(result);
                 job.setStatus(EventLogAutomationJobStatus.SUCCESS);
             } catch (Exception ex) {
