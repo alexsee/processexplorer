@@ -31,7 +31,7 @@
     "dagre-d3": "^0.6.4",
     "highcharts": "^8.2.2",
     "highcharts-angular": "^2.8.2",
-    "humanize-duration": "^3.23.1",
+    "humanize-duration": "^3.25.1",
     "net": "^1.0.2",
     "ng-zorro-antd": "^10.2.0",
     "ngx-webstorage-service": "^4.1.0",
