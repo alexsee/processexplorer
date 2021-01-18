@@ -18,7 +18,6 @@
 
 package org.processexplorer.server.analysis.query.condition;
 
-import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import com.healthmarketscience.sqlbuilder.InCondition;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 

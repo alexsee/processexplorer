@@ -20,8 +20,8 @@ package org.processexplorer.server.analysis.mining.artifacts;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.processexplorer.server.analysis.query.QueryService;
-import org.processexplorer.server.common.persistence.repository.EventLogArtifactRepository;
 import org.processexplorer.server.common.persistence.entity.EventLogArtifact;
+import org.processexplorer.server.common.persistence.repository.EventLogArtifactRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

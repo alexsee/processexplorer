@@ -18,15 +18,17 @@
 
 package org.processexplorer.server.analysis.ml.metric.insights;
 
-import com.healthmarketscience.sqlbuilder.*;
+import com.healthmarketscience.sqlbuilder.Condition;
+import com.healthmarketscience.sqlbuilder.FunctionCall;
+import com.healthmarketscience.sqlbuilder.SelectQuery;
 import org.processexplorer.server.analysis.query.codes.AnalysisTargetCodes;
 import org.processexplorer.server.analysis.query.codes.DomainCodes;
 import org.processexplorer.server.analysis.query.codes.EventAttributeCodes;
 import org.processexplorer.server.analysis.query.codes.VisualizationCodes;
 import org.processexplorer.server.analysis.query.model.Insight;
 import org.processexplorer.server.analysis.query.model.InsightValueFormat;
-import org.processexplorer.server.common.persistence.repository.EventLogAnnotationRepository;
 import org.processexplorer.server.common.persistence.entity.EventLogAnnotation;
+import org.processexplorer.server.common.persistence.repository.EventLogAnnotationRepository;
 import org.processexplorer.server.common.utils.ApplicationContextProvider;
 
 import java.util.Arrays;

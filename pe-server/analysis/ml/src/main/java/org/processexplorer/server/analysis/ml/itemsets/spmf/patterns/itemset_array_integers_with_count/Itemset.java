@@ -1,9 +1,10 @@
 package org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.itemset_array_integers_with_count;
-import java.util.Arrays;
-import java.util.List;
 
 import org.processexplorer.server.analysis.ml.itemsets.spmf.algorithms.ArraysAlgos;
 import org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.AbstractOrderedItemset;
+
+import java.util.Arrays;
+import java.util.List;
 
 /* This file is copyright (c) 2008-2012 Philippe Fournier-Viger
 * 

@@ -18,8 +18,8 @@
 
 package org.processexplorer.webservice.services;
 
-import org.processexplorer.server.common.persistence.repository.EventLogAnnotationRepository;
 import org.processexplorer.server.common.persistence.entity.EventLogAnnotation;
+import org.processexplorer.server.common.persistence.repository.EventLogAnnotationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

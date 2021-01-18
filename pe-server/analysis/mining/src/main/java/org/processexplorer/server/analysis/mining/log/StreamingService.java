@@ -1,9 +1,5 @@
 package org.processexplorer.server.analysis.mining.log;
 
-import com.healthmarketscience.sqlbuilder.BinaryCondition;
-import com.healthmarketscience.sqlbuilder.CustomExpression;
-import com.healthmarketscience.sqlbuilder.InsertQuery;
-import com.healthmarketscience.sqlbuilder.UpdateQuery;
 import org.processexplorer.server.analysis.query.DatabaseModel;
 import org.processexplorer.server.analysis.query.model.Event;
 import org.springframework.jdbc.core.JdbcTemplate;

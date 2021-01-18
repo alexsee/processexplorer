@@ -20,9 +20,6 @@ package org.processexplorer.server.analysis.ml.metric;
 
 import org.apache.commons.math3.stat.StatUtils;
 
-import static org.apache.commons.math3.stat.StatUtils.mean;
-import static org.apache.commons.math3.stat.StatUtils.sum;
-
 /**
  * @author Alexander Seeliger on 01.10.2019.
  */

@@ -18,7 +18,10 @@
 
 package org.processexplorer.server.analysis.ml.metric.insights;
 
-import com.healthmarketscience.sqlbuilder.*;
+import com.healthmarketscience.sqlbuilder.BinaryCondition;
+import com.healthmarketscience.sqlbuilder.Condition;
+import com.healthmarketscience.sqlbuilder.FunctionCall;
+import com.healthmarketscience.sqlbuilder.SelectQuery;
 
 import java.util.HashMap;
 import java.util.Map;

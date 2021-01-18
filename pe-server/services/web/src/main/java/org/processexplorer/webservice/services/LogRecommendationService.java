@@ -22,9 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.processexplorer.server.analysis.ml.recommender.RecommendationService;
 import org.processexplorer.server.analysis.query.ConditionList;
 import org.processexplorer.server.analysis.query.model.Recommendation;
+import org.processexplorer.server.common.persistence.entity.EventLogRecommendation;
 import org.processexplorer.server.common.persistence.repository.EventLogRecommendationRepository;
 import org.processexplorer.server.common.persistence.repository.EventLogRepository;
-import org.processexplorer.server.common.persistence.entity.EventLogRecommendation;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
