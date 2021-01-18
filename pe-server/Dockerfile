@@ -1,3 +1,11 @@
+FROM maven as builder
+
+WORKDIR /app
+
+COPY ./ /app
+
+RUN mvn install
+
 # base image
 FROM openjdk:13-jdk-alpine
 
@@ -5,7 +13,7 @@ FROM openjdk:13-jdk-alpine
 WORKDIR /app
 
 # add app
-COPY ./services/web/target/web-*.jar /app/app.jar
+COPY --from=builder /app/services/web/target/web-*.jar /app/app.jar
 
 VOLUME /var/lib/processexplorer/
 
