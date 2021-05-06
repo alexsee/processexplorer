@@ -1,5 +1,5 @@
 # base image
-FROM node:12-buster-slim
+FROM node:14-buster-slim
 
 # install chrome for protractor tests
 #RUN apt-get update && apt-get install -yq wget
@@ -15,8 +15,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 # install and cache app dependencies
 COPY package.json /app/package.json
+RUN npm install -g @angular/cli@11.2.12
 RUN npm install
-RUN npm install -g @angular/cli@10.1.5
 
 # add app
 COPY . /app
