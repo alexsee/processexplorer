@@ -20,12 +20,12 @@ package org.processexplorer.server.analysis.ml.recommender;
 
 import org.processexplorer.server.analysis.ml.itemsets.FrequentItemset;
 import org.processexplorer.server.analysis.ml.itemsets.FrequentItemsetMiner;
-import org.processexplorer.server.analysis.query.request.CasesQuery;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.*;
 import org.processexplorer.server.analysis.query.model.FieldValue;
 import org.processexplorer.server.analysis.query.model.Insight;
 import org.processexplorer.server.analysis.query.model.Recommendation;
+import org.processexplorer.server.analysis.query.request.CasesQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

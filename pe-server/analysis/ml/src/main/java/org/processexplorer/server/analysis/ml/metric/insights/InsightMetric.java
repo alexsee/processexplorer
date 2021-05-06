@@ -18,8 +18,8 @@
 
 package org.processexplorer.server.analysis.ml.metric.insights;
 
-import org.processexplorer.server.analysis.query.model.Insight;
 import org.processexplorer.server.analysis.query.condition.Condition;
+import org.processexplorer.server.analysis.query.model.Insight;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;

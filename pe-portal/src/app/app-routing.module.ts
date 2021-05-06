@@ -11,6 +11,7 @@ import { PredictionModelListComponent } from './modules/predictions/model-list/m
 import { TrainModelComponent } from './modules/predictions/train-model/train-model.component';
 import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
 import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
+import { JobListComponent } from './modules/predictions/job-list/job-list.component';
 
 const routes: Routes = [
   { path: '', component: LogComponent },
@@ -30,11 +31,12 @@ const routes: Routes = [
   { path: 'models/train', component: TrainModelComponent },
   { path: 'models/:id', component: ModelDetailComponent },
 
-  { path: 'cases/open', component: OpenCasesListComponent }
+  { path: 'cases/open', component: OpenCasesListComponent },
+  { path: 'cases/jobs', component: JobListComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

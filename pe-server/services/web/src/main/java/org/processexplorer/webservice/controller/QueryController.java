@@ -19,7 +19,6 @@
 package org.processexplorer.webservice.controller;
 
 import org.processexplorer.server.analysis.ml.simulation.SensitivityAnalysis;
-import org.processexplorer.server.analysis.ml.simulation.SensitivityResult;
 import org.processexplorer.server.analysis.ml.simulation.SensitivityValue;
 import org.processexplorer.server.analysis.query.QueryService;
 import org.processexplorer.server.analysis.query.condition.Condition;

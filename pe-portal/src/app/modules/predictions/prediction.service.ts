@@ -5,6 +5,8 @@ import { EventLogModel } from 'src/app/log/models/eventlog-model.model';
 import { environment } from 'src/environments/environment';
 import { TrainingConfiguration } from './shared/training-configuration.model';
 import { OpenCase } from './shared/open-case.model';
+import { AutomationAction } from './shared/automation-action.model';
+import { AutomationJob } from './shared/automation-job.model';
 
 @Injectable({
   providedIn: 'root'
@@ -43,5 +45,25 @@ export class PredictionService {
 
   predictOpenCases(logName: string): Observable<void> {
     return this.http.get<void>(environment.serviceUrl + '/prediction/predict/open_cases?logName=' + logName);
+  }
+
+  getAutomationActions(logName: string, caseId: number): Observable<AutomationAction[]> {
+    return this.http.get<AutomationAction[]>(environment.serviceUrl + '/prediction/automation_actions?logName=' +
+      logName + '&caseId=' + caseId);
+  }
+
+  getAutomationJobs(logName: string, caseId: number): Observable<AutomationJob[]> {
+    return this.http.get<AutomationJob[]>(environment.serviceUrl + '/prediction/automation_jobs?logName=' +
+      logName + '&caseId=' + caseId);
+  }
+
+  getAllAutomationJobs(logName: string): Observable<AutomationJob[]> {
+    return this.http.get<AutomationJob[]>(environment.serviceUrl + '/prediction/automation_jobs_all?logName=' +
+      logName);
+  }
+
+  triggerAutomation(logName: string, caseId: number, actionId: number): Observable<AutomationJob> {
+    return this.http.get<AutomationJob>(environment.serviceUrl + '/prediction/automation_trigger?logName=' +
+      logName + '&caseId=' + caseId + '&actionId=' + actionId);
   }
 }

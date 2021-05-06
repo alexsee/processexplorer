@@ -41,6 +41,7 @@ import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 
@@ -80,6 +81,7 @@ import { PredictionModelListComponent } from './modules/predictions/model-list/m
 import { OpenCasesListComponent } from './modules/predictions/open-cases-list/open-cases-list.component';
 import { ModelDetailComponent } from './modules/predictions/model-detail/model-detail.component';
 import { PredictionNavigationComponent } from './modules/predictions/prediction-navigation/prediction-navigation.component';
+import { JobListComponent } from './modules/predictions/job-list/job-list.component';
 
 @NgModule({
   declarations: [
@@ -120,7 +122,8 @@ import { PredictionNavigationComponent } from './modules/predictions/prediction-
     TrainModelComponent,
     PredictionModelListComponent,
     OpenCasesListComponent,
-    PredictionNavigationComponent
+    PredictionNavigationComponent,
+    JobListComponent
   ],
   imports: [
     BrowserModule,
@@ -160,6 +163,7 @@ import { PredictionNavigationComponent } from './modules/predictions/prediction-
     NzTimelineModule,
     NzDescriptionsModule,
     NzPopconfirmModule,
+    NzTabsModule,
 
     HighchartsChartModule,
 

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ReworkConditionComponent } from './rework-condition.component';
 
@@ -6,7 +6,7 @@ describe('ReworkConditionComponent', () => {
   let component: ReworkConditionComponent;
   let fixture: ComponentFixture<ReworkConditionComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ReworkConditionComponent ]
     })

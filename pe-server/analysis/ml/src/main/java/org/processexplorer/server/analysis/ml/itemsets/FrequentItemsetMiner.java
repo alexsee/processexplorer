@@ -18,10 +18,10 @@
 
 package org.processexplorer.server.analysis.ml.itemsets;
 
+import org.processexplorer.server.analysis.ml.itemsets.spmf.frequentpatterns.AlgoFPClose;
 import org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.itemset_array_integers_with_count.Itemset;
 import org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.itemset_array_integers_with_count.Itemsets;
 import org.processexplorer.server.analysis.query.model.FieldValue;
-import org.processexplorer.server.analysis.ml.itemsets.spmf.frequentpatterns.AlgoFPClose;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

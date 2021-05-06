@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AttributeConditionComponent } from './attribute-condition.component';
 
@@ -6,7 +6,7 @@ describe('AttributeConditionComponent', () => {
   let component: AttributeConditionComponent;
   let fixture: ComponentFixture<AttributeConditionComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AttributeConditionComponent ]
     })

@@ -20,8 +20,8 @@ package org.processexplorer.server.analysis.ml.recommender;
 
 import org.processexplorer.server.analysis.ml.metric.insights.*;
 import org.processexplorer.server.analysis.query.QueryService;
-import org.processexplorer.server.analysis.query.model.Insight;
 import org.processexplorer.server.analysis.query.condition.Condition;
+import org.processexplorer.server.analysis.query.model.Insight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

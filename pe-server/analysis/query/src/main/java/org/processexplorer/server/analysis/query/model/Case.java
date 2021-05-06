@@ -44,6 +44,8 @@ public class Case {
 
     private List<Event> events;
 
+    private int state;
+
     public long getCaseId() {
         return caseId;
     }
@@ -114,5 +116,13 @@ public class Case {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

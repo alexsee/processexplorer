@@ -18,7 +18,6 @@
 
 package org.processexplorer.server.analysis.ml.metric.insights;
 
-import com.healthmarketscience.sqlbuilder.CustomSql;
 import com.healthmarketscience.sqlbuilder.ExtractExpression;
 import com.healthmarketscience.sqlbuilder.FunctionCall;
 import com.healthmarketscience.sqlbuilder.custom.postgresql.PgExtractDatePart;

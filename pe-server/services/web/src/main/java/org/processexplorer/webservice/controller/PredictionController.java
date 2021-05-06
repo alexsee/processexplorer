@@ -18,10 +18,13 @@
 
 package org.processexplorer.webservice.controller;
 
+import org.processexplorer.data.action.AutomationAction;
 import org.processexplorer.data.prediction.OpenCaseResult;
 import org.processexplorer.data.prediction.PredictionConfiguration;
 import org.processexplorer.data.prediction.TrainingConfiguration;
+import org.processexplorer.server.common.persistence.entity.EventLogAutomationJob;
 import org.processexplorer.server.common.persistence.entity.EventLogModel;
+import org.processexplorer.webservice.services.AutomationService;
 import org.processexplorer.webservice.services.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +41,12 @@ public class PredictionController {
 
     private final PredictionService predictionService;
 
+    private final AutomationService automationService;
+
     @Autowired
-    public PredictionController(PredictionService predictionService) {
+    public PredictionController(PredictionService predictionService, AutomationService automationService) {
         this.predictionService = predictionService;
+        this.automationService = automationService;
     }
 
     @GetMapping("/models")
@@ -88,6 +94,30 @@ public class PredictionController {
     @GetMapping("/open_cases")
     public ResponseEntity<List<OpenCaseResult>> openCases(@RequestParam(name = "logName") String logName) {
         return ResponseEntity.ok(predictionService.getOpenCases(logName));
+    }
+
+    @GetMapping("/automation_actions")
+    public ResponseEntity<List<AutomationAction>> automationActions(@RequestParam("logName") String logName,
+                                                                    @RequestParam("caseId") long caseId) {
+        return ResponseEntity.ok(predictionService.getAutomationActions(logName, caseId));
+    }
+
+    @GetMapping("/automation_trigger")
+    public ResponseEntity<EventLogAutomationJob> automationTrigger(@RequestParam("logName") String logName,
+                                                                   @RequestParam("caseId") long caseId,
+                                                                   @RequestParam("actionId") long actionId) {
+        return ResponseEntity.ok(automationService.triggerJob(logName, caseId, actionId));
+    }
+
+    @GetMapping("/automation_jobs")
+    public ResponseEntity<List<EventLogAutomationJob>> automationJobs(@RequestParam("logName") String logName,
+                                                                      @RequestParam("caseId") long caseId) {
+        return ResponseEntity.ok(automationService.getAutomationJobs(logName, caseId));
+    }
+
+    @GetMapping("/automation_jobs_all")
+    public ResponseEntity<List<EventLogAutomationJob>> automationJobs(@RequestParam("logName") String logName) {
+        return ResponseEntity.ok(automationService.getAutomationJobs(logName));
     }
 
 }

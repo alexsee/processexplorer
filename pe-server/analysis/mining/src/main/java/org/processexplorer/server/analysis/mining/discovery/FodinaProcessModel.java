@@ -18,14 +18,14 @@
 
 package org.processexplorer.server.analysis.mining.discovery;
 
-import org.processexplorer.server.analysis.query.QueryService;
-import org.processexplorer.server.analysis.query.condition.Condition;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XAttributable;
 import org.deckfour.xes.model.XAttribute;
+import org.processexplorer.server.analysis.query.QueryService;
+import org.processexplorer.server.analysis.query.condition.Condition;
 import org.processmining.plugins.bpmnminer.causalnet.CausalNet;
 import org.processmining.plugins.bpmnminer.fitness.AbstractFitness;
 import org.processmining.plugins.bpmnminer.fitness.ICSFitness;

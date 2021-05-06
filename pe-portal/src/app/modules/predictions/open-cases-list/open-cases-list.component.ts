@@ -8,6 +8,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Subscription } from 'rxjs';
 import { Message } from 'stompjs';
+import { AutomationAction } from '../shared/automation-action.model';
+import { AutomationJob } from '../shared/automation-job.model';
 
 @Component({
   selector: 'app-open-cases-list',
@@ -18,6 +20,9 @@ export class OpenCasesListComponent implements OnInit, OnDestroy {
   public logName: string;
   public openCases: OpenCase[];
   public case: Case;
+
+  public automationActions: AutomationAction[];
+  public automationJobs: AutomationJob[];
 
   private subscription: Subscription;
 
@@ -60,11 +65,21 @@ export class OpenCasesListComponent implements OnInit, OnDestroy {
 
   showSingleCase(caseId: number) {
     this.queryService.getSingleCase(this.logName, caseId).subscribe(c => this.case = c);
+
+    this.predictionService.getAutomationActions(this.logName, caseId).subscribe(a => this.automationActions = a);
+    this.predictionService.getAutomationJobs(this.logName, caseId).subscribe(a => this.automationJobs = a);
   }
 
   doRefresh(): void {
     this.predictionService.predictOpenCases(this.logName).subscribe(x => {
       this.nzMessageService.success('Prediction for event log <b>' + this.logName + '</b> in background started successfully.');
+    });
+  }
+
+  doTriggerAction(caseId: number, actionId: number) {
+    this.predictionService.triggerAutomation(this.logName, caseId, actionId).subscribe(a => {
+      this.showSingleCase(caseId);
+      this.loadList();
     });
   }
 

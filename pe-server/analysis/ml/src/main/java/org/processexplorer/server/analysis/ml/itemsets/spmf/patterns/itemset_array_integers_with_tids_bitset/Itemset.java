@@ -16,9 +16,9 @@ package org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.itemset_ar
 * SPMF. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import java.util.BitSet;
-
 import org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.AbstractOrderedItemset;
+
+import java.util.BitSet;
 
 /**
  * This class represents an itemset (a set of items) where the itemset is an array of integers 

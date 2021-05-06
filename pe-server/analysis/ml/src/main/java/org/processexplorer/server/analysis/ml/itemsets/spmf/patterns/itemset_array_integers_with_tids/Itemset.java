@@ -17,10 +17,10 @@ package org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.itemset_ar
 */
 
 
+import org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.AbstractOrderedItemset;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.processexplorer.server.analysis.ml.itemsets.spmf.patterns.AbstractOrderedItemset;
 
 /**
  * This class represents an itemset (a set of items) where the itemset is an array of integers 

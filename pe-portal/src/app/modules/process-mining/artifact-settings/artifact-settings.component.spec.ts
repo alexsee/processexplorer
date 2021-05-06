@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ArtifactSettingsComponent } from './artifact-settings.component';
 
@@ -6,7 +6,7 @@ describe('ArtifactSettingsComponent', () => {
   let component: ArtifactSettingsComponent;
   let fixture: ComponentFixture<ArtifactSettingsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ArtifactSettingsComponent ]
     })

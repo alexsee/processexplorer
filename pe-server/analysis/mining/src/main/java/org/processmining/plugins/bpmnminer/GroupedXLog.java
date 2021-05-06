@@ -1,21 +1,11 @@
 package org.processmining.plugins.bpmnminer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.info.impl.XLogInfoImpl;
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeMap;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XLogImpl;
+
+import java.util.*;
 
 public class GroupedXLog implements Cloneable {
     private XEventClassifier classifier;

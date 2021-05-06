@@ -28,8 +28,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.*;
 
-import static org.processexplorer.server.analysis.ml.metric.StatisticMetrics.norm;
 import static org.apache.commons.math3.stat.StatUtils.sum;
+import static org.processexplorer.server.analysis.ml.metric.StatisticMetrics.norm;
 import static smile.math.MathEx.JensenShannonDivergence;
 
 /**
