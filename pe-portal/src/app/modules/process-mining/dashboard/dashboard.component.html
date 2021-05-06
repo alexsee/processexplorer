@@ -33,7 +33,7 @@
     <div class="grid" [ngClass]="{ 'edit-mode': editMode && optionsTemplate }">
         <gridster class="chart" [options]="gridOptions">
             <gridster-item [item]="item" *ngFor="let item of dashboard; index as idx">
-                <div class="widget" nz-popover [nzPopoverContent]="editTemplate" [nzPopoverTrigger]="'hover'">
+                <div class="widget" nz-popover [nzPopoverContent]="editTemplate" [nzPopoverTrigger]="editMode ? 'hover' : null">
                     <app-widget-host
                         #widget
                         [context]="context"
